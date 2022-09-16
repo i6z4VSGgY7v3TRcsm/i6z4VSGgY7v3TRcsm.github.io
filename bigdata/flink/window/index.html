@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="Youtube上观看的Flink学习笔记, 有段时间了, 由于是边看视频边记得笔记, 逻辑有些乱, 还请见谅! 有时间再重新整理下!">
+<meta name="keywords" content="Big Data,Apache Flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink学习手札之Stream Window小结篇">
+<meta property="og:url" content="https://ultradata.stream/bigdata/flink/window/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="Youtube上观看的Flink学习笔记, 有段时间了, 由于是边看视频边记得笔记, 逻辑有些乱, 还请见谅! 有时间再重新整理下!">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/Tubling-window.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/Sliding-window.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/Session-window.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/interval-join.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/window-join.png">
+<meta property="og:updated_time" content="2019-05-11T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink学习手札之Stream Window小结篇">
+<meta name="twitter:description" content="Youtube上观看的Flink学习笔记, 有段时间了, 由于是边看视频边记得笔记, 逻辑有些乱, 还请见谅! 有时间再重新整理下!">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/Tubling-window.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/flink/window/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Flink学习手札之Stream Window小结篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/flink/window/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Flink学习手札之Stream Window小结篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-11 22:19:16" itemprop="dateModified" datetime="2019-05-11T22:19:16+08:00">2019-05-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">17k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">15 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div class="note success">
+            <p>Youtube上观看的Flink学习笔记, 有段时间了, 由于是边看视频边记得笔记, 逻辑有些乱, 还请见谅! 有时间再重新整理下!</p>
+          </div>
+<a id="more"></a>
+<h2 id="Window生命周期"><a href="#Window生命周期" class="headerlink" title="Window生命周期"></a>Window生命周期</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Window Content</td>
+<td>窗口内容,或<code>ReduceFunction</code>/<code>AggregateFunction</code>窗口operator增量聚合结果</td>
+</tr>
+<tr>
+<td>Window Object</td>
+<td>窗口算子基于返回对象对数据进行分组,窗口对象用于区分不同窗口.每个窗口对象拥有基于哪个窗口之后的端点时间戳及可以删除的状态</td>
+</tr>
+<tr>
+<td>Trigger计时器</td>
+<td>Trigger可注册在某个时间点调用的计时器如计算一个窗口还是清空内容.这些计时器由窗口操作符维护</td>
+</tr>
+<tr>
+<td>Trigger自定义状态</td>
+<td>Trigger可以定义per-window/per-key或自定义状态,这些状态完全由Trigger控制,不用window operator维护</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>当窗口算子删除一个要结束的Window时(到达窗口对象定义的结束时间戳), 具体发生于ProcessingTime还是EventTime语义取决于<code>WindowAsssigner.isEventTime()</code>返回值. 删除一个窗口时,自动清除窗口内容并丢弃窗口对象, 并不会清除自定义Trigger状态及注册的触发计时器(对于窗口操作符而言并不透明). 可以通过<code>Trigger.clear()</code>防止状态泄露.</p>
+<h3 id="Assigner"><a href="#Assigner" class="headerlink" title="Assigner"></a>Assigner</h3><p><code>GobalWindows</code> Assigner映射所有数据至同一全局窗口, 默认Trigger为<code>NeverTrigger</code>, 实现上须指定自定义Trigger及Evictor. <code>GlobalWindows</code>结束时间戳为Long.MAX_VALUE, 导致其从不被完全清空掉. 对于不断演变发展的KeyedStream, <code>GlobalWindows</code>为每个key维护某些状态, 需谨慎使用. <code>MergingWindowAssigner</code>接口继承了<code>WindowAssigner</code>接口, 用于Merge窗口算子.</p>
+<p><code>WindowAssigner</code>的Flink源码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">WindowAssigner</span>&lt;<span class="title">T</span>, <span class="title">W</span> <span class="keyword">extends</span> <span class="title">Window</span>&gt; <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Returns a collection of windows to which the element is assigned</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Collection&lt;W&gt; <span class="title">assignWindows</span><span class="params">(T element,<span class="keyword">long</span> timestamp, WindowAssignerContext context)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Trigger&lt;T, W&gt; <span class="title">getDefaultTrigger</span><span class="params">(StreamExecutionEnvironment env)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> TypeSerializer&lt;W&gt; <span class="title">getWindowSerializer</span><span class="params">(ExecutionConfig executionConfig)</span></span>;</span><br><span class="line">      <span class="comment">// Indicates whether this assigner creates event-time windows</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isEventTime</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// A context that gives access to the current processing time</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">WindowAssignerContext</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">long</span> <span class="title">getCurrentProcessingTime</span><span class="params">()</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>以下代码为实现一30秒滚动窗口的<code>WindowAssigner</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">winAsgnCtx</span> </span>= <span class="type">WindowAssigner</span>.<span class="type">WindowAssignerContext</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ThirtySecondsWindows</span> <span class="keyword">extends</span> <span class="title">WindowAssigner</span>[<span class="type">Object</span>, <span class="type">TimeWindow</span>] </span>&#123;</span><br><span class="line">    <span class="keyword">val</span> windowSize: <span class="type">Long</span> = <span class="number">30</span> * <span class="number">1000</span>L</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">assignWindows</span></span>(o: <span class="type">Object</span>, ts: <span class="type">Long</span>, ctx: winAsgnCtx): java.util.<span class="type">List</span>[<span class="type">TimeWindow</span>] = &#123;</span><br><span class="line">        <span class="keyword">val</span> startTime = ts - (ts % windowSize)</span><br><span class="line">        <span class="keyword">val</span> endTime = startTime + windowSize</span><br><span class="line">        <span class="type">Collections</span>.singletonList(<span class="keyword">new</span> <span class="type">TimeWindow</span>(startTime, endTime))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">getWindowSerializer</span></span>(executionConfig: <span class="type">ExecutionConfig</span>): <span class="type">TypeSerializer</span>[<span class="type">TimeWindow</span>] = &#123; <span class="keyword">new</span> <span class="type">TimeWindow</span>.<span class="type">Serializer</span> &#125;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">getDefaultTrigger</span></span>(env: envirnoment.<span class="type">StreamExecutionEnvironment</span>): <span class="type">Trigger</span>[<span class="type">Object</span>, <span class="type">TimeWindow</span>] = &#123; <span class="type">EventTimeTrigger</span>.create() &#125;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">isEventTime</span> </span>= <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Trigger"><a href="#Trigger" class="headerlink" title="Trigger"></a>Trigger</h3><p>Mergable Triggers只能使用可以自动聚合的状态原语, 如ListState, ReduceState或AggregatingState. Trigger可以访问时间属性及计时器, 也可访问状态, 每次调用Trigger时返回<code>TriggerResult</code>, <code>TriggerResult</code>有以下值:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CONTINUE</td>
+<td>不采取行动</td>
+</tr>
+<tr>
+<td>FREE</td>
+<td>若窗口算子拥有<code>ProcessWindowFunction</code>,调用函数返回结果; 若为增量聚合函数<code>ReduceFunction</code>/<code>AggregateFunction</code>,仅触发当前聚合结果.窗口状态并不会改变</td>
+</tr>
+<tr>
+<td>PURGE</td>
+<td>完全丢弃窗口内容并移除所有元数据, 调用<code>ProcessWindowFunction.clear()</code>清除所有自定义的per-window状态</td>
+</tr>
+<tr>
+<td>FIRE_AND_PURGE</td>
+<td>首先计算窗口, 然后接着移除所有状态及元数据</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>其中, <code>Trigger</code>的Flink源码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Trigger</span>&lt;<span class="title">T</span>, <span class="title">W</span> <span class="keyword">extends</span> <span class="title">Window</span>&gt; <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123; <span class="comment">//源码</span></span><br><span class="line">   <span class="comment">// Called for every element that gets added to a window</span></span><br><span class="line">   <span class="function">TriggerResult <span class="title">onElement</span><span class="params">(T element, <span class="keyword">long</span> timestamp, W window, TriggerContext ctx)</span></span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Called when a processing-time timer fires</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> TriggerResult <span class="title">onProcessingTime</span><span class="params">(<span class="keyword">long</span> timestamp, W window, TriggerContext ctx)</span></span>;</span><br><span class="line">   <span class="comment">// Called when an event-time timer fires</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> TriggerResult <span class="title">onEventTime</span><span class="params">(<span class="keyword">long</span> timestamp, W window, TriggerContext ctx)</span></span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Returns true if this trigger supports merging of trigger state</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canMerge</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="comment">// Called when several windows have been merged into one window</span></span><br><span class="line">   <span class="comment">// and the state of the triggers needs to be merged</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMerge</span><span class="params">(W window, OnMergeContext ctx)</span></span>;</span><br><span class="line">   <span class="comment">// Clears any state that the trigger might hold for the given window</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">(W window, TriggerContext ctx)</span></span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="comment">// A context object that is given to Trigger methods to allow them</span></span><br><span class="line"> <span class="comment">// to register timer callbacks and deal with state</span></span><br><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TriggerContext</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">long</span> <span class="title">getCurrentProcessingTime</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">long</span> <span class="title">getCurrentWatermark</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">registerProcessingTimeTimer</span><span class="params">(<span class="keyword">long</span> time)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">registerEventTimeTimer</span><span class="params">(<span class="keyword">long</span> time)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">deleteProcessingTimeTimer</span><span class="params">(<span class="keyword">long</span> time)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">deleteEventTimeTimer</span><span class="params">(<span class="keyword">long</span> time)</span></span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Retrieves a state object that is scoped to the window and the key of the trigger</span></span><br><span class="line">   &lt;S extends State&gt; <span class="function">S <span class="title">getPartitionedState</span><span class="params">(StateDescriptor&lt;S, ?&gt; stateDescriptor)</span></span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="comment">// Extension of TriggerContext that is given to the Trigger.onMerge() method</span></span><br><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnMergeContext</span> <span class="keyword">extends</span> <span class="title">TriggerContext</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Merges per-window state of the trigger</span></span><br><span class="line">   <span class="comment">// The state to be merged must support merging</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">mergePartitionedState</span><span class="params">(StateDescriptor&lt;S, ?&gt; stateDescriptor)</span></span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>如何使用Trigger, 以下为一个小例子:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">TrgCtx</span> </span>= <span class="type">Trigger</span>.<span class="type">TriggerResult</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OneSecondIntervalTrigger</span> <span class="keyword">extends</span> <span class="title">Trigger</span>[<span class="type">SensorReading</span>, <span class="type">TimeWindow</span>] </span>&#123;</span><br><span class="line">    <span class="keyword">val</span> firstSeenDesc = <span class="keyword">new</span> <span class="type">ValueStateDescriptor</span>[<span class="type">Boolean</span>](<span class="string">"firstSeen"</span>, classOf[<span class="type">Boolean</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">onElment</span></span>(r: <span class="type">SensorReading</span>, timestamp: <span class="type">Long</span>, window: <span class="type">TimeWindow</span>, ctx: <span class="type">TrgCtx</span>): <span class="type">TriggerResult</span> = &#123;</span><br><span class="line">        <span class="keyword">val</span> firstSeen: <span class="type">ValueState</span>[<span class="type">Boolean</span>] = ctx.getPartitionedState(firstSeenDesc)</span><br><span class="line">        <span class="keyword">if</span> (!firstSeen.value()) &#123;</span><br><span class="line">             <span class="keyword">val</span> t = ctx.getCurrentWatermark + (<span class="number">1000</span> - (ctx.getCurrentWatermark % <span class="number">100</span>))</span><br><span class="line">             ctx.registerEventTimeTimer(t)</span><br><span class="line">             ctx.registerEventTimeTimer(window.getEnd)  <span class="comment">// register timer for the window end</span></span><br><span class="line">             firstSeen.update(<span class="literal">true</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">TriggerResult</span>.<span class="type">CONTINUE</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">onEventTime</span></span>(timestamp: <span class="type">Long</span>, window: <span class="type">TimeWindow</span>, ctx: <span class="type">TrgCtx</span>): <span class="type">TriggerResult</span> = &#123;</span><br><span class="line">         <span class="keyword">if</span> (timestamp == wind.getEnd) &#123;</span><br><span class="line">             <span class="type">TriggerResult</span>.<span class="type">FIRE_AND_PURGE</span></span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             <span class="keyword">val</span> t = ctx.getCurrentWatermark + (<span class="number">1000</span> - (ctx.getCurrentWatermak % <span class="number">100</span>))</span><br><span class="line">             <span class="keyword">if</span> (t &lt; window.getEnd) &#123; ctx.registerEvenTimeTimer(t) &#125;</span><br><span class="line">             <span class="type">TriggerResult</span>.<span class="type">FIRE</span></span><br><span class="line">         &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">onProcessingTime</span></span>(timestamp: <span class="type">Long</span>, window: <span class="type">TimeWindow</span>, ctx:<span class="type">TrgCtx</span>): <span class="type">TriggerResult</span> = &#123;</span><br><span class="line">         <span class="type">TriggerResult</span>.<span class="type">CONTINUE</span>    <span class="comment">// dont't process processing time timers</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">clear</span></span>(window: <span class="type">TimeWindow</span>, ctx: <span class="type">TrgCtx</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">         <span class="keyword">val</span> firstSeen: <span class="type">ValueState</span>[<span class="type">Boolean</span>] = ctx.getPartitionedState(firstSeenDesc)</span><br><span class="line">         firstSeen.clear()   <span class="comment">// clear trigger state. 由于使用的是`ValueState`, 该Trigger不可合并(non-mergable)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Evictor"><a href="#Evictor" class="headerlink" title="Evictor"></a>Evictor</h3><p><code>Evictor</code>的Flink源码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**Evictors常用于`GlobalWindow`清理部分窗口而非清除整个窗口状态. 可以在窗口计算之前或之后移除部分数据</span></span><br><span class="line"><span class="comment"> * Evictors不适用于`ReduceFunction`/`AggregateFunction`对窗口进行增量聚合. 源码参考如下</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Evictor</span>&lt;<span class="title">T</span>, <span class="title">W</span> <span class="keyword">extends</span> <span class="title">Window</span>&gt; <span class="keyword">extends</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Optionally evicts elements. Called before windowing function.</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">evictBefore</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">          Iterable&lt;TimestampedValue&lt;T&gt;&gt; elements,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">int</span> size,</span></span></span><br><span class="line"><span class="function"><span class="params">          W window,</span></span></span><br><span class="line"><span class="function"><span class="params">          EvictorContext evictorContext)</span></span>; <span class="comment">//EvictorContext提供当前处理时间及水印的访问途径</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Optionally evicts elements. Called after windowing function.</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">evictAfter</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">          Iterable&lt;TimestampedValue&lt;T&gt;&gt; elements,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">int</span> size,</span></span></span><br><span class="line"><span class="function"><span class="params">          W window,</span></span></span><br><span class="line"><span class="function"><span class="params">          EvictorContext evictorContext)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// A context object that is given to Evictor methods.</span></span><br><span class="line">  <span class="class"><span class="keyword">interface</span> <span class="title">EvictorContext</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">getCurrentProcessingTime</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">// Returns the current event time watermark.</span></span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">getCurrentWatermark</span><span class="params">()</span></span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="窗口算子及类型"><a href="#窗口算子及类型" class="headerlink" title="窗口算子及类型"></a>窗口算子及类型</h2><p>主要有两类: Keyed Stream及Non-Keyed Stream.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>keyed stream window</td>
+<td>nonkeyed stream window</td>
+</tr>
+<tr>
+<td>并行计算</td>
+<td>单线程处理</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>创建一窗口算子, 需指定Window Assigner及Window Function. WindowAssigner决定窗口输入流数据Record如何分组, 通常返回<code>WindowStream</code>及<code>AllWindowedStream</code>(Nonkeyed Stream). WindowFunction适用于<code>WindowStream</code>或 <code>AllWindowedStream</code>, 处理窗口内数据Record. 示例代码, 参考如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">inputStream.keyBy(...).window(...).reduce/aggregate/process(...)   <span class="comment">// keyed stream</span></span><br><span class="line">inputStream.windowAll(...).reduce/aggregate/process(...)           <span class="comment">// nonkeyed stream</span></span><br></pre></td></tr></table></figure>
+<p>除了基于时间窗口,Flink也支持Count-based Window, 由于依赖于消费顺序,计数窗口无序,使用时需指定自定义Trigger对窗口进行维护.</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> sensorData: <span class="type">DataStream</span>[<span class="type">SensorReading</span>] = ...</span><br><span class="line"><span class="comment">// Tumbling Window</span></span><br><span class="line"><span class="keyword">val</span> avgTemp = sensorData.keyBy(_.id)</span><br><span class="line">    <span class="comment">//或使用便捷方式 .timeWindow(Time.seconds(1)), 也可指定时间偏移offset(第二个时间参数)</span></span><br><span class="line">    <span class="comment">//如  .window(TumblingEventTimeWindows.of(Time.hours(1), Time.minutes(15)))</span></span><br><span class="line">    <span class="comment">// TumblingProcessingTimeWindows.of(Time.seconds(1))</span></span><br><span class="line">    .window(<span class="type">TumblingEventTimeWindows</span>.of(<span class="type">Time</span>.seconds(<span class="number">1</span>)))</span><br><span class="line">    .process(<span class="keyword">new</span> <span class="type">TemperatureAverager</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Sliding Window</span></span><br><span class="line"><span class="keyword">val</span> slidingAvgTemp = sensorData.keyBy(_.id)</span><br><span class="line">    <span class="comment">//可以使用便捷方式 .window(Time.hours(1), Time.minutes(15))</span></span><br><span class="line">    <span class="comment">// SlidingProcessingTimeWindows.of(Time.hours(1), Time.minutes(15))</span></span><br><span class="line">    .window(<span class="type">SlidingEventTimeWindows</span>.of(<span class="type">Time</span>.hours(<span class="number">1</span>), <span class="type">Time</span>.minutes(<span class="number">15</span>)))</span><br><span class="line">    .process(<span class="keyword">new</span> <span class="type">TemperatureAverager</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Session Window, Session Gap时间范围内不接受Record,不活跃(inactivity)</span></span><br><span class="line"><span class="keyword">val</span> sessionWindows = sensorData.keyBy(_.id)</span><br><span class="line">    <span class="comment">// ProcessingTimeSessionWindows.withGap(Time.minutes(15))</span></span><br><span class="line">    .window(<span class="type">EventTimeSessionWindows</span>.withGap(<span class="type">Time</span>.minutes(<span class="number">15</span>)))</span><br><span class="line">    .process(...)</span><br></pre></td></tr></table></figure>
+<p>窗口类型, 主要有三大类: Tumbing Window(滚动窗口), Sliding Window(滑动窗口)以及Session Window(会话窗口).</p>
+<p>Tumbing Window</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/Tubling-window.png" alt="Tubling-window"></p>
+<p>Sliding Window</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/Sliding-window.png" alt="Sliding-window"></p>
+<p>Session Window</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/Session-window.png" alt="session-window"></p>
+<h2 id="常见窗口函数"><a href="#常见窗口函数" class="headerlink" title="常见窗口函数"></a>常见窗口函数</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>函数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Incremental Aggregate Functions</td>
+<td><code>ReduceFunction</code>,<code>AggregateFunction</code></td>
+</tr>
+<tr>
+<td>Full Window Functions</td>
+<td><code>ProcessWindowFunction</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="ReduceFunction"><a href="#ReduceFunction" class="headerlink" title="ReduceFunction"></a>ReduceFunction</h3><p>示例代码, 参考如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> minTempPerWindow: <span class="type">DataStream</span>[(<span class="type">String</span>, <span class="type">Double</span>)] = sensorData.map&#123; r =&gt; (r.id, r.temperature)&#125;</span><br><span class="line">   .keyBy(_._1)</span><br><span class="line">   .timeWindow(<span class="type">Time</span>.seconds(<span class="number">15</span>))</span><br><span class="line">   .reduce&#123;(r1, r2) =&gt; (r1._1, r1._2.min(r2._2))&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AggregateFunction"><a href="#AggregateFunction" class="headerlink" title="AggregateFunction"></a>AggregateFunction</h3><p><code>AggregateFunction</code> 接口,  Flink源码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AggregateFunction</span>&lt;<span class="title">IN</span>, <span class="title">ACC</span>, <span class="title">OUT</span>&gt; <span class="keyword">extends</span> <span class="title">Function</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">   <span class="function">ACC <span class="title">createAccumulator</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="comment">// add an input element to the accumulator and return the accumulator.</span></span><br><span class="line">   <span class="function">ACC <span class="title">add</span><span class="params">(IN value, ACC accumulator)</span></span>;</span><br><span class="line">   <span class="function">OUT <span class="title">getResult</span><span class="params">(ACC accumulator)</span></span>;</span><br><span class="line">   <span class="comment">// merge two accumulators and return the result.=</span></span><br><span class="line">   <span class="function">ACC <span class="title">merge</span><span class="params">(ACC a, ACC b)</span></span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>使用示例代码, 参考如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> avgTempPerWindow: <span class="type">DataStream</span>[(<span class="type">String</span>, <span class="type">Double</span>)] = sensorData.map &#123; r =&gt; (r.id, r.temperature)&#125;</span><br><span class="line">   .keyBy(_._1)</span><br><span class="line">   .timeWindow(<span class="type">Time</span>.seconds(<span class="number">15</span>))</span><br><span class="line">   .aggregate(<span class="keyword">new</span> <span class="type">AvgTempFunction</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AvgTempFunction</span> <span class="keyword">extends</span> <span class="title">AggregateFunction</span>[(<span class="type">String</span>, <span class="type">Double</span>), (<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Int</span>), (<span class="type">String</span>, <span class="type">Double</span>)] </span>&#123;</span><br><span class="line">    <span class="keyword">val</span> initVal = (<span class="string">""</span>, <span class="number">0.0</span>, <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">createAccumulator</span></span>() = initVal</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">add</span></span>(in: (<span class="type">String</span>, <span class="type">Double</span>, acc:(<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Int</span>))) = &#123;</span><br><span class="line">        (in._1, in._2 + acc._2, <span class="number">1</span> + acc._3)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">merge</span></span>(acc1: (<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Int</span>), acc2: (<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Int</span>)) = &#123;</span><br><span class="line">        (acc1._1, acc1._2 + acc2._2, acc1._3 + acc2._3)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">getResult</span></span>(acc: (<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Int</span>)) = &#123;</span><br><span class="line">         (acc._1, acc._2 / acc._3)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ProcessWindowFunction"><a href="#ProcessWindowFunction" class="headerlink" title="ProcessWindowFunction"></a>ProcessWindowFunction</h3><p>通过Context对象访问当前处理时间及事件时间及Side outputs, 窗口元数据通常包括可用于窗口标识符信息如开始和结束时间戳.  <code>ProcessWindowFunction</code>存储所有Events至<code>ListState</code>, 该抽象类, Flink源码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ProcessWindowFunction</span>&lt;<span class="title">IN</span>, <span class="title">OUT</span>, <span class="title">KEY</span>, <span class="title">W</span> <span class="keyword">extends</span> <span class="title">Window</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractRichFunction</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Evaluates the window</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">process</span><span class="params">(KEY key, Context ctx, Iterable&lt;IN&gt; vals, Collector&lt;OUT&gt; out)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">   <span class="comment">// Deletes any custom per-window state when the window is purged</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">(Context ctx)</span> <span class="keyword">throws</span> Exception </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// The context holding window metadata</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">     <span class="comment">// Returns the metadata of the window</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> W <span class="title">window</span><span class="params">()</span></span>;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">long</span> <span class="title">currentProcessingTime</span><span class="params">()</span></span>;</span><br><span class="line">     <span class="comment">// Returns the current event-time watermark</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">long</span> <span class="title">currentWatermark</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// State accessor for per-window state</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> KeyedStateStore <span class="title">windowState</span><span class="params">()</span></span>;</span><br><span class="line">     <span class="comment">// State accessor for per-key global state</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> KeyedStateStore <span class="title">globalState</span><span class="params">()</span></span>;</span><br><span class="line">     <span class="comment">// Emits a record to the side output identified by the OutputTag.</span></span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">abstract</span> &lt;X&gt; <span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(OutputTag&lt;X&gt; outputTag, X value)</span></span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>以下代码计算每5秒Tumbling窗口内最高最低温度</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">MinMaxTemp</span>(<span class="params">id: <span class="type">String</span>, min: <span class="type">Double</span>, max: <span class="type">Double</span>, endTs: <span class="type">Long</span></span>)</span></span><br><span class="line"><span class="class"><span class="title">val</span> <span class="title">minMaxTempPerWindow</span></span>: <span class="type">DataStream</span>[<span class="type">MinMaxTemp</span>] = sensorData.keyBy(_.id)</span><br><span class="line">    .timeWindow(<span class="type">Time</span>.seconds(<span class="number">5</span>))</span><br><span class="line">    .process(<span class="keyword">new</span> <span class="type">HighAndLowTempProcessFunction</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HighAndLowTempProcessFunction</span> <span class="keyword">extends</span> <span class="title">ProcessWindowFunction</span>[<span class="type">SensorReading</span>, <span class="type">MinMaxTemp</span>, <span class="type">String</span>, <span class="type">TimeWindow</span>] </span>&#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">process</span></span>(key: <span class="type">String</span>, ctx: <span class="type">Context</span>, vals: <span class="type">Iterable</span>[<span class="type">SensorReading</span>], out: <span class="type">Collector</span>[<span class="type">MinMaxTemp</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">        <span class="keyword">val</span> temps = vals.map(_.temperature)</span><br><span class="line">        <span class="keyword">val</span> windowEnd = ctx.window.getEnd</span><br><span class="line">        <span class="keyword">val</span> minMaxTemp = <span class="type">MinMaxTemp</span>(key, temps.min, temps.max, windowEnd)</span><br><span class="line">        out.collect(minMaxTemp)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="窗口增量聚合函数"><a href="#窗口增量聚合函数" class="headerlink" title="窗口增量聚合函数"></a>窗口增量聚合函数</h3><p><code>ProcessWindowFunction</code>虽然强大, 但需谨慎使用, 该函数通常容纳比增量聚合函数更多状态数据. 如需应用增量聚合逻辑并访问窗口元数据, 可以结合使用<code>ReduceFunction</code>或<code>AggregateFunction</code>.  当窗口触发器触发时, 分配至窗口的数据立即聚合, 聚合结果会立即由<code>ProcessWindowFunction</code>处理.</p>
+<p>示例代码, 参考如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">input.keyBy(...)</span><br><span class="line">     .timeWindow(...)</span><br><span class="line">     <span class="comment">//.aggregate(incrAggregator: AggregateFunction[IN, ACC, V], windowFunction: ProcessWindowFunction[V, OUT, K, W])</span></span><br><span class="line">     .reduce(incrAggregator: <span class="type">ReduceFunction</span>[<span class="type">IN</span>],</span><br><span class="line">             function: <span class="type">ProcessWindowFunction</span>[<span class="type">IN</span>, <span class="type">OUT</span>, <span class="type">K</span>, <span class="type">W</span>])</span><br><span class="line"></span><br><span class="line"> <span class="comment">//case class MinMaxTemp(id: String, min: Double, max: Double, endTs: Long)</span></span><br><span class="line"> <span class="keyword">val</span> incrAgg = (r1: (<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Double</span>), r2: (<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Double</span>)) =&gt; &#123;</span><br><span class="line">     (r1._1, r1._2.min(r2._2), r1._3.max(r2._3))</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">val</span> minMaxTempPerWindow2: <span class="type">DataStream</span>[<span class="type">MinMaxTemp</span>] = sensorData.map &#123;r =&gt; (r.id, r.temperature, r.temperature)&#125;</span><br><span class="line">     .keyBy(_._1)</span><br><span class="line">     .timeWindow(<span class="type">Time</span>.seconds(<span class="number">5</span>))</span><br><span class="line">     .reduce(incrAgg, <span class="keyword">new</span> <span class="type">AssignWindowEndProcessFunction</span>())</span><br><span class="line"></span><br><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">AssignWindowEndProcessFunction</span> <span class="keyword">extends</span> <span class="title">ProcessWindowFunction</span>[(<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Double</span>), <span class="type">MinMaxTemp</span>, <span class="type">String</span>, <span class="type">TimeWindow</span>] </span>&#123;</span><br><span class="line">     <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">process</span></span>(key: <span class="type">String</span>,</span><br><span class="line">                          ctx: <span class="type">Context</span>,</span><br><span class="line">                          minMaxIt: <span class="type">Iterable</span>[(<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Double</span>)],</span><br><span class="line">                          out: <span class="type">Collector</span>[<span class="type">MinMaxTemp</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">         <span class="keyword">val</span> minMax = minMaxIt.head</span><br><span class="line">         <span class="keyword">val</span> windowEnd = ctx.window.getEnd</span><br><span class="line">         out.collect(<span class="type">MinMaxTemp</span>(key, minMax._2, minMax._3, windowEnd))</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="窗口Join"><a href="#窗口Join" class="headerlink" title="窗口Join"></a>窗口Join</h2><p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/interval-join.png" alt="interval-join"></p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/window-join.png" alt="window-join"></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Interval Join</span></span><br><span class="line">input.keyBy(<span class="number">0</span>).between(lowerBound, upperBound).process(<span class="type">ProcessJoinFunction</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Window Join</span></span><br><span class="line">input1.join(input2)</span><br><span class="line">    .where(...)     <span class="comment">//Specify key attributes for input1</span></span><br><span class="line">    .equalTo(...)   <span class="comment">//Specify key attributes for input2</span></span><br><span class="line">    .window(...)    <span class="comment">//Specify the WindowAssigner</span></span><br><span class="line">    .trigger(...)   <span class="comment">//Optional: specify a Trigger</span></span><br><span class="line">    .evictor(...)   <span class="comment">//Optional: specify a Evictor</span></span><br><span class="line">    .apply(...)     <span class="comment">//Specify the JoinFunction</span></span><br></pre></td></tr></table></figure>
+<h2 id="处理延迟数据"><a href="#处理延迟数据" class="headerlink" title="处理延迟数据"></a>处理延迟数据</h2><p>通常有以下三种方式用于处理延迟数据:</p>
+<ul>
+<li>简单丢弃 （EventTime窗口算子默认丢弃）</li>
+<li>重定向至其它Stream</li>
+<li>基于延迟事件更新计算结果, 触发更新</li>
+</ul>
+<p>示例代码, 参考如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//重定向延迟事件, 比如可以通过DataStream中side-output特性重定向,延迟事件可以通过常用的sink函数处理或触发</span></span><br><span class="line"><span class="comment">//基于具体业务逻辑,可以将延迟数据嵌入至周期性Backfill流式进程中</span></span><br><span class="line"><span class="keyword">val</span> readings: <span class="type">DataStream</span>[<span class="type">SensorReading</span>] = ???</span><br><span class="line"><span class="keyword">val</span> lateReadingOutputTag = <span class="keyword">new</span> <span class="type">OutputTag</span>[<span class="type">SensorReading</span>](<span class="string">"late-readings"</span>)</span><br><span class="line"><span class="keyword">val</span> countPer10Secs: <span class="type">DataStream</span>[(<span class="type">String</span>, <span class="type">Long</span>, <span class="type">Int</span>)] = readings.keyBy(_.id).timeWindow(<span class="type">Time</span>.seconds(<span class="number">10</span>))</span><br><span class="line">    .sideOutputLateData(lateReadingOutputTag)</span><br><span class="line">    .process(<span class="keyword">new</span> <span class="type">CountFunction</span>())</span><br><span class="line"><span class="keyword">val</span> lateStream: <span class="type">DataStream</span>[<span class="type">SensorReading</span>] = countPer10Secs.getSideOutput(lateReadingOutputTag)</span><br><span class="line"></span><br><span class="line"><span class="comment">// filter late sensor readings and redirects to a side output</span></span><br><span class="line"><span class="keyword">val</span> filterReadings: <span class="type">DataStream</span>[<span class="type">SensorReading</span>] = readings.process(<span class="keyword">new</span> <span class="type">LateReadingsFilter</span>)</span><br><span class="line"><span class="keyword">val</span> lateReadings: <span class="type">DataStream</span>[<span class="type">SensorReading</span>] = filterReadings.getSideOutput(lateReadingOutputTag)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LateReadingsFilter</span> <span class="keyword">extends</span> <span class="title">ProcessFunction</span>[<span class="type">SensorReading</span>, <span class="type">SensorReading</span>] </span>&#123;</span><br><span class="line">    <span class="keyword">val</span> lrOutputTag = lateReadingOutputTag</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">processRlement</span></span>(in: <span class="type">SensorReading</span>,</span><br><span class="line">                                ctx: <span class="type">ProcessFunction</span>[<span class="type">SensorReading</span>, <span class="type">SensorReading</span>]#<span class="type">Context</span>,</span><br><span class="line">                                out: <span class="type">Collector</span>[<span class="type">SensorReading</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">         <span class="comment">// late reading =&gt; redirect to the side output</span></span><br><span class="line">        <span class="keyword">if</span> (in.timestamp &lt; ctx.timerService().currentWatermark()) &#123;</span><br><span class="line">            ctx.output(lrOutputTag, in)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            out.collect(in)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 基于延迟事件, 触发更新</span></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">OT</span> </span>= (<span class="type">String</span>, <span class="type">Long</span>, <span class="type">Int</span>, <span class="type">String</span>)</span><br><span class="line"><span class="keyword">val</span> countPer10Secs: <span class="type">DataStream</span>[<span class="type">OT</span>] = readings.keyBy(_.id).timeWindow(<span class="type">Time</span>.seconds(<span class="number">10</span>))</span><br><span class="line">    .allowedLateness(<span class="type">Time</span>.seconds(<span class="number">5</span>)).process(<span class="keyword">new</span> <span class="type">UpdatingWindowCountFunction</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UpdatingWindowCountFunction</span> <span class="keyword">extends</span> <span class="title">ProcessWindowFunction</span>[<span class="type">SensorReading</span>, <span class="type">OT</span>, <span class="type">String</span>, <span class="type">TimeWindow</span>] </span>&#123;</span><br><span class="line">     <span class="keyword">val</span> isUpdateDesc = <span class="keyword">new</span> <span class="type">ValueStateDescriptor</span>[<span class="type">Boolean</span>](<span class="string">"isUpdate"</span>, <span class="type">Types</span>.of[<span class="type">Boolean</span>])</span><br><span class="line"></span><br><span class="line">     <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">process</span></span>(id: <span class="type">String</span>, ctx: <span class="type">Context</span>, elements: <span class="type">Iterable</span>[<span class="type">SensorReading</span>], out: <span class="type">Collector</span>[<span class="type">OT</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">         <span class="keyword">val</span> cnt = elements.count(_ =&gt; <span class="literal">true</span>)</span><br><span class="line">         <span class="keyword">val</span> isUpdate = ctx.windowState.getState(isUpdateDesc)</span><br><span class="line">         <span class="comment">// first evaluation, emit first result else emit an update</span></span><br><span class="line">         <span class="keyword">if</span> (!isUpdate.value()) &#123;</span><br><span class="line">             out.collect((id, ctx.window.getEnd, cnt, <span class="string">"first"</span>))</span><br><span class="line">             isUpdate.update(<span class="literal">true</span>)</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             out.collect((id, ctx.window.getEnd, cnt, <span class="string">"update"</span>))</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Apache-Flink/" <i class="fa fa-tag"> Apache Flink</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/shapeless/dependent-types/" rel="next" title="Shapeless初体验之依赖类型(Dependent Types)">
+                <i class="fa fa-chevron-left"></i> Shapeless初体验之依赖类型(Dependent Types)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/shapeless/poly/" rel="prev" title="Shapeless初体验之Poly与Type Class篇">
+                Shapeless初体验之Poly与Type Class篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Window生命周期"><span class="nav-number">1.</span> <span class="nav-text">Window生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Assigner"><span class="nav-number">1.1.</span> <span class="nav-text">Assigner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trigger"><span class="nav-number">1.2.</span> <span class="nav-text">Trigger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Evictor"><span class="nav-number">1.3.</span> <span class="nav-text">Evictor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#窗口算子及类型"><span class="nav-number">2.</span> <span class="nav-text">窗口算子及类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见窗口函数"><span class="nav-number">3.</span> <span class="nav-text">常见窗口函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ReduceFunction"><span class="nav-number">3.1.</span> <span class="nav-text">ReduceFunction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AggregateFunction"><span class="nav-number">3.2.</span> <span class="nav-text">AggregateFunction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ProcessWindowFunction"><span class="nav-number">3.3.</span> <span class="nav-text">ProcessWindowFunction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#窗口增量聚合函数"><span class="nav-number">3.4.</span> <span class="nav-text">窗口增量聚合函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#窗口Join"><span class="nav-number">4.</span> <span class="nav-text">窗口Join</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理延迟数据"><span class="nav-number">5.</span> <span class="nav-text">处理延迟数据</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

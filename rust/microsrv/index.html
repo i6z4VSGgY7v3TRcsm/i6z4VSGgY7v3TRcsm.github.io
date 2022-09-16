@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="轻量级Rust微服务框架介绍与小结.">
+<meta name="keywords" content="Microservices,Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lightweight Rust Microservices Framework">
+<meta property="og:url" content="https://ultradata.stream/rust/microsrv/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="轻量级Rust微服务框架介绍与小结.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/gotham.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/rouille.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/nickel.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/rocket-test.jpg">
+<meta property="og:updated_time" content="2017-11-01T15:18:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lightweight Rust Microservices Framework">
+<meta name="twitter:description" content="轻量级Rust微服务框架介绍与小结.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/gotham.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/rust/microsrv/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Lightweight Rust Microservices Framework | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/rust/microsrv/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Lightweight Rust Microservices Framework
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-04-06 21:02:21" itemprop="dateCreated datePublished" datetime="2016-04-06T21:02:21+08:00">2016-04-06</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-11-01 23:18:16" itemprop="dateModified" datetime="2017-11-01T23:18:16+08:00">2017-11-01</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">7.1k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">6 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>轻量级Rust微服务框架介绍与小结. <a id="more"></a> Hyper Crate在Rust开发中比较常见, 特别是Rust微服务开发中, 本文将介绍以下几种轻量级的Rust微服务Crates:</p>
+<ul>
+<li>Rouille</li>
+<li>Nickle</li>
+<li>Rocket</li>
+<li>Gotham</li>
+</ul>
+<p>其中, Rouille、Nickel和Rocket均为同步框架, Gotham为异步微服务框架, 常见的异步微服务Crates有:</p>
+<ul>
+<li>Hyper</li>
+<li>Actix/Actix-web</li>
+<li>Gotham (内部使用Hyper和Tokio俩大Crate进行开发)</li>
+</ul>
+<h2 id="Gotham"><a href="#Gotham" class="headerlink" title="Gotham"></a>Gotham</h2><p>简单看个例子, 使用Gotham创建一个简单的HTTP Route服务, 首先看下HTTP句柄Handler, 主逻辑如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> gotham::handler::IntoResponse;</span><br><span class="line"><span class="keyword">use</span> gotham::state::State;</span><br><span class="line"></span><br><span class="line"><span class="built_in">macro_rules!</span> generic_handler &#123;</span><br><span class="line">    ($($t:ident),*) =&gt; &#123; $(</span><br><span class="line">        <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> $<span class="title">t</span></span>(state: State) -&gt; (State, <span class="keyword">impl</span> IntoResponse) &#123;</span><br><span class="line">            (state, <span class="built_in">stringify!</span>($t))</span><br><span class="line">        &#125;</span><br><span class="line">    )+ &#125;&#125;</span><br><span class="line"></span><br><span class="line">generic_handler!(index);</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">mod</span> products &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line">    generic_handler!(index);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">mod</span> bag &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line">    generic_handler!(index);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">mod</span> checkout &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">mod</span> address &#123;</span><br><span class="line">        <span class="keyword">use</span> super::*;</span><br><span class="line">        generic_handler!(create, update, delete);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>HTTP Route主逻辑如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// HTTP对应Route</span></span><br><span class="line"><span class="comment">//  /                --&gt; GET, HEAD</span></span><br><span class="line"><span class="comment">//  products         --&gt; GET, HEAD</span></span><br><span class="line"><span class="comment">//  bag              --&gt; GET</span></span><br><span class="line"><span class="comment">//  checkout/address --&gt; POST, PUT, PATCH, DELETE</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">router</span></span>() -&gt; Router &#123;</span><br><span class="line">    build_simple_router(|route| &#123;</span><br><span class="line">        route</span><br><span class="line">            .request(<span class="built_in">vec!</span>[Method::GET, Method::HEAD], <span class="string">"/"</span>)</span><br><span class="line">            .to(index);</span><br><span class="line">        route.get_or_head(<span class="string">"/products"</span>).to(products::index);</span><br><span class="line">        route.get(<span class="string">"/bag"</span>).to(bag::index);</span><br><span class="line"></span><br><span class="line">        route</span><br><span class="line">            .post(<span class="string">"/checkout/address"</span>)</span><br><span class="line">            .to(checkout::address::create);</span><br><span class="line"></span><br><span class="line">        route.put(<span class="string">"/checkout/address"</span>).to(checkout::address::update);</span><br><span class="line"></span><br><span class="line">        route</span><br><span class="line">            .patch(<span class="string">"/checkout/address"</span>)</span><br><span class="line">            .to(checkout::address::update);</span><br><span class="line"></span><br><span class="line">        route</span><br><span class="line">            .delete(<span class="string">"/checkout/address"</span>)</span><br><span class="line">            .to(checkout::address::delete);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>开启Route服务:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> addr = <span class="string">"127.0.0.1:7878"</span>;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Listening for requests at http://&#123;&#125;"</span>, addr);</span><br><span class="line">    gotham::start(addr, router())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>服务效果检测如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/gotham.jpg" alt></p>
+<h2 id="Rouille"><a href="#Rouille" class="headerlink" title="Rouille"></a>Rouille</h2><p>Rouille框架主要围绕router!该Macros构建, 路径和方法声明简单、实用, 其Routing声明与Hyper有些类似, 但更加简洁. Routile本身提够了很多实用的同步API, 每个请求均由线程池中线程处理. 同样看个简单例子, 编写一个简单的WebSocket服务, 将用户输入打印并在服务端记录, 代码如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[macro_use]</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">crate</span> rouille;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::thread;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> rouille::websocket;</span><br><span class="line"><span class="keyword">use</span> rouille::Response;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Now listening on localhost:8000"</span>);</span><br><span class="line"></span><br><span class="line">    rouille::start_server(<span class="string">"localhost:8000"</span>, <span class="keyword">move</span> |request| &#123;</span><br><span class="line">        router!(request,</span><br><span class="line">            (GET) (/) =&gt; &#123;</span><br><span class="line">                <span class="comment">// 本例仅为示例代码, 实际生产环境中需自行设计好Render页面逻辑</span></span><br><span class="line">                Response::html(<span class="string">"&lt;script type=\"text/javascript\"&gt;</span></span><br><span class="line"><span class="string">                    var socket = new WebSocket(\"ws://localhost:8000/ws\", \"echo\");</span></span><br><span class="line"><span class="string">                    function send(data) &#123;&#123;</span></span><br><span class="line"><span class="string">                        socket.send(data);</span></span><br><span class="line"><span class="string">                    &#125;&#125;</span></span><br><span class="line"><span class="string">                    socket.onmessage = function(event) &#123;&#123;</span></span><br><span class="line"><span class="string">                        document.getElementById('result').innerHTML += event.data + '&lt;br /&gt;';</span></span><br><span class="line"><span class="string">                    &#125;&#125;</span></span><br><span class="line"><span class="string">                    &lt;/script&gt;</span></span><br><span class="line"><span class="string">                    &lt;p&gt;This example sends back everything you send to the server.&lt;/p&gt;</span></span><br><span class="line"><span class="string">                    &lt;p&gt;&lt;form onsubmit=\"send(document.getElementById('msg').value); return false;\"&gt;</span></span><br><span class="line"><span class="string">                    &lt;input type=\"text\" id=\"msg\" /&gt;</span></span><br><span class="line"><span class="string">                    &lt;button type=\"submit\"&gt;Send&lt;/button&gt;</span></span><br><span class="line"><span class="string">                    &lt;/form&gt;&lt;/p&gt;</span></span><br><span class="line"><span class="string">                    &lt;p&gt;Received: &lt;/p&gt;</span></span><br><span class="line"><span class="string">                    &lt;p id=\"result\"&gt;&lt;/p&gt;"</span>)</span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">            (GET) (/ws) =&gt; &#123;</span><br><span class="line">                <span class="keyword">let</span> (response, websocket) = try_or_400!(websocket::start(&amp;request, <span class="literal">Some</span>(<span class="string">"echo"</span>)));</span><br><span class="line"></span><br><span class="line">                thread::spawn(<span class="keyword">move</span> || &#123;</span><br><span class="line">                    <span class="keyword">let</span> ws = websocket.recv().unwrap();</span><br><span class="line">                    websocket_handling_thread(ws);</span><br><span class="line">                &#125;);</span><br><span class="line"></span><br><span class="line">                response</span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">            _ =&gt; rouille::Response::empty_404()</span><br><span class="line">        )</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">websocket_handling_thread</span></span>(<span class="keyword">mut</span> websocket: websocket::Websocket) &#123;</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">let</span> <span class="literal">Some</span>(message) = websocket.next() &#123;</span><br><span class="line">        <span class="keyword">match</span> message &#123;</span><br><span class="line">            websocket::Message::Text(txt) =&gt; &#123;</span><br><span class="line">                <span class="built_in">println!</span>(<span class="string">"received &#123;:?&#125; from a websocket"</span>, txt);</span><br><span class="line">                websocket.send_text(&amp;txt).unwrap();</span><br><span class="line">            &#125;,</span><br><span class="line">            websocket::Message::Binary(_) =&gt; &#123;</span><br><span class="line">                <span class="built_in">println!</span>(<span class="string">"received binary from a websocket"</span>);</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>服务效果检测如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/rouille.jpg" alt></p>
+<h2 id="Nickel"><a href="#Nickel" class="headerlink" title="Nickel"></a>Nickel</h2><p>Nickel使用简单, 该框架主要受JS框架Express的影响, 非异步框架. 看个简单例子, 使用Nickel构建一个简单的模板渲染服务, 假定需要Rendering的模板如下:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span></span><br><span class="line">            Bonjour &#123;&#123; name &#125;&#125;!</span><br><span class="line">        <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Rendering服务逻辑如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[macro_use]</span> </span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">crate</span> nickel;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"><span class="keyword">use</span> nickel::&#123;Nickel, HttpRouter&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> server = Nickel::new();</span><br><span class="line"></span><br><span class="line">    server.get(<span class="string">"/"</span>, middleware! &#123; |_, response|</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> data = HashMap::new();</span><br><span class="line">        data.insert(<span class="string">"name"</span>, <span class="string">"Deep Insight"</span>);</span><br><span class="line">        <span class="keyword">return</span> response.render(<span class="string">"assets/template.tpl"</span>, &amp;data);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    server.listen(<span class="string">"127.0.0.1:6767"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>服务效果检测如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/nickel.jpg" alt></p>
+<h2 id="Rocket"><a href="#Rocket" class="headerlink" title="Rocket"></a>Rocket</h2><p>Rocket充分利用Nightly Rust编译器特性, 将一系列Rust函数转变为一个完备的Web服务框架. Rocket通过环境变量和日志充当应用配置, 好处在于下次迭代时可以免去日志和配置代码编写, 坏处在于使后期调优和维护变得困难. Rocket在Rust社区曝光度较高, 以下是一段有关Rocket中MsgPack使用的示例代码:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![feature(proc_macro_hygiene)]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#[macro_use]</span> <span class="keyword">extern</span> <span class="keyword">crate</span> rocket;</span><br><span class="line"><span class="meta">#[macro_use]</span> <span class="keyword">extern</span> <span class="keyword">crate</span> serde_derive;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg(test)]</span> <span class="keyword">mod</span> tests;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> rocket_contrib::msgpack::MsgPack;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Serialize, Deserialize)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Message</span></span>&lt;<span class="symbol">'r</span>&gt; &#123;</span><br><span class="line">    id: <span class="built_in">usize</span>,</span><br><span class="line">    contents: &amp;<span class="symbol">'r</span> <span class="built_in">str</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[get(<span class="meta-string">"/&lt;id&gt;"</span>, format = <span class="meta-string">"msgpack"</span>)]</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">get</span></span>(id: <span class="built_in">usize</span>) -&gt; MsgPack&lt;Message&lt;<span class="symbol">'static</span>&gt;&gt; &#123;</span><br><span class="line">    MsgPack(Message &#123; id: id, contents: <span class="string">"Hello, world!"</span>, &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[post(<span class="meta-string">"/"</span>, data = <span class="meta-string">"&lt;data&gt;"</span>, format = <span class="meta-string">"msgpack"</span>)]</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">create</span></span>(data: MsgPack&lt;Message&lt;<span class="symbol">'_</span>&gt;&gt;) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">    data.contents.to_string()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">rocket</span></span>() -&gt; rocket::Rocket &#123;</span><br><span class="line">    rocket::ignite().mount(<span class="string">"/message"</span>, routes![get, create])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    rocket().launch();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试代码如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> crate::rocket;</span><br><span class="line"><span class="keyword">use</span> rocket::local::Client;</span><br><span class="line"><span class="keyword">use</span> rocket::http::&#123;Status, ContentType&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Serialize, Deserialize)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Message</span></span> &#123;</span><br><span class="line">    id: <span class="built_in">usize</span>,</span><br><span class="line">    contents: <span class="built_in">String</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">msgpack_get</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> client = Client::new(rocket()).unwrap();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> res = client.get(<span class="string">"/message/1"</span>).header(ContentType::MsgPack).dispatch();</span><br><span class="line">    <span class="built_in">assert_eq!</span>(res.status(), Status::<span class="literal">Ok</span>);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(res.content_type(), <span class="literal">Some</span>(ContentType::MsgPack));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 消息为 `[1, "Hello, world!"]`</span></span><br><span class="line">    <span class="built_in">assert_eq!</span>(&amp;res.body_bytes().unwrap(),</span><br><span class="line">               &amp;[<span class="number">146</span>, <span class="number">1</span>, <span class="number">173</span>, <span class="number">72</span>, <span class="number">101</span>, <span class="number">108</span>, <span class="number">108</span>, <span class="number">111</span>, <span class="number">44</span>, <span class="number">32</span>, <span class="number">119</span>, <span class="number">111</span>, <span class="number">114</span>, <span class="number">108</span>, <span class="number">100</span>, <span class="number">33</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">msgpack_post</span></span>() &#123;</span><br><span class="line">    <span class="comment">// 消息为 `[2, "Goodbye, world!"]`.</span></span><br><span class="line">    <span class="keyword">let</span> client = Client::new(rocket()).unwrap();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> res = client.post(<span class="string">"/message"</span>)</span><br><span class="line">        .header(ContentType::MsgPack)</span><br><span class="line">        .body(&amp;[<span class="number">146</span>, <span class="number">2</span>, <span class="number">175</span>, <span class="number">71</span>, <span class="number">111</span>, <span class="number">111</span>, <span class="number">100</span>, <span class="number">98</span>, <span class="number">121</span>, <span class="number">101</span>, <span class="number">44</span>, <span class="number">32</span>, <span class="number">119</span>, <span class="number">111</span>, <span class="number">114</span>, <span class="number">108</span>, <span class="number">100</span>, <span class="number">33</span>])</span><br><span class="line">        .dispatch();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">assert_eq!</span>(res.status(), Status::<span class="literal">Ok</span>);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(res.body_string(), <span class="literal">Some</span>(<span class="string">"Goodbye, world!"</span>.into()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如下图所示, 测试通过:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/rocket-test.jpg" alt></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Microservices/" <i class="fa fa-tag"> Microservices</a>
+          
+            
+            <a href="/tags/Rust/" <i class="fa fa-tag"> Rust</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/rust/pyo3/" rel="next" title="使用Rust语言对Python加速">
+                <i class="fa fa-chevron-left"></i> 使用Rust语言对Python加速
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/rust/fasttext/" rel="prev" title="Rust大法试水NLP之语句分类与预测">
+                Rust大法试水NLP之语句分类与预测 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Gotham"><span class="nav-number">1.</span> <span class="nav-text">Gotham</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rouille"><span class="nav-number">2.</span> <span class="nav-text">Rouille</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nickel"><span class="nav-number">3.</span> <span class="nav-text">Nickel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rocket"><span class="nav-number">4.</span> <span class="nav-text">Rocket</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

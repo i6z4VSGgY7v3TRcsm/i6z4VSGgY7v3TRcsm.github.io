@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将教你如何使用Rust语言对Python加速.">
+<meta name="keywords" content="Python,Rust,PyO3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Rust语言对Python加速">
+<meta property="og:url" content="https://ultradata.stream/rust/pyo3/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将教你如何使用Rust语言对Python加速.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/pyo3.jpg">
+<meta property="og:updated_time" content="2019-02-11T14:21:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Rust语言对Python加速">
+<meta name="twitter:description" content="本文将教你如何使用Rust语言对Python加速.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/pyo3.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/rust/pyo3/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>使用Rust语言对Python加速 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/rust/pyo3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Rust语言对Python加速
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-03-06 20:11:18" itemprop="dateCreated datePublished" datetime="2016-03-06T20:11:18+08:00">2016-03-06</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-11 22:21:36" itemprop="dateModified" datetime="2019-02-11T22:21:36+08:00">2019-02-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">3k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">3 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将教你如何使用Rust语言对Python加速. <a id="more"></a> 一直以来, Python都是LLVM生态的重度依赖者, 比如高性能的Numpy、OpenCV、甚至是Tensorflow等, 底层实现为均为C或C++, Python Binding在手, 代码”瞬间溜得飞起”. </p>
+<h2 id="Why-Rust"><a href="#Why-Rust" class="headerlink" title="Why Rust"></a>Why Rust</h2><p>问题来了, 为何不Pythonic点, 使用C或C++语言对Python加速即可. 而且Python本身有个CPython版本, 再不济也可考虑使用CPython, 当然也可考虑Pypy. 但是, CPython存在GIL(全局解释锁), 在并行性实现方面存在困难; Pypy虽好, 但生态方面比不及CPython, 有些Python包可能需要重写, 并不能直接使用. 至于C或C++语言加Python binding, 很不错, 毕竟Python社区也是这么过来的. </p>
+<p>话说, 有没有考虑过以下几点:</p>
+<ul>
+<li>系统安全性问题, Unsafe一直是C或C++语言”广为诟病”的问题, 毕竟有很多底层漏洞就是由于C或C++语言Unsafe导致</li>
+<li>内存管理, C或C++语言没有自动垃圾回收机制, 需要手动进行内存管理, 作为C++或C语言开发者, 无疑是件很痛苦的事儿</li>
+<li>面向过程、指令式思考, 面向过程思考问题很痛苦, 所以才有了OOP面向对象的兴起, 虽然C++也有OOP, 但C++复杂的语法一直”令人诟病”</li>
+</ul>
+<p>Rust语言, 类型安全、效率高, 一直是不少攻城狮心中完美的”C++”.  So, Why not Rust ?</p>
+<h2 id="PyO3简介"><a href="#PyO3简介" class="headerlink" title="PyO3简介"></a>PyO3简介</h2><p>PyO3开始作为<a href="https://github.com/dgrunwald/rust-cpython" target="_blank" rel="noopener">rust-cpython</a>的fork出现, 后来由于rust-cpython缺乏维护, PyO3开始在Rust社区流行, 现在PyO3与rust-cpython差别逐步扩大. 通过PyO3, 可以使用Rust语言对Python加速, 或者说可自行开发高性能的Rust程序, 然后通过PyO3导出, 以包的形式与其他Python代码交互, 由于导出包使用Rust语言开发, 在运行效率及性能上基本”完爆”同等Python实现模块. </p>
+<h2 id="PyO3实战"><a href="#PyO3实战" class="headerlink" title="PyO3实战"></a>PyO3实战</h2><h3 id="小测试"><a href="#小测试" class="headerlink" title="小测试"></a>小测试</h3><p>下面, 看个小例子, 假定有这样一个需求: 有一堆字符串(假定可以逗号分割, 如”Letter,Kelly,Hope”等), 从中找出与给定前缀(如”Le”)匹配的单词列表. 很简单, 对不? 几行Python就可以搞定:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_prefix_matched_words</span><span class="params">(text, prefix)</span>:</span></span><br><span class="line">    ret = []</span><br><span class="line">    <span class="keyword">for</span> w <span class="keyword">in</span> text.split(<span class="string">","</span>):</span><br><span class="line">        w = w.strip()</span><br><span class="line">        <span class="keyword">if</span> w.startswith(prefix):</span><br><span class="line">            ret.append(w)</span><br><span class="line">    <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
+<h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><p>以此为例, 说明如何使用PyO3. 首先, 新建测试项目并创建Python虚拟环境(建议使用Python虚拟环境, 对正常开发的Python环境影响少; 或者将Rust源码编译后的.so包放到Python模块中)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="comment"># 新建Rust测试项目</span></span><br><span class="line">$ cargo new prefix_case --lib</span><br><span class="line">$ <span class="comment"># 创建Python虚拟环境</span></span><br><span class="line">$ virtualenv -p /usr/bin/python3.6 prefix_test</span><br><span class="line">$ <span class="comment"># 启用Python虚拟环境</span></span><br><span class="line">$ <span class="built_in">source</span>  prefix_test/bin/activate</span><br></pre></td></tr></table></figure>
+<p>添加PyO3依赖, 在测试项目目录下的Cargo.toml中添加以下代码(PyO3版本可自行选择, lib中name可随意):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[dependencies.pyo3]</span><br><span class="line">version = <span class="string">"0.8.1"</span></span><br><span class="line">features = [<span class="string">"extension-module"</span>]</span><br><span class="line"></span><br><span class="line">[lib]</span><br><span class="line">name = <span class="string">"words_prefix"</span></span><br><span class="line">crate-type = [<span class="string">"cdylib"</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="Rust编码实战"><a href="#Rust编码实战" class="headerlink" title="Rust编码实战"></a>Rust编码实战</h3><p>对prefix_case/src/lib.rs进行Rust编码, 实现上面需求主逻辑:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> pyo3::prelude::*;</span><br><span class="line"><span class="keyword">use</span> pyo3::wrap_pyfunction;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[pymodule]</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">words_prefix</span></span>(_py: Python, module: &amp;PyModule) -&gt; PyResult&lt;()&gt; &#123;</span><br><span class="line">    module.add_wrapped(wrap_pyfunction!(find_prefix))?;</span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[pyfunction]</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">find_prefix</span></span>(src: &amp;<span class="built_in">str</span>, prefix: &amp;<span class="built_in">str</span>) -&gt; PyResult&lt;<span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> v = <span class="built_in">vec!</span>[];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> matched = src.split(<span class="string">","</span>).filter_map(|s| &#123;</span><br><span class="line">        <span class="keyword">let</span> trimmed = s.trim();</span><br><span class="line">        <span class="keyword">if</span> trimmed.starts_with(&amp;prefix) &#123;</span><br><span class="line">            <span class="literal">Some</span>(trimmed.to_owned())</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="literal">None</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> matched  &#123;</span><br><span class="line">        v.push(s);   </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="literal">Ok</span>(v)   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>逻辑很简单, 接下来要做的是将上述Rust代码导出为Python模块.</p>
+<h3 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h3><p>这里使用Maturin(旧称为pyo3-pack, 可以将PyO3、rust-cpython、CFFI binding或者含Rust binary的Crates编译打包并发布为Python包), 利用该工具将编译好的Rust代码发布至PyPI(Python Package Index), 安装Maturin命令如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cargo install maturin</span><br></pre></td></tr></table></figure>
+<p>使用Maturin将上述Rust源码编译导出为Python模块,</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> prefix_case &amp;&amp; maturin develop</span><br></pre></td></tr></table></figure>
+<h3 id="脚本测试"><a href="#脚本测试" class="headerlink" title="脚本测试"></a>脚本测试</h3><p>现在可以使用 <code>words_prefix</code> 模块了, 可在prefix_case目录下新建一个Python测试脚本, 测试脚本内容如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> words_prefix <span class="keyword">as</span> p</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    words = <span class="string">"Letter,Kelly,Let,Hope,Leisly,Lopez"</span></span><br><span class="line">    prefix = <span class="string">"Le"</span></span><br><span class="line">    words_matched = p.find_prefix(words, prefix)</span><br><span class="line">    print(<span class="string">'The list of words: &#123;&#125; match the prefix - &#123;&#125;'</span>.format(words_matched, prefix))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/pyo3.jpg" alt></p>
+<p>测试脚本运行无误, 导出模块能与Python代码正常交互.</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Python/" <i class="fa fa-tag"> Python</a>
+          
+            
+            <a href="/tags/Rust/" <i class="fa fa-tag"> Rust</a>
+          
+            
+            <a href="/tags/PyO3/" <i class="fa fa-tag"> PyO3</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/dl/frecg/" rel="next" title="二十行代码轻松搞定人脸识别">
+                <i class="fa fa-chevron-left"></i> 二十行代码轻松搞定人脸识别
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/rust/microsrv/" rel="prev" title="Lightweight Rust Microservices Framework">
+                Lightweight Rust Microservices Framework <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-Rust"><span class="nav-number">1.</span> <span class="nav-text">Why Rust</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PyO3简介"><span class="nav-number">2.</span> <span class="nav-text">PyO3简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PyO3实战"><span class="nav-number">3.</span> <span class="nav-text">PyO3实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#小测试"><span class="nav-number">3.1.</span> <span class="nav-text">小测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加依赖"><span class="nav-number">3.2.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rust编码实战"><span class="nav-number">3.3.</span> <span class="nav-text">Rust编码实战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导出"><span class="nav-number">3.4.</span> <span class="nav-text">导出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#脚本测试"><span class="nav-number">3.5.</span> <span class="nav-text">脚本测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果"><span class="nav-number">3.6.</span> <span class="nav-text">效果</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

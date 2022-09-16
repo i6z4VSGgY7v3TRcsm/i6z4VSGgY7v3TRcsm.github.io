@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="关于本站             THIS SITE ONLY SHOWS MY PERSONAL TECH INTEREST AND NOTES FOR PUBLIC SHARING, PLEASE NOTE THAT.本站仅展示个人技术偏好以及技术笔记(可大众共享).             个人博客站点, 不定期更新以下内容(对以下IT方向感兴趣)相关博文 新技术 人工智能/深度学习/机器学">
+<meta property="og:type" content="website">
+<meta property="og:title" content="INSIGHT">
+<meta property="og:url" content="https://ultradata.stream/about/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="关于本站             THIS SITE ONLY SHOWS MY PERSONAL TECH INTEREST AND NOTES FOR PUBLIC SHARING, PLEASE NOTE THAT.本站仅展示个人技术偏好以及技术笔记(可大众共享).             个人博客站点, 不定期更新以下内容(对以下IT方向感兴趣)相关博文 新技术 人工智能/深度学习/机器学">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-08-12T11:59:58.930Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="INSIGHT">
+<meta name="twitter:description" content="关于本站             THIS SITE ONLY SHOWS MY PERSONAL TECH INTEREST AND NOTES FOR PUBLIC SHARING, PLEASE NOTE THAT.本站仅展示个人技术偏好以及技术笔记(可大众共享).             个人博客站点, 不定期更新以下内容(对以下IT方向感兴趣)相关博文 新技术 人工智能/深度学习/机器学">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/about/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title> | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about menu-item-active">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+
+</h1>
+
+<div class="post-meta">
+  
+  
+
+
+
+</div>
+
+</header>
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <h2 id="关于本站"><a href="#关于本站" class="headerlink" title="关于本站"></a>关于本站</h2><div class="note info">
+            <p><strong>THIS SITE ONLY SHOWS MY PERSONAL TECH INTEREST AND NOTES FOR PUBLIC SHARING, PLEASE NOTE THAT</strong>.<br><strong>本站仅展示个人技术偏好以及技术笔记(可大众共享)</strong>. </p>
+          </div>
+<p>个人博客站点, 不定期更新以下内容(对以下IT方向感兴趣)相关博文</p>
+<h3 id="新技术"><a href="#新技术" class="headerlink" title="新技术"></a>新技术</h3><ul>
+<li>人工智能/深度学习/机器学习算法</li>
+<li>容器化技术(Docker/Kubernetes/Mesos etc.)</li>
+<li>大数据</li>
+</ul>
+<h3 id="编程语言"><a href="#编程语言" class="headerlink" title="编程语言"></a>编程语言</h3><ul>
+<li>JVM语言, 如: Java/Scala/Kotlin/Groovy/Clojure etc.</li>
+<li>Rust</li>
+<li>Golang</li>
+<li>Python</li>
+</ul>
+<h3 id="软件架构"><a href="#软件架构" class="headerlink" title="软件架构"></a>软件架构</h3><ul>
+<li>微服务</li>
+<li>分布式系统</li>
+</ul>
+<p>学无止境, 与君共勉 !</p>
+<div class="note warning">
+            <p>如果你实在疑惑, 感觉个人没有专注, 你可能漏了<a href="/about/#关于本人">这里</a>. <strong>博客内容广泛</strong> (杂), <strong>一是兴趣; 二是为后续创业准备</strong>! (别误会, 现在空有想法, 离创业还有很长的路要走!)</p>
+          </div>
+<h2 id="建站历程"><a href="#建站历程" class="headerlink" title="建站历程"></a>建站历程</h2><ul>
+<li>2016 - 2018, 经好友推荐, 站点托管于Linode. 博客比较随意, 主要用于科学上网.</li>
+<li>2018 - 2019, 站点迁移至<a href="https://t.cn/A67zMSiq" target="_blank" rel="noopener">Vultr</a>, 没别的, 主要在于想试下其它的VPS供应商, 毕竟试用无法准确评估VPS实际服务质量. (好吧, 其实是Linode忘了续费). 该阶段博客站点开始”长草”, “荒芜”.</li>
+<li>2019 - 至今, 开始重新整理博客, 站点迁移 <a href="https://t.cn/A67qY3sk" target="_blank" rel="noopener">Digital Ocean</a> -&gt; <a href="https://t.cn/A67RiLM9" target="_blank" rel="noopener">Liquid Web</a> . </li>
+</ul>
+<p>简单说下VPS, 个人比较推荐<a href="https://t.cn/A67zMSiq" target="_blank" rel="noopener">Vultr</a>和<a href="https://t.cn/A67RiLM9" target="_blank" rel="noopener">Liquid Web</a>, 两者对新用户均有优惠礼包(哎, 可怜我们这些老用户), 比如新用户注册<a href="https://t.cn/A67zMSiq" target="_blank" rel="noopener">Vultr</a>可获取100美金新人礼. <a href="https://t.cn/A67zMSiq" target="_blank" rel="noopener">Vultr</a>比较稳定, 个人VPS使用期间, 从未出现过宕机情况.  域名购买推荐<a href="https://t.cn/A67ziyia" target="_blank" rel="noopener">Namesilo</a>, 他家域名比较公道, 也比较实惠. 推荐一款个人使用过的<a href="https://t.cn/A6ZBXaDn" target="_blank" rel="noopener">CDN</a>, 速度很快, 免备案.</p>
+<p>本人对域名充满执念, 如果你想收藏本站, 请勿收藏本网址(如加入浏览器书签等,如果哪天抢到一个好的域名, 你收藏的本站网址有可能瞬间不可达!) 如果实在想Bookmark本站, 请<a href="https://github.com/dot-delta" target="_blank" rel="noopener">Fork Or Follow Me On Github</a>, 以防”失联”</p>
+<h2 id="关于本人"><a href="#关于本人" class="headerlink" title="关于本人"></a>关于本人</h2><p>后端, 大后端, 目前专注于<strong>算法</strong>(深度学习及机器学习算法应用)和<strong>大数据</strong>(Big Data).</p>
+<!-- IF YOU HAPPEN TO CLICK THIS SITE FROM MY RESUME, PLEASE ASK SOMETHING FROM MY RESUME OR PROJECT EXPERIENCE RELARED QUESTIONS. I REFUSE TO ANSWER ANY QUESTIONS ON BLOG POSTS FROM THIS SITE (IF YOU DO HAVE, PLEASE EMAIL ME LATER). I THINK I'VE MADE IT CLEAR FORM [THIS BOLD NOTE TEXT FROM THIS SITE](/about/#关于本站) -->
+<div class="note info">
+            <p>如果你是从本人简历点开本站, 幸会! 详聊的时候, 还请以个人简历为主或项目经历为主, 博客写的时间久了, 自然会遗忘, 毕竟写博客的初衷在于充当”烂笔头”! </p>
+          </div>
+        
+      </div>
+      
+      
+      
+    </div>
+    
+
+
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于本站"><span class="nav-number">1.</span> <span class="nav-text">关于本站</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#新技术"><span class="nav-number">1.1.</span> <span class="nav-text">新技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编程语言"><span class="nav-number">1.2.</span> <span class="nav-text">编程语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件架构"><span class="nav-number">1.3.</span> <span class="nav-text">软件架构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建站历程"><span class="nav-number">2.</span> <span class="nav-text">建站历程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于本人"><span class="nav-number">3.</span> <span class="nav-text">关于本人</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

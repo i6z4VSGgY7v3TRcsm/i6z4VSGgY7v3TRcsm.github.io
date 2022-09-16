@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将对Cascading自定义操作进行简介.">
+<meta name="keywords" content="Big Data,Cascading,MapReduce,Apache Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cascading实战之Operation篇">
+<meta property="og:url" content="https://ultradata.stream/bigdata/cascading/ops-intro/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将对Cascading自定义操作进行简介.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/filter-call.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/function-call.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/aggregator-call.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/buffer-call.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/value-assertion.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/group-assertion.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/ops-uml.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/baseops.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/interface-call.jpg">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cascading实战之Operation篇">
+<meta name="twitter:description" content="本文将对Cascading自定义操作进行简介.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/filter-call.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/cascading/ops-intro/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Cascading实战之Operation篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/cascading/ops-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Cascading实战之Operation篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">11k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">10 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将对Cascading自定义操作进行简介. <a id="more"></a> Cascading中一个Operation对应一个类, 可以通过<code>new</code>关键字实例化这些对象, 创建<code>Pipe</code>后, 通过参数传递形式将这些对象传入并绑定至管道(Pipe)中. Pipe中传入数据元组与特定的Operation进行绑定, 以便执行数据转换、计算逻辑. 示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Each (单元组) Pipe</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> CustomFunction());</span><br><span class="line"><span class="comment">// 调用自定义Filter</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> CustomFilter());</span><br><span class="line"><span class="comment">// 调用自定义ValueAssertion</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, AssertionLevel.STRICT, <span class="keyword">new</span> CustomValueAssertion());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Every (分组元组, 非单元组) Pipe, 调用自定义Aggregator</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Every(inPipe, <span class="keyword">new</span> CustomAggregator());</span><br><span class="line"><span class="comment">// 调用自定义Buffer</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Every(inPipe, <span class="keyword">new</span> CustomBuffer());</span><br><span class="line"><span class="comment">// 调用自定义GroupAssertion</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Every(inPipe, AssertionLevel.STRICT, <span class="keyword">new</span> CustomGroupAssertion());</span><br></pre></td></tr></table></figure>
+<p>Cascading中所有Operation源自<code>Operation</code>接口, 其它特定接口如<code>Filter</code>、<code>Function</code>、<code>Aggregator</code>、<code>Buffer</code>等均源自该接口. <code>BaseOpertaion</code>提供具体实现, 该类为Operation中多数具体类的基类. Cascading中Operation可以粗略地分为以下几类(若按Type划分, 请参考下文中Operation Type小节):</p>
+<ul>
+<li><strong>Filter</strong>, 对数据进行过滤</li>
+<li><strong>Function</strong>, 执行特定数据转换或计算方法</li>
+<li><strong>Aggregator</strong>, 对数据集进行聚合、汇总</li>
+<li><strong>Buffer</strong>, 在一定数量的数据集执行数据计算</li>
+<li><strong>Assertion</strong>, 断言, Assertion适用于单元组Pipe(如<code>Each</code>)和分组元组Pipe(如<code>Every</code>)等.</li>
+</ul>
+<p>关于Operation与Fields, 存在以下俩种方式绑定Function、Fields至Pipe中:</p>
+<ul>
+<li><p>方式一: 绑定Function、所有Fields至Pipe中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, Fields.ALL, <span class="keyword">new</span> CustomFunction());</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方式二: 绑定Funtion、特定Fields至Pipe中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"address"</span>), <span class="keyword">new</span> CustomFunction());</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>类似地, 存在以下三种方式绑定Function并触发Fields处理于Pipe中:</p>
+<ul>
+<li><p>方式一: 绑定Function、触发所有Fields至Pipe中处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> CustomFunction(), Fields.ALL);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方式二: 绑定Function、触发RESULTS Fields至Pipe中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> CustomFunction(), Fields.RESULTS);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方式三: 绑定Function、触发特定Fields至Pipe中处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> CustomFunction(), <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"address"</span>));</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Operation-Type"><a href="#Operation-Type" class="headerlink" title="Operation Type"></a>Operation Type</h2><p>Cascading中Operation可分为俩大类: 一类执行于单元组的Operation与另一类执行于Group元组(分组元组, 非单元组)的Operation. 单元组与<code>Each</code>管道(Pipe)相关, Group元组与<code>Every</code> Pipe相关.</p>
+<h3 id="Each"><a href="#Each" class="headerlink" title="Each"></a>Each</h3><p><code>Each</code>管道常用于处理单元组, <code>Each</code> Opeartion中存在Filter与Function.</p>
+<h4 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h4><p><code>Filter</code>是所有Operation中最简单的, 执行该Operation时仅需实现一个方法<code>isRemove()</code>, 该方法传入一元组并判断是否为待移除元组. <code>Filter</code>内部调用逻辑, 参考如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/filter-call.jpg" alt></p>
+<p><code>Filter</code>实现代码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomFilter</span> <span class="keyword">extends</span> <span class="title">BaseOperation</span>&lt;<span class="title">Context</span>&gt; <span class="keyword">implements</span> <span class="title">Filter</span>&lt;<span class="title">Context</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">// `prepare()`、`cleanup()` 方法实现略</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isRemove</span><span class="params">(FlowProcess flowProcess, FilterCall&lt;Context&gt; filterCall)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 具体过滤逻辑略</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Cascading自带过滤器(Filter), 参考如下:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Filter名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ExpressionFilter</td>
+<td>传入一Expression字符串, 编译并通过名称或位置绑定输入元组、然后执行, 基于表达式返回Boolean值, 该Filter使用Janino编译</td>
+</tr>
+<tr>
+<td>RegexFilter</td>
+<td>基于正则表达式过滤</td>
+</tr>
+<tr>
+<td>SampleFilter</td>
+<td>基于采样比例对元组进行采样抽取, 其中初始化随机数生成函数的Seed值可选</td>
+</tr>
+<tr>
+<td>Deubg</td>
+<td>打印每项元组至标准输出</td>
+</tr>
+<tr>
+<td>FilterNotNull</td>
+<td>过滤掉每一项不含null值元组</td>
+</tr>
+<tr>
+<td>FilterNull</td>
+<td>过滤掉每一项含null值元组</td>
+</tr>
+<tr>
+<td>And</td>
+<td>传入一过滤器列表, 对列表中Filter进行逻辑与操作(即若满足列表中所有Filter条件则返回true)</td>
+</tr>
+<tr>
+<td>Or</td>
+<td>传入一过滤器列表, 对列表中Filter进行逻辑或操作(即若满足列表中任一Filter条件则返回true)</td>
+</tr>
+<tr>
+<td>XOR</td>
+<td>传入一过滤器集, 对其中Filter进行异或操作(如果所有Filter均返回true或false, 则最终结果返回false)</td>
+</tr>
+<tr>
+<td>Not</td>
+<td>对传入的Filter取反</td>
+</tr>
+<tr>
+<td>ScriptFilter</td>
+<td>基于脚本内容过滤</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> RegexFilter(<span class="string">"ECOMM"</span>));</span><br><span class="line"><span class="comment">// 从Data Stream中抽取20% 数据元组</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> SampleFilter(<span class="number">0.2</span>));</span><br><span class="line"><span class="comment">// 基于Expression过滤</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> ExpressionFilter(<span class="string">"$0 + $1 &lt;= 10000"</span>));</span><br><span class="line"><span class="comment">// 写入所有元组至标准输出</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> Debug());</span><br><span class="line"><span class="comment">//基于Field名过滤 </span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> Fields(<span class="string">"salary"</span>, <span class="string">"raise"</span>), <span class="keyword">new</span> ExpressionFilter(<span class="string">"$salary + $raise &lt;= 10000"</span>));</span><br><span class="line"><span class="comment">// Or、And Filter</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> Or(<span class="keyword">new</span> FilterOne(), <span class="keyword">new</span> FilterTwo(), <span class="keyword">new</span> FilterThree()));</span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> And(<span class="keyword">new</span> FilterOne(), <span class="keyword">new</span> FilterTwo(), <span class="keyword">new</span> FilterThree()));</span><br></pre></td></tr></table></figure>
+<h4 id="Funtion"><a href="#Funtion" class="headerlink" title="Funtion"></a>Funtion</h4><p><code>Function</code>比较通用, 执行特定计算或数据转换逻辑, 然后返回结果元组. <code>Function</code>内部调用逻辑, 参考如下(该Operation主要方法为<code>operate()</code>):</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/function-call.jpg" alt></p>
+<p><code>Function</code>实现代码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomFunction</span> <span class="keyword">extends</span> <span class="title">BaseOperation</span>&lt;<span class="title">Context</span>&gt; <span class="keyword">implements</span> <span class="title">Function</span>&lt;<span class="title">Context</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">// `prepare()`、`cleanup()` 方法实现略</span></span><br><span class="line">    <span class="function">pubic <span class="keyword">void</span> <span class="title">operate</span><span class="params">(FlowProcess flowProcess, FunctionCall&lt;Context&gt; functionCall)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 具体处理逻辑略</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Cascading自带Function, 参考如下:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Functon名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DateFormatter</td>
+<td>将Java时间戳转化为Java字符串, 即传入时间可为SimpleTimeFormat或Timezone、Locale对象</td>
+</tr>
+<tr>
+<td>DateParser</td>
+<td>将字符串转化为Java中Timestamp对象</td>
+</tr>
+<tr>
+<td>RegexParser</td>
+<td>基于正则解析</td>
+</tr>
+<tr>
+<td>RegexPlacer</td>
+<td>基于正则替换</td>
+</tr>
+<tr>
+<td>RegexSplitGenerator</td>
+<td>基于正则分割元组</td>
+</tr>
+<tr>
+<td>ExpressionFunction</td>
+<td>传入一Expression字符串, 该函数将编译成字节码, 并通过名称或位置绑定输入元组、然后执行并输出结果, 该函数使用Janino编译</td>
+</tr>
+<tr>
+<td>ScriptFunction</td>
+<td>可传入一些列脚本字符串, 该函数将编译成字节码, 并通过名称或位置绑定输入元组、然后执行并输出结果, 该函数使用Janino编译</td>
+</tr>
+<tr>
+<td>FieldJoiner</td>
+<td>将多项Fields通过可选的分隔符(默认为TAB)拼接成一项Field</td>
+</tr>
+<tr>
+<td>FieldFormatter</td>
+<td>将多项Fields按照格式化字符串合并为一项Field</td>
+</tr>
+<tr>
+<td>Insert</td>
+<td>插入部分Fields值至元组中</td>
+</tr>
+<tr>
+<td>UnGroup</td>
+<td>传入一组Field Selector及Value Field Selector, 为每项Value Field Selector输出分组元组</td>
+</tr>
+<tr>
+<td>Identity</td>
+<td>什么也没做, 仅写入输入元组至输出collector中</td>
+</tr>
+<tr>
+<td>XPathParser</td>
+<td>通过使用XPath表达式抽取数据</td>
+</tr>
+<tr>
+<td>TagSoupParser</td>
+<td>通过使用Tag Soup解释器引擎将HTML转换成合法的XHTML</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// INSERT 值至Tuple中</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> Insert(<span class="keyword">new</span> Fields(<span class="string">"datasrc"</span>), <span class="string">"ECOMM DATA"</span>));</span><br><span class="line"><span class="comment">// 将三项Fields合并成一项</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> FieldJoiner(<span class="keyword">new</span> Fields(<span class="string">"LastName"</span>, <span class="string">"FirstName"</span>, <span class="string">"MiddleName"</span>), <span class="string">" "</span>));</span><br><span class="line"><span class="comment">// 基于Expression的函数</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> ExpressionFunction(<span class="keyword">new</span> Fields(<span class="string">"TotalSalary"</span>), <span class="string">"$salary + $raise"</span>, Long.class));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用`UnGroup` 对元组进行分割</span></span><br><span class="line"><span class="comment">// 注意 `UnGroup` 在Hadoop中仅为一Map进程(除非后续指定`GroupBy`)</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> UnGroup(<span class="keyword">new</span> Fields(<span class="string">"FirstName"</span>, <span class="string">"LastName"</span>), <span class="keyword">new</span> Fields[] &#123;<span class="keyword">new</span> Fields(<span class="string">"Salary"</span>), <span class="keyword">new</span> Fields(<span class="string">"Raise"</span>)&#125;));</span><br></pre></td></tr></table></figure>
+<h3 id="Every"><a href="#Every" class="headerlink" title="Every"></a>Every</h3><p><code>Every</code>管道, 执行于一组元组之上(非单元组), 通常这些分组由<code>GroupBy</code>管道确定. 这些分组元组可以一次处理一项(<code>Aggregator</code>)或一次性处理所有(<code>Buffer</code>).</p>
+<h4 id="Aggregator"><a href="#Aggregator" class="headerlink" title="Aggregator"></a>Aggregator</h4><p><code>Aggreagator</code>常用于聚合(如求和、平均值等)操作, 在一组元组上执行具体聚合逻辑, 返回聚合结果值. <code>Aggregator</code>调用示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/aggregator-call.jpg" alt></p>
+<p><code>Aggreagator</code>实现代码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomAggreagator</span> <span class="keyword">extends</span> <span class="title">BaseOperation</span>&lt;<span class="title">Context</span>&gt; <span class="keyword">implements</span> <span class="title">Aggreagator</span>&lt;<span class="title">Context</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">// `prepare()`、`cleanup()` 方法实现略</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(FlowProcess flowProcess, AggregatorCall&lt;Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 具体实现略</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">aggregate</span><span class="params">(FlowProcess flowProcess, AggregatorCall&lt;Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 具体实现略</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">complete</span><span class="params">(FlowProcess flowProcess, AggregatorCall&lt;Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 具体实现略</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Cascading中自带<code>Aggregator</code>, 参考如下(注意新版Cascading中, <code>MinBy</code>、<code>MaxBy</code>、<code>FirstBy</code>、<code>AverageBy</code>、<code>SumBy</code>及<code>CountBy</code>基类均为<code>AggregateBy</code>, <code>AggregateBy</code>与Hadoop中<code>Combiner</code>类似, 于Map端聚合部分结果、然后在Reduce端合并, <code>AggregateBy</code>通过自动插入<code>GroupBy</code>至Stream中执行Reducer函数):</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Aggregator名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>First</td>
+<td>输出任意一组元组第一项Record (新版Cascading中为<code>FirstBy</code>)</td>
+</tr>
+<tr>
+<td>Last</td>
+<td>输出任意一组元组最后一项Record</td>
+</tr>
+<tr>
+<td>Min</td>
+<td>输出组中包含最小值的Record (新版Cascading中为<code>MinBy</code>)</td>
+</tr>
+<tr>
+<td>Max</td>
+<td>输出组中包含最大值的Record (新版Cascading中为<code>MaxBy</code>)</td>
+</tr>
+<tr>
+<td>Average</td>
+<td>输出组中平均值  (新版Cascading中为<code>AverageBy</code>)</td>
+</tr>
+<tr>
+<td>Sum</td>
+<td>对组中元组值进行求和 (新版Cascading中为<code>SumBy</code>)</td>
+</tr>
+<tr>
+<td>Count</td>
+<td>对组中元组进行计数 (新版Cascading中为<code>CountBy</code>)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对分组元组进行计数</span></span><br><span class="line">inPipe = <span class="keyword">new</span> GroupBy(inPipe, <span class="keyword">new</span> Fields(<span class="string">"group"</span>));</span><br><span class="line">inPipe = <span class="keyword">new</span> Every(inPipe, Fields.ALL, <span class="keyword">new</span> Count(<span class="keyword">new</span> Fields(<span class="string">"TotalRecords"</span>)), Fields.ALL);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对分组元组求和</span></span><br><span class="line">inPipe = <span class="keyword">new</span> GroupBy(inPipe, <span class="keyword">new</span> Fields(<span class="string">"ToSum"</span>));</span><br><span class="line">inPipe = <span class="keyword">new</span> Every(inPipe, <span class="keyword">new</span> SumBy(<span class="keyword">new</span> Fields(<span class="keyword">new</span> Fields(<span class="string">"Bonus"</span>), <span class="keyword">new</span> Fields(<span class="string">"SumBonus"</span>), Long.class)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 找出部门年龄最小人员 (分组默认升序), 也可使用 `MinBy`</span></span><br><span class="line">inPipe = <span class="keyword">new</span> GroupBy(inPipe, <span class="keyword">new</span> Fields(<span class="string">"Department"</span>), <span class="keyword">new</span> Fields(<span class="string">"Age"</span>));</span><br><span class="line">inPipe = <span class="keyword">new</span> Every(inPipe, <span class="keyword">new</span> First());</span><br></pre></td></tr></table></figure>
+<h4 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h4><p><code>Buffer</code>允许在一个”窗口”上的元组进行操作, <code>Buffer</code>与Aggregator有些类似, 但同时传入一组元组进行处理, 而非单元组. 其中分组操作可由<code>GroupBy</code>和<code>CoGroup</code>管道定义, <code>Buffer</code>中<code>operate()</code>方法可传入一<code>TupleEntries</code>相关迭代器. <code>Buffer</code>内部调用逻辑示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/buffer-call.jpg" alt></p>
+<p><code>Buffer</code>实现代码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomBuffer</span> <span class="keyword">extends</span> <span class="title">BaseOperation</span>&lt;<span class="title">Context</span>&gt; <span class="keyword">implements</span> <span class="title">Buffer</span>&lt;<span class="title">Context</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">// `prepare()`、`cleanup()` 方法实现略</span></span><br><span class="line">    <span class="function">pubic <span class="keyword">void</span> <span class="title">operate</span><span class="params">(FlowProcess flowProcess, BufferCall&lt;Context&gt; bufferCall)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 具体处理逻辑略</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Cascading中自带<code>Buffer</code>, 有<code>FirstNBuffer</code>, 该<code>Buffer</code>可以接收Group中特定数量元组, 有些类似TOP N做法, 示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 每组选取前1000项Record, 按照自定义函数处理</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Every(inPipe, <span class="keyword">new</span> FirstNBuffer(<span class="number">1000</span>));</span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> CustomFunction());</span><br></pre></td></tr></table></figure>
+<h3 id="Assertion"><a href="#Assertion" class="headerlink" title="Assertion"></a>Assertion</h3><p><code>Assertion</code>与Java中断言类似, 适用于条件未满足、抛出异常情形, <code>Assertion</code>常用于测试、Debug, 特别是单元测试中. <code>Assertion</code>与其它<code>Operation</code>不同之处在于, 一般的Assertion需继承<code>BaseAssertion&lt;Context&gt;</code>、实现<code>ValueAssertion&lt;Context&gt;</code>或<code>GroupAssertion&lt;Context&gt;</code>接口(取决于运用于<code>Each</code>还是<code>Every</code>管道). </p>
+<p><code>ValueAssertion&lt;Context&gt;</code>接口中<code>doAssert()</code>执行主逻辑、<code>getTrace()</code>方法用于存储断言Fail相关信息以便Trace, <code>ValueAssertion&lt;Context&gt;</code>调用示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/value-assertion.jpg" alt></p>
+<p><code>GroupAssertion&lt;Context&gt;</code>接口, 需实现<code>start()</code>、<code>aggregate()</code>及<code>doAssert()</code>方法, <code>start()</code>方法用于断言初始化、开启新元组, 然后将组中每一项元组传入<code>aggregate()</code>方法中执行与Aggregator类似的计算, 处理完后调用<code>doAssert()</code>方法. <code>GroupAssertion&lt;Context&gt;</code>调用示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/group-assertion.jpg" alt></p>
+<p><code>Assertion</code>存在以下<code>AssertionLevel</code>:</p>
+<ul>
+<li><strong>AssertionLevel.STRICT</strong>, 适用于生产Job级别</li>
+<li><strong>AssertionLevel.VALID</strong>, 适用于测试代码中</li>
+<li><strong>AssertionLevel.NONE</strong>, 关闭所有断言</li>
+</ul>
+<p>Cascading中自带Asssertion, 参考如下:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Assertion名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AssertEquals</td>
+<td>构造器中传入一元组, 然后验证入参中所有待处理元组是否含有相同数量的Entries</td>
+</tr>
+<tr>
+<td>AssertEqualsAll</td>
+<td>与上类似</td>
+</tr>
+<tr>
+<td>AssertNotEquals</td>
+<td>与上类似, 注意条件为非等</td>
+</tr>
+<tr>
+<td>AssertExperssion</td>
+<td>基于Expression验证所待处理元组, 基于Expression返回结果, 该类使用Janino编译</td>
+</tr>
+<tr>
+<td>AssertGroupBase</td>
+<td>该基类不常用, 一般继承该基类实现自定义Assertion</td>
+</tr>
+<tr>
+<td>AssetGroupSizeEquals</td>
+<td>基于Size或正则断言</td>
+</tr>
+<tr>
+<td>AssertGroupSizeLessThan</td>
+<td>与上类似, Size判定条件为小于</td>
+</tr>
+<tr>
+<td>AssertGroupSizeMoreThan</td>
+<td>与上类似, Size判定条件为大于</td>
+</tr>
+<tr>
+<td>AssertMatches</td>
+<td>基于正则断言</td>
+</tr>
+<tr>
+<td>AssertMatchesAll</td>
+<td>基于正则断言</td>
+</tr>
+<tr>
+<td>AssertNotNull</td>
+<td>断言所有待处理元组不为空</td>
+</tr>
+<tr>
+<td>AssertNull</td>
+<td>与上类似, 判定条件为元组为空</td>
+</tr>
+<tr>
+<td>AssertSizeEquals</td>
+<td>判定传入Size与所有待处理元组Size是否相等</td>
+</tr>
+<tr>
+<td>AssertSizeLessThan</td>
+<td>与上类似, Size判定条件为小于</td>
+</tr>
+<tr>
+<td>AssertSizeMoreThan</td>
+<td>与上类似, Size判定条件为大于</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 验证每项元组中所有Fields非空</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, AssertionLevel.STRICT, <span class="keyword">new</span> AssertNotNull());</span><br><span class="line"><span class="comment">// 验证所有元组长度为5</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, AssertionLevel.STRICT, <span class="keyword">new</span> AssertSizeEquals(<span class="number">5</span>));</span><br><span class="line"><span class="comment">// 基于Expression断言, 验证前俩项Field之和为10</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, AssertionLevel.STRICT, <span class="keyword">new</span> AssertionExpression(<span class="string">"$0 + $1 ==10L"</span>, Long.class));</span><br><span class="line"><span class="comment">// 验证Field中Salary(本薪) 和 Raise(提薪部分)之和小于 10000</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, AssertionLevel.STRICT, <span class="keyword">new</span> AssertionExpression(<span class="string">"$salary +$raise &lt;10000L"</span>, Long.class));</span><br><span class="line"><span class="comment">// 验证每组至少存在俩元组</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, AssertionLevel.STRICT, <span class="keyword">new</span> AssertGroupSizeMoreThan(<span class="number">1</span>));</span><br></pre></td></tr></table></figure>
+<h2 id="Operation类与接口"><a href="#Operation类与接口" class="headerlink" title="Operation类与接口"></a>Operation类与接口</h2><p><code>Operation</code>类与接口, 继承关系类图如下, 实际上<code>Context</code>作为一类型参数, 也可简单替换为<code>&lt;T&gt;</code>, 主要表明存储于<code>Operation</code>类的对象类型.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/ops-uml.jpg" alt></p>
+<p><code>Operation</code>接口, 存在以下方法签名:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Operation</span>&lt;<span class="title">Context</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">// 接口中其它方法声明略</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">prepare</span><span class="params">(FlowProcess flowProcess, OperationCall&lt;Context&gt; operationCall)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">cleanup</span><span class="params">(FlowProcess flowProcess, OperationCall&lt;Context&gt; operationCall)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">flush</span><span class="params">(FlowProcess flowProcess, OperationCall&lt;Context&gt; operationCall)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getNumArgs</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Fields <span class="title">getFieldDeclartion</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isSafe</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>BaseOperation</code>类中提供了许多获取Operation参数的方法, 如调用<code>getFieldDeclaration()</code>方法返回<code>Fields</code>对象, 包含所有创建的<code>Fields</code>信息; <code>getNumArgs()</code>返回输入Fields数量等. 调用<code>isSafe()</code>方法, 若返回true, 表明在同一数据集上运行多次该Operation, 最终得到同一结果, 没有副作用, 具有幂等性.</p>
+<p>下图为基本<code>Operation</code>内部调用逻辑示意图, 通过调用<code>prepare()</code>方法初始化, 调用<code>operate()</code>方法对要处理元组执行具体计算、转换逻辑, 处理完成后调用<code>cleanup()</code>方法进行内存释放、关闭文件句柄、数据库连接等. 通常, <code>prepare()</code>方法在Operation执行前调用, 常用于分配context对象并将其存储于<code>OperationCall&lt;Context&gt;</code>中, 实际上<code>prepare()</code>方法还可以做很多事情, 如从磁盘上加载数据、对任务进行反馈通知等. 当所有数据处理任务完成后, 可以调用<code>cleanup()</code>方法, 该方法常用于释放<code>Context</code>对象及分配的内存.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/baseops.jpg" alt></p>
+<h3 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h3><p><code>Context</code>作为用户定义类型, 由<code>Operation</code>分配, 该对象可传入<code>Operation</code>接口方法中调用, 换句话说, <code>Context</code>可用于存储方法调用的状态信息. 由于<code>Operation</code>是有类型的, 类型参数为<code>Context</code>, 实现<code>Operation</code>接口的子类须指明具体泛型参数. Cascading中并不存在具体类或接口名为<code>Context</code>, <code>Context</code>作为泛型参数引入, 一是类型安全需要, 二是代码复用需要.</p>
+<h3 id="FlowProcess"><a href="#FlowProcess" class="headerlink" title="FlowProcess"></a>FlowProcess</h3><p><code>FlowProcess</code>允许<code>Operation</code>访问底层处理系统相关数据元素, 如Cascading任务以本地模式运行时可访问不同Property值, 若以Hadoop模式运行时可访问<code>JobConf</code>中封装的所有Hadoop类. <code>FlowProcess</code>由Cascading系统创建、可传入<code>Operation</code>接口方法中, 允许访问系统计数器及其它特定Cascading标识与资源等, 注意<code>FlowProcess</code>可不带泛型参数.</p>
+<h3 id="OperationCall"><a href="#OperationCall" class="headerlink" title="OperationCall"></a>OperationCall<context></context></h3><p>该对象封装了所有<code>Operation</code>需指定的参数, 由Pipe调用该对象进行实际数据处理. <code>OperationCall&lt;Context&gt;</code> 允许用户访问<code>Context</code>对象存储状态. 每一个<code>Operation</code>类型均有源自<code>OperationCall&lt;Context&gt;</code>的接口, 如Filter有<code>FilterCall&lt;Context&gt;</code>, Function有<code>FunctionCall&lt;Context&gt;</code>等. 下表为常见接口中参考方法:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/interface-call.jpg" alt></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Cascading/" <i class="fa fa-tag"> Cascading</a>
+          
+            
+            <a href="/tags/MapReduce/" <i class="fa fa-tag"> MapReduce</a>
+          
+            
+            <a href="/tags/Apache-Hadoop/" <i class="fa fa-tag"> Apache Hadoop</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/cascading/tuning/" rel="next" title="Cascading实战之性能优化篇">
+                <i class="fa fa-chevron-left"></i> Cascading实战之性能优化篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/hbase/pqs/" rel="prev" title="Apache Phoenix Query Server">
+                Apache Phoenix Query Server <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Operation-Type"><span class="nav-number">1.</span> <span class="nav-text">Operation Type</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Each"><span class="nav-number">1.1.</span> <span class="nav-text">Each</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Filter"><span class="nav-number">1.1.1.</span> <span class="nav-text">Filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Funtion"><span class="nav-number">1.1.2.</span> <span class="nav-text">Funtion</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Every"><span class="nav-number">1.2.</span> <span class="nav-text">Every</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Aggregator"><span class="nav-number">1.2.1.</span> <span class="nav-text">Aggregator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Buffer"><span class="nav-number">1.2.2.</span> <span class="nav-text">Buffer</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Assertion"><span class="nav-number">1.3.</span> <span class="nav-text">Assertion</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Operation类与接口"><span class="nav-number">2.</span> <span class="nav-text">Operation类与接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Context"><span class="nav-number">2.1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FlowProcess"><span class="nav-number">2.2.</span> <span class="nav-text">FlowProcess</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OperationCall"><span class="nav-number">2.3.</span> <span class="nav-text">OperationCall</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

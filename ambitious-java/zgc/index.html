@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="为何写这个系列的笔记?            Java 11在GC上做了很多优化, 比如新引入的ZGC(Z Garbage Collector), 可拓展、低延迟. ZGC作为一种新的GC, 可运用于堆内存(大小可以从及KB到TB级别, 对你没看错, TB级别), 作为一并发垃圾回收器, ZGC可保证应用延迟不会超过10毫秒, 即便是堆内存占用很大(如TB级别)情况也适用">
+<meta name="keywords" content="JVM And JVM Languages">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ambitious Java Evolving系列之ZGC篇">
+<meta property="og:url" content="https://ultradata.stream/ambitious-java/zgc/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="为何写这个系列的笔记?            Java 11在GC上做了很多优化, 比如新引入的ZGC(Z Garbage Collector), 可拓展、低延迟. ZGC作为一种新的GC, 可运用于堆内存(大小可以从及KB到TB级别, 对你没看错, TB级别), 作为一并发垃圾回收器, ZGC可保证应用延迟不会超过10毫秒, 即便是堆内存占用很大(如TB级别)情况也适用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/jbtn/zgc-heap-region.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/jbtn/ptr.png">
+<meta property="og:updated_time" content="2019-03-21T15:17:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ambitious Java Evolving系列之ZGC篇">
+<meta name="twitter:description" content="为何写这个系列的笔记?            Java 11在GC上做了很多优化, 比如新引入的ZGC(Z Garbage Collector), 可拓展、低延迟. ZGC作为一种新的GC, 可运用于堆内存(大小可以从及KB到TB级别, 对你没看错, TB级别), 作为一并发垃圾回收器, ZGC可保证应用延迟不会超过10毫秒, 即便是堆内存占用很大(如TB级别)情况也适用">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/jbtn/zgc-heap-region.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/ambitious-java/zgc/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Ambitious Java Evolving系列之ZGC篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/ambitious-java/zgc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Ambitious Java Evolving系列之ZGC篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2014-10-11 22:13:16" itemprop="dateCreated datePublished" datetime="2014-10-11T22:13:16+08:00">2014-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-21 23:17:15" itemprop="dateModified" datetime="2019-03-21T23:17:15+08:00">2019-03-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">2.8k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">3 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div class="note info">
+            <p><a href="/ambitious-java/guide/">为何写这个系列的笔记?</a></p>
+          </div>
+<p>Java 11在GC上做了很多优化, 比如新引入的ZGC(Z Garbage Collector), 可拓展、低延迟. ZGC作为一种新的GC, 可运用于堆内存(大小可以从及KB到TB级别, 对你没看错, TB级别), 作为一并发垃圾回收器, ZGC可保证应用延迟不会超过10毫秒, 即便是堆内存占用很大(如TB级别)情况也适用, ZGC很容易调优. <a id="more"></a></p>
+<h2 id="引入原因"><a href="#引入原因" class="headerlink" title="引入原因"></a>引入原因</h2><p>随着现代硬件技术(内存、磁盘、CPU等)的发展, 低延迟、高吞吐应用已不再是奢望, 对于广发Java程序员而言, 一直都希望Java能有个低延迟、高吞吐的垃圾回收器. ZGC延迟不超过10毫秒, 相对于其它垃圾回收器, Stop-the-world Pause较少, 前景诱人. </p>
+<h2 id="ZGC特点"><a href="#ZGC特点" class="headerlink" title="ZGC特点"></a>ZGC特点</h2><ul>
+<li><p>ZGC作为一<strong>并发垃圾回收器</strong>, 可以并发进行内存标记、内存拷贝以及重分配. ZGC含有并发引用处理器, 意味着开发人员可以添加任意类型引用(如软引用、虚引用、弱引用及Finalizer等), 无需过多地担心GC Pause.</p>
+</li>
+<li><p><strong>ZGC使用Load Barriers</strong>, 与其它HotSpot GC使用Store Barriers不同, ZGC使用Load Barriers. Load Barriers可用于追踪堆内存使用情况, 不同的Load Barrier使用有不同的标色指针, 以便当线程运行时允许ZGC进行并发操作, 如对象重分配或重分配集选择等. </p>
+</li>
+<li><p><strong>基于Region的垃圾回收器</strong>, 与G1 GC相比, ZGC更加灵活(如配置大小及Schema等), 更适合处理较大对象的内存分配与回收.</p>
+</li>
+<li><p><strong>支持NUMA架构</strong>, ZGC含有支持NUMA架构的内存分配器</p>
+</li>
+<li><p><strong>单代GC</strong>, ZGC支持部分内存合并(Compaction), ZGC在内存回收与重分配方面非常高效, 高性能.</p>
+</li>
+</ul>
+<p>缺点在于ZGC目前仅支持Linux/x64位架构, 其它架构和平台的支持会在未来版本中添加.</p>
+<h2 id="ZGC堆内存"><a href="#ZGC堆内存" class="headerlink" title="ZGC堆内存"></a>ZGC堆内存</h2><p>ZGC将内存分成不同的Region, 这些Region也称ZPage, ZPage可动态创建和销毁, 可动态扩容(以2MB为单位, 动态扩容这点与G1 GC存在区别). ZGC堆中按Region大小可分为以下三类:</p>
+<ul>
+<li><strong>Small(2MB)</strong>, 较小Region</li>
+<li><strong>Medium(32MB)</strong>, 中等Region</li>
+<li><strong>Large(N * 2MB)</strong>, 较大Region</li>
+</ul>
+<p>ZGC堆中可有不同大小的Region, 其中中等Region及较大Region内存是连续分配的, 示意图参考如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/jbtn/zgc-heap-region.png" alt="ZGC Heap Region"></p>
+<p>与其它GC不同, ZGC堆中Region物理内存可以映射成较大堆内存地址空间(也可包含虚拟内存), 有助于预防内存碎片问题. 对于多数垃圾回收器而言, 通常JVM需要进行多项GC周期, 释放内存以便获取连续内存空间, 如果内存不够, JVM会由于OOM报错而Shut Down. 但对于ZGC而言, 并不会出现这种问题, 因为物理内存会映射成更大的地址空间, 分配连续内存空间不是问题. </p>
+<h2 id="ZGC中的GC阶段"><a href="#ZGC中的GC阶段" class="headerlink" title="ZGC中的GC阶段"></a>ZGC中的GC阶段</h2><p>ZGC的GC周期主要包含以下三个阶段:</p>
+<ul>
+<li><strong>Pause Mark开始阶段</strong></li>
+<li><strong>Pause Mark结束阶段</strong></li>
+<li><strong>Pause 重分配开始阶段</strong></li>
+</ul>
+<p>第一阶段, Pause标记开始阶段, ZGC从GC Root进行溯源、标记对象, 包括遍历可达对象并进行标记, 该阶段是ZGC中GC工作最密集的阶段之一. 接下来进行同步, 该过程将中止(Pause)大概1毫秒左右, ZGC开始进行引用处理并进行清理, 包括如重分配集选择(Relocation Set Selection), 标记需要合并的Region等. 最后一个阶段, Pause重分配阶段, 触发实际的Region合并, 从GC Root重新扫描遍历, 于重分配集中并发进行对象重分配. 其中Pause Mark开始阶段, 也会Remap还存活的数据(Live Data). </p>
+<h2 id="ZGC中标色指针"><a href="#ZGC中标色指针" class="headerlink" title="ZGC中标色指针"></a>ZGC中标色指针</h2><p>标色指针, 也是ZGC一大特色之一, 通过标色指针, 方便ZGC查找、标记、定位以及Remap对象. 但该特性目前并不支持x32位架构机器. 实现标色指针需要虚拟地址标记(可以通过硬件、操作系统或者软件实现), 示意图参考如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/jbtn/ptr.png" alt="64位对象引用"></p>
+<p>如上图所示, 该64位对象引用可分为以下几个部分:</p>
+<ul>
+<li>18比特未使用, 保留为后续使用</li>
+<li>Finalizeble占1比特, 与并发引用处理相关, 标记仅可通过Finalizer访问的对象</li>
+<li>Remapped占1比特, 标记位, 并不指向重分配集</li>
+<li>Marked1占1比特, 用于标记对象</li>
+<li>Marked0占1比特, 用于标记对象</li>
+<li>42位对象地址, 可解决4TB地址空间映射问题</li>
+</ul>
+<p>运行ZGC时, 会使用很多虚拟内存空间, 主要原因在于Heap间多映射导致, 如指定对象与标色指针在虚拟内存中如何存储等.</p>
+<h2 id="ZGC调优"><a href="#ZGC调优" class="headerlink" title="ZGC调优"></a>ZGC调优</h2><p>主要是一些JVM参数调优, 如设置最大的并发线程数(ZGC作为一并发垃圾回收器, 并发线程数需设置合理), 启用较大ZPage, 启用Huge Page, 以及启用NUMA支持特性等</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ java -XX:ConcGCThreads=&lt;some-number-you-set&gt; \</span><br><span class="line">    -XX:+UseLargePages \</span><br><span class="line">    -XX:+UseTransparentHugePage \</span><br><span class="line">    -XX:+UseNUMA</span><br></pre></td></tr></table></figure>
+<h2 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h2><p>如何使用? 由于ZGC目前仅支持Linux/x64位架构, 所以你需要一台x64位架构的Linux主机以及JDK 11. 安装指令参考如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hg <span class="built_in">clone</span> http://hg.openjdk.java.net/jdk/jdk</span><br><span class="line">$ <span class="built_in">cd</span> zgc &amp;&amp; sh configure --with-jvm-features=zgc</span><br><span class="line">$ make images</span><br></pre></td></tr></table></figure>
+<p>测试代码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BonjourZGC</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Bonjour from the ZGC!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>启用ZGC并运行代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC BonjourZGC</span><br><span class="line">$ <span class="comment"># 或者启用GC日志</span></span><br><span class="line">$ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xlog:gc:YOUR-LOG-NAME.log* BonjourZGC</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/JVM-And-JVM-Languages/" <i class="fa fa-tag"> JVM And JVM Languages</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/ambitious-java/epsilon-gc/" rel="next" title="Ambitious Java Evolving系列之Epsilon GC篇">
+                <i class="fa fa-chevron-left"></i> Ambitious Java Evolving系列之Epsilon GC篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/nosql/leveldb/search/" rel="prev" title="LevelDB学习手札之Key键迭代与搜索">
+                LevelDB学习手札之Key键迭代与搜索 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引入原因"><span class="nav-number">1.</span> <span class="nav-text">引入原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZGC特点"><span class="nav-number">2.</span> <span class="nav-text">ZGC特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZGC堆内存"><span class="nav-number">3.</span> <span class="nav-text">ZGC堆内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZGC中的GC阶段"><span class="nav-number">4.</span> <span class="nav-text">ZGC中的GC阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZGC中标色指针"><span class="nav-number">5.</span> <span class="nav-text">ZGC中标色指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZGC调优"><span class="nav-number">6.</span> <span class="nav-text">ZGC调优</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用例"><span class="nav-number">7.</span> <span class="nav-text">用例</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

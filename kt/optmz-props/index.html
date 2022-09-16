@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:Akka Actor">
+<meta name="keywords" content="JVM And JVM Languages,Kotlin,High Performance Kotlin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin高性能实战 (二) -- Kotlin Property优化(Part One)">
+<meta property="og:url" content="https://ultradata.stream/kt/optmz-props/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:Akka Actor">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-07-26T13:22:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin高性能实战 (二) -- Kotlin Property优化(Part One)">
+<meta name="twitter:description" content="之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:Akka Actor">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/kt/optmz-props/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Kotlin高性能实战 (二) -- Kotlin Property优化(Part One) | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/kt/optmz-props/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kotlin高性能实战 (二) -- Kotlin Property优化(Part One)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-23 20:21:36" itemprop="dateCreated datePublished" datetime="2015-10-23T20:21:36+08:00">2015-10-23</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-07-26 21:22:36" itemprop="dateModified" datetime="2017-07-26T21:22:36+08:00">2017-07-26</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">10k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">9 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div class="note success">
+            <p>之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:</p><ul><li>Akka Actor (或者类似的Actor包)</li><li>RxJava (或类似的Reactive响应式框架, 比如Vert.x)</li></ul><p>开发高性能高并发应用程序, 以上抽象均为Message Driven或Event Driven(消息驱动或事件驱动), 但有些业务场景如果考虑使用Event-Driven建模, 未免过于重量级, 于是你需要更加轻量级的替代方案, 比如Future/Promise (异步非阻塞, 本质为占位符(Placeholder), 仅适用于单个值), 比如轻量级线程—协程. 尽管Kotlin协程本质上也是使用JVM线程池进行封装, 但Kotlin协程在JVM生态同等实现中表现出色! 最重要的是, 作为JVM语言, 不仅Java可以使用Kotlin协程, Scala/Groovy/Clojure照样也可使用Kotlin协程.</p>
+          </div>
+<p>Kotlin中Property使用, 与Java相比, 还是有些区别, 本博文将介绍Kotlin中Property使用及注意事项, 并给出对应性能优化建议. <a id="more"></a></p>
+<h3 id="Property-初探"><a href="#Property-初探" class="headerlink" title="Property 初探"></a>Property 初探</h3><p>先来看段示例代码, 如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 简单定义一个`Button`类, 属性有文本内容、背景颜色、点击监听器</span></span><br><span class="line"><span class="comment">// 注意 `TODO()` 方法在Kotlin标准库中有定义, 是标准库中一方法, </span></span><br><span class="line"><span class="comment">// 可以用于方法,表明不想立即实现该方法;也可用于类,对类建模时不想立即实现特定的类成员</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Button</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> text: String = TODO()</span><br><span class="line">    <span class="keyword">var</span> backgroundColor: <span class="built_in">Int</span> = TODO()</span><br><span class="line">    <span class="keyword">var</span> onClickListener: ((Button) -&gt; <span class="built_in">Unit</span>)? = <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将上面这段代码的字节码反编译成Java源码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Button</span> </span>&#123;</span><br><span class="line">   <span class="meta">@NotNull</span></span><br><span class="line">   <span class="keyword">private</span> String text;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">int</span> backgroundColor;</span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="keyword">private</span> Function1 onClickListener;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@NotNull</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">getText</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.text;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setText</span><span class="params">(@NotNull String var1)</span> </span>&#123;</span><br><span class="line">      Intrinsics.checkParameterIsNotNull(var1, <span class="string">"&lt;set-?&gt;"</span>);</span><br><span class="line">      <span class="keyword">this</span>.text = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getBackgroundColor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.backgroundColor;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setBackgroundColor</span><span class="params">(<span class="keyword">int</span> var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.backgroundColor = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Function1 <span class="title">getOnClickListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.onClickListener;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setOnClickListener</span><span class="params">(@Nullable Function1 var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.onClickListener = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Button</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">throw</span> (Throwable) (</span><br><span class="line">          <span class="keyword">new</span> NotImplementedError((String)<span class="keyword">null</span>, <span class="number">1</span>, (DefaultConstructorMarker)<span class="keyword">null</span>)</span><br><span class="line">      );</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Kotlin为这三个类属性分别加上了getter和setter方法.值得注意的是<code>text</code>属性加上了<code>NotNull</code>注解, 并且在类构造器中抛出异常, Why? 点开<code>TODO()</code>源码, 该方法返回类型为<code>Noting</code>, 具体实现为抛出<code>NotImplementedError</code>异常. <code>Button</code>类中三个类属性, <code>onClickListener</code>初始化为<code>null</code>, 其它俩个属性均使用<code>TODO()</code>方法初始化, 现在可以理解构造器本质上抛出的<code>NotImplementedError</code>. 还有一个小细节, 虽然<code>text</code>和<code>backgroundColor</code>属性均使用<code>TODO()</code>方法初始化,但在构造器中<code>text</code>属性参数为<code>null</code>,而<code>backgroundColor</code>属性参数为<code>1</code>? 出现这种现象主要在于俩属性的类型不同导致,<code>text</code>属性为字符串类型, <code>backgroundColor</code>类型为<code>Int</code>, 在Java/Kotlin中字符串默认初始化参数为空, 而整型Int存在默认初始化参数. </p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// `TODO()` 方法源码</span></span><br><span class="line"><span class="meta">@kotlin</span>.<span class="keyword">internal</span>.InlineOnly</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">TODO</span><span class="params">()</span></span>: <span class="built_in">Nothing</span> = <span class="keyword">throw</span> NotImplementedError()</span><br><span class="line"></span><br><span class="line"><span class="meta">@kotlin</span>.<span class="keyword">internal</span>.InlineOnly</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">TODO</span><span class="params">(reason: <span class="type">String</span>)</span></span>: <span class="built_in">Nothing</span> = </span><br><span class="line">    <span class="keyword">throw</span> NotImplementedError(<span class="string">"An operation is not implemented: <span class="variable">$reason</span>"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="Backing-Property-初探"><a href="#Backing-Property-初探" class="headerlink" title="Backing Property 初探"></a>Backing Property 初探</h3><p>现在对<code>Button</code>类进行重构如下:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Button</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> text: String? = <span class="literal">null</span></span><br><span class="line">    <span class="comment">//自定义 getters和setters 方法</span></span><br><span class="line">    <span class="keyword">set</span>(value) &#123;</span><br><span class="line">        println(value)</span><br><span class="line">        text = value</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">get</span>() &#123;</span><br><span class="line">        <span class="keyword">return</span> field + field</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> backgroundColor: <span class="built_in">Int</span>? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">var</span> onClickListener: ((Button) -&gt; <span class="built_in">Unit</span>)? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试 `Button`类</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</span><br><span class="line">    Button().text = <span class="string">"Generating a simple Button"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>试着运行这段代码,很不幸,打印几个”Generating a simple Button”后立即抛出<code>StackOverflowError</code>, What’s wrong? 别急, 先从字节码上找原因, <code>Button</code>类字节码如下, 可以看到<code>setText</code>方法调用自身, 导致栈内存溢出.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// access flags 0x11</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="title">setText</span><span class="params">(Ljava/lang/String;)</span>V</span></span><br><span class="line"><span class="function">@Lorg/jetbrains/annotations/Nullable</span>;() <span class="comment">// invisible, parameter 0</span></span><br><span class="line">L0</span><br><span class="line">LINENUMBER <span class="number">21</span> L0</span><br><span class="line">L1</span><br><span class="line">GETSTATIC java/lang/System.out : Ljava/io/PrintStream;</span><br><span class="line">ALOAD <span class="number">1</span></span><br><span class="line">INVOKEVIRTUAL java/io/PrintStream.println (Ljava/lang/Object;)V</span><br><span class="line">L2</span><br><span class="line">L3</span><br><span class="line">LINENUMBER <span class="number">22</span> L3</span><br><span class="line">ALOAD <span class="number">0</span></span><br><span class="line">ALOAD <span class="number">1</span></span><br><span class="line">INVOKEVIRTUAL Button.setText (Ljava/lang/String;)V</span><br><span class="line">L4</span><br><span class="line">LINENUMBER <span class="number">23</span> L4</span><br><span class="line">RETURN</span><br><span class="line">L5</span><br><span class="line">LOCALVARIABLE <span class="keyword">this</span> LButton; L0 L5 <span class="number">0</span></span><br><span class="line">LOCALVARIABLE value Ljava/lang/String; L0 L5 <span class="number">1</span></span><br><span class="line">MAXSTACK = <span class="number">2</span></span><br><span class="line">MAXLOCALS = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>通常使用getters和setters访问类成员(fields), 以便编译器内联并直接引用. 但在某种情况下, 比如Android开发过程中, 有时使用getters和setters未必性能最优, 理由如下:</p>
+<ul>
+<li>Android 4.4及以下版本使用Dalvik虚拟机, Dalvik基于JIT(及时)编译, 意味着每次运行App时, Dalvik将字节码编译成机器码</li>
+<li>Android 4.4及以上版本使用功ART(Android Runtime)技术, ART基于AOT(运行前)编译, 意味着App在安装时由字节码编译成机器码</li>
+<li>Android 4.4既支持Dalvik, 也支持ART</li>
+</ul>
+<p>根据<a href="https://developer.android.com/training/articles/perf-tips.html" target="_blank" rel="noopener">安卓官方性能优化建议</a>, 直接访问fields比在ART中调用getters和setters快三倍, 比在Dalvik中调用getters和setters快7倍.</p>
+<h3 id="Backing-Property与Private限定符"><a href="#Backing-Property与Private限定符" class="headerlink" title="Backing Property与Private限定符"></a>Backing Property与Private限定符</h3><p>可以使用Backing Properties直接访问类成员. 现在重构<code>Button</code>类如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Button</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> _text: String? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">var</span> text: String</span><br><span class="line">        <span class="keyword">set</span>(value) &#123;</span><br><span class="line">            println(value)</span><br><span class="line">            _text = value</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">get</span>() &#123;</span><br><span class="line">            <span class="keyword">return</span> _text + _text</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> backgroundColor: <span class="built_in">Int</span>? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> onClickListener: ((Button) -&gt; <span class="built_in">Unit</span>)? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">printText</span><span class="params">()</span></span> &#123;</span><br><span class="line">        println(_text)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将上面这段代码反编译成Java源码如下, 注意到Kotlin为<code>_text</code>属性生成getters和setters方法, 而<code>text</code>没有.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Button</span> </span>&#123;</span><br><span class="line">   <span class="keyword">private</span> String _text;</span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="keyword">private</span> Integer backgroundColor;</span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="keyword">private</span> Function1 onClickListener;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@NotNull</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">getText</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> Intrinsics.stringPlus(<span class="keyword">this</span>._text, <span class="keyword">this</span>._text);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setText</span><span class="params">(@NotNull String value)</span> </span>&#123;</span><br><span class="line">      Intrinsics.checkParameterIsNotNull(value, <span class="string">"value"</span>);</span><br><span class="line">      System.out.println(value);</span><br><span class="line">      <span class="keyword">this</span>._text = value;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Integer <span class="title">getBackgroundColor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.backgroundColor;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setBackgroundColor</span><span class="params">(@Nullable Integer var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.backgroundColor = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Function1 <span class="title">getOnClickListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">this</span>.onClickListener;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setOnClickListener</span><span class="params">(@Nullable Function1 var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.onClickListener = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">printText</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      String var1 = <span class="keyword">this</span>._text;</span><br><span class="line">      System.out.println(var1);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>printText()</code>方法字节码如下, 可以看到<code>printText</code>方法直接引用<code>_text</code>属性. 这也表明Backing Property可以允许你完全访问<code>fields</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="title">printText</span><span class="params">()</span>V</span></span><br><span class="line"><span class="function">L0</span></span><br><span class="line"><span class="function">LINENUMBER 30 L0</span></span><br><span class="line"><span class="function">ALOAD 0</span></span><br><span class="line"><span class="function">GETFIELD Button._text : Ljava/lang/String</span>;</span><br><span class="line">ASTORE <span class="number">1</span></span><br><span class="line">L1</span><br><span class="line">GETSTATIC java/lang/System.out : Ljava/io/PrintStream;</span><br><span class="line">ALOAD <span class="number">1</span></span><br><span class="line">INVOKEVIRTUAL java/io/PrintStream.println (Ljava/lang/Object;)V</span><br><span class="line">L2</span><br><span class="line">L3</span><br><span class="line">LINENUMBER <span class="number">31</span> L3</span><br><span class="line">RETURN</span><br><span class="line">L4</span><br><span class="line">LOCALVARIABLE <span class="keyword">this</span> LButton; L0 L4 <span class="number">0</span></span><br><span class="line">MAXSTACK = <span class="number">2</span></span><br><span class="line">MAXLOCALS = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>如果去掉<code>_text</code>前的<code>private</code>关键字, 如下, 猜猜看会发生什么?</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Button</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> _text: String? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">var</span> text: String</span><br><span class="line">        <span class="keyword">set</span>(value) &#123;</span><br><span class="line">            println(value)</span><br><span class="line">            _text = value</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">get</span>() &#123;</span><br><span class="line">            <span class="keyword">return</span> _text + _text</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> backgroundColor: <span class="built_in">Int</span>? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">var</span> onClickListener: ((Button) -&gt; <span class="built_in">Unit</span>)? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">printText</span><span class="params">()</span></span> &#123;</span><br><span class="line">        println(_text)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以通过反编译后的Java源码来验证下, Ops……., Kotlin为<code>_text</code>生成了一对无用的getter和setter— <code>get_text()</code>和<code>set_text</code>方法.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Button</span> </span>&#123;</span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="keyword">private</span> String _text;</span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="keyword">private</span> Integer backgroundColor;</span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="keyword">private</span> Function1 onClickListener;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">get_text</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>._text;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">set_text</span><span class="params">(@Nullable String var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>._text = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@NotNull</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">getText</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> Intrinsics.stringPlus(<span class="keyword">this</span>._text, <span class="keyword">this</span>._text);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setText</span><span class="params">(@NotNull String value)</span> </span>&#123;</span><br><span class="line">      Intrinsics.checkParameterIsNotNull(value, <span class="string">"value"</span>);</span><br><span class="line">      System.out.println(value);</span><br><span class="line">      <span class="keyword">this</span>._text = value;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Integer <span class="title">getBackgroundColor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.backgroundColor;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setBackgroundColor</span><span class="params">(@Nullable Integer var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.backgroundColor = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Nullable</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Function1 <span class="title">getOnClickListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.onClickListener;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setOnClickListener</span><span class="params">(@Nullable Function1 var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.onClickListener = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">printText</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      String var1 = <span class="keyword">this</span>._text;</span><br><span class="line">      System.out.println(var1);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="JvmField-注解"><a href="#JvmField-注解" class="headerlink" title="@JvmField 注解"></a>@JvmField 注解</h3><p>先来看段示例代码, 如下, 使用Kotlin中data class定义一个简单的Point类, 给定俩参数, 坐标x和y </p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span></span>(<span class="keyword">var</span> x: <span class="built_in">Int</span>, <span class="keyword">var</span> y: <span class="built_in">Int</span>)</span><br></pre></td></tr></table></figure>
+<p>这段代码反编译成Java源码如下, Kotlin除了为<code>Point</code>类中<code>x</code>,<code>y</code>生成getters和setters外, 还自动生成了<code>copy()</code>、<code>equals()</code>、<code>hashcode()</code> <code>toString()</code>四个方法. 注意到生成的<code>x</code>和<code>y</code>限定符为<code>private</code>, 每次访问<code>x</code>或<code>y</code>时, 实际上分别调用它们的setter和getter方法.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">int</span> x;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">int</span> y;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.x;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.x = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.y;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.y = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Point</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.x = x;</span><br><span class="line">      <span class="keyword">this</span>.y = y;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">component1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.x;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">component2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.y;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@NotNull</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Point <span class="title">copy</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> Point(x, y);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"Point(x="</span> + <span class="keyword">this</span>.x + <span class="string">", y="</span> + <span class="keyword">this</span>.y + <span class="string">")"</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.x * <span class="number">31</span> + <span class="keyword">this</span>.y;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span> != var1) &#123;</span><br><span class="line">         <span class="keyword">if</span> (var1 <span class="keyword">instanceof</span> Point) &#123;</span><br><span class="line">            Point var2 = (Point)var1;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.x == var2.x &amp;&amp; <span class="keyword">this</span>.y == var2.y) &#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为解决这个问题, 可以使用<code>@JvmField</code>声明, 对<code>Point</code>类重构如下</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span></span>(<span class="meta">@JvmField</span> <span class="keyword">var</span> x: <span class="built_in">Int</span>, <span class="meta">@JvmField</span> <span class="keyword">var</span> y: <span class="built_in">Int</span>)</span><br></pre></td></tr></table></figure>
+<p>来看下字节码反编译后的Java源码, 可以看到<code>x</code>和<code>y</code>被<code>public</code>关键字修饰, 意味着没有必要为它们生成 getters 和 setters方法.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">   <span class="meta">@JvmField</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> x;</span><br><span class="line">   <span class="meta">@JvmField</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> y;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Point</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.x = x;</span><br><span class="line">      <span class="keyword">this</span>.y = y;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">component1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.x;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">component2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.y;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@NotNull</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Point <span class="title">copy</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> Point(x, y);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"Point(x="</span> + <span class="keyword">this</span>.x + <span class="string">", y="</span> + <span class="keyword">this</span>.y + <span class="string">")"</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.x * <span class="number">31</span> + <span class="keyword">this</span>.y;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object var1)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span> != var1) &#123;</span><br><span class="line">         <span class="keyword">if</span> (var1 <span class="keyword">instanceof</span> Point) &#123;</span><br><span class="line">            Point var2 = (Point)var1;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.x == var2.x &amp;&amp; <span class="keyword">this</span>.y == var2.y) &#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/JVM-And-JVM-Languages/" <i class="fa fa-tag"> JVM And JVM Languages</a>
+          
+            
+            <a href="/tags/Kotlin/" <i class="fa fa-tag"> Kotlin</a>
+          
+            
+            <a href="/tags/High-Performance-Kotlin/" <i class="fa fa-tag"> High Performance Kotlin</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/kt/range/" rel="next" title="Kotlin高性能实战 (一) -- Kotlin Range">
+                <i class="fa fa-chevron-left"></i> Kotlin高性能实战 (一) -- Kotlin Range
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/kt/dlgt-props/" rel="prev" title="Kotlin高性能实战 (四) -- Kotlin Delegate (Part Two)">
+                Kotlin高性能实战 (四) -- Kotlin Delegate (Part Two) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Property-初探"><span class="nav-number">1.</span> <span class="nav-text">Property 初探</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backing-Property-初探"><span class="nav-number">2.</span> <span class="nav-text">Backing Property 初探</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backing-Property与Private限定符"><span class="nav-number">3.</span> <span class="nav-text">Backing Property与Private限定符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JvmField-注解"><span class="nav-number">4.</span> <span class="nav-text">@JvmField 注解</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

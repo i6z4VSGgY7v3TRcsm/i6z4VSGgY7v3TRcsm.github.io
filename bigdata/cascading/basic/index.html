@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将介绍Cascading基本概念.">
+<meta name="keywords" content="Big Data,Cascading,MapReduce,Apache Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cascading实战之基本概念篇">
+<meta property="og:url" content="https://ultradata.stream/bigdata/cascading/basic/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将介绍Cascading基本概念.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/beer-proc.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/taps.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/pipe-def.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/psort.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/merge.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/cogrp.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/hashjoin.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/flow-graph.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/une-cascade.jpg">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cascading实战之基本概念篇">
+<meta name="twitter:description" content="本文将介绍Cascading基本概念.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/beer-proc.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/cascading/basic/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Cascading实战之基本概念篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/cascading/basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Cascading实战之基本概念篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">12k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">11 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将介绍Cascading基本概念. <a id="more"></a></p>
+<h2 id="Data-Flow"><a href="#Data-Flow" class="headerlink" title="Data Flow"></a>Data Flow</h2><p>Cascading数据处理模型基于Data Stream与数据操作(如过滤、聚合、断言、函数处理等), Cascading API允许开发者组装管道子组件(SubAssembly, 如Stream分割、分组、合并及Join等)定义数据处理流(Data Flow). </p>
+<p>下面以酿酒流程为例, 处理流程示意如下, 首先对酿造原料进行发酵, 对发酵酒精进行过滤, 经过多道工艺(如增加调料、改进口感等)处理, 最后得到醇香可口的佳酿.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/beer-proc.jpg" alt></p>
+<p>对应Cascading代码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Scheme liquidFlowScheme = <span class="keyword">new</span> TextDelimited(<span class="keyword">new</span> Fields(<span class="string">"liquid"</span>), <span class="keyword">true</span>, <span class="string">","</span>);</span><br><span class="line">String sourceContainerLocation = <span class="string">"The Path To Source Container"</span>;</span><br><span class="line">Tap sourceContainer = <span class="keyword">new</span> FileTap(liquidFlowScheme, sourceContainerLocation);</span><br><span class="line"></span><br><span class="line">Scheme drinkScheme = <span class="keyword">new</span> TextDelimited(<span class="keyword">new</span> Fields(<span class="string">"drink"</span>), <span class="keyword">true</span>, <span class="string">","</span>);</span><br><span class="line">String sinkContainerLocation = <span class="string">"The Path To Sink Container"</span>;</span><br><span class="line">Tap sinkContainer = <span class="keyword">new</span> FileTap(drinkScheme, sinkContainerLocation);</span><br><span class="line"></span><br><span class="line">Pipe pipe = <span class="keyword">new</span> Each(pipe, <span class="keyword">new</span> Filter());</span><br><span class="line">Pipe topPipe = <span class="keyword">new</span> Each(pipe, <span class="keyword">new</span> AddFlaver1());</span><br><span class="line">Pipe midPipe1 = <span class="keyword">new</span> Each(pipe, <span class="keyword">new</span> AddFlaver2());</span><br><span class="line">Pipe midPipe2 = <span class="keyword">new</span> Each(pipe, <span class="keyword">new</span> AddFlaver3());</span><br><span class="line">Pipe bottomPipe = <span class="keyword">new</span> Each(pipe, <span class="keyword">new</span> AddFlaver4());</span><br><span class="line">Pipe outPipe = <span class="keyword">new</span> Merge(topPipe, midPipe1, midPipe2, bottomPipe);</span><br><span class="line"></span><br><span class="line">Flow flow = <span class="keyword">new</span> LocalFlowConnector().connect(sourceContainer, sinkContainer, outPipe);</span><br><span class="line">flow.complete();</span><br></pre></td></tr></table></figure>
+<p>Cascading本身利用高级API模拟待处理的Data Flow, 无需过多暴露底层处理复杂性(如MapReduce实现等). 在详细介绍Cascading前, 需了解以下几个概念:</p>
+<ul>
+<li><strong>Tuple</strong>, 元组, 即Data Record, Cascading将所有待处理数据视为元组, 与MapReduce、Spark中RDD(当然有些特殊的RDD除外, RDD本身的KV键值对通常以元组形式出现)数据处理类似</li>
+<li><strong>Pipe</strong>, 执行数据操作的数据流, 通常这些数据操作包括如数据过滤、聚合、转换、计算及汇总等</li>
+<li><strong>Pipe Assembly</strong>, 管道子组件, 常用于连接管道分支</li>
+<li><strong>Tap</strong>, Data Source(数据源)或Data Sink(通常指结果数据持久化的地方, 可以是文件系统, 也可为数据库), Taps须与管道子组件绑定, 如Data Source Tap常作为管道输入数据, Data Sink Tap作为管道结果输出数据</li>
+<li><strong>Flow</strong>, 包含Tap与管道子组件的系统, 通常多项数据集于Flow中计算、转换并输出</li>
+<li><strong>Cascade</strong>, 一系列Flow, 如果某项Flow依赖其它Flow输出, 该Flow并不会立即执行, 需待条件满足后执行</li>
+</ul>
+<h2 id="Record抽象"><a href="#Record抽象" class="headerlink" title="Record抽象"></a>Record抽象</h2><p>本节将介绍Cascading中Record相关抽象, 即Cascading处理数据流基本数据结构与Schema.</p>
+<h3 id="Tuple"><a href="#Tuple" class="headerlink" title="Tuple"></a>Tuple</h3><p>元组, 本身比较常见, 可以通过偏移(即下标)和名称(如Named Tuple)进行访问, 元组本身可以允许不同数据类型. 元组有些类似于数据库中Record概念, 如每列可以基于序数位置访问. 由于Java语言本身并不支持元组(Scala与Python等语言对元组支持已嵌入语言级别), 需要通过对象封装或以类的形式实现, Cascading中元组常见方法参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如创建一元组result, 该元组对象Size为3</span></span><br><span class="line"><span class="comment">// Tuple result = Tuple.size(3)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Tuple <span class="title">size</span><span class="params">(<span class="keyword">int</span> size)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过下标位置访问元组中元素</span></span><br><span class="line"><span class="comment">// 如 tuple.getObject(0) 访问元组中第一项Field(对应Record中第一列)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getObject</span><span class="params">(<span class="keyword">int</span> pos)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 基于下标访问元组中元素</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">getBoolean</span><span class="params">(<span class="keyword">int</span> pos)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getString</span><span class="params">(<span class="keyword">int</span> pos)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getFloat</span><span class="params">(<span class="keyword">int</span> pos)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getDouble</span><span class="params">(<span class="keyword">int</span> pos)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getInteger</span><span class="params">(<span class="keyword">int</span> pos)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="Fields"><a href="#Fields" class="headerlink" title="Fields"></a>Fields</h3><p>可以通过<code>Fields</code>访问元组中元素, <code>Fields</code>存储了Field元数据(如名称、类型、类型变换、比较器等), <code>Fields</code>代表了元组中成员名或充当元组的Selector引用元组中元素值. 一<code>Fields</code>实例可能包含了一系列Field名与位置(元组下标)信息, Field值也可为Comparable以便进行排序. 实例化<code>Fields</code>比较简单, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fields fields = <span class="keyword">new</span> Fields(<span class="string">"id"</span>, <span class="string">"ssn"</span>, <span class="string">"gender"</span>, <span class="string">"name"</span>);</span><br></pre></td></tr></table></figure>
+<p><code>Fields</code>可充当元组元数据, 便于控制和Map待处理数据. <code>Fields</code>既可充当声明器也可充当选择器, 声明器声明特定类型或特定值Field, 选择器用于选取元组中给定引用Field. Cascading中存在一Field Sets概念, 用于控制元组传入或处理, 参考如下:</p>
+<ul>
+<li><strong>cascading.tuple.Fields.ALL</strong>, 代表当前所有可用的Field</li>
+<li><strong>cascading.tuple.Fields.UNKNOWN</strong>, 声明Field时并不知晓Field名称或数量, 是用于处理任意长度元组中Field声明</li>
+<li><strong>cascading.tuple.Fields.ARGS</strong>, 适用于Fields作为输入参数执行某些Operation</li>
+<li><strong>cascading.tuple.Fields.RESULT</strong>, 适用于Fields作为某些Operation输出结果而选用时</li>
+<li><strong>cascading.tuple.Fields.GROUP</strong>, 适用于对Fields进行分组(如进行<code>GroupBy</code>)时</li>
+</ul>
+<p><code>Feilds</code>也支持类型转换, 如将字符串类型的timestamp字段转换成Long类型, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Cascading通过`cascading.tuple.coerce.Coerce`进行类型转换</span></span><br><span class="line">pipe = <span class="keyword">new</span> Coerce(<span class="keyword">new</span> Fields(<span class="string">"timestamp"</span>), Long.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者也可通过Field声明时指定类型, 如下</span></span><br><span class="line">Fields field = <span class="keyword">new</span> Fields(<span class="string">"id"</span>, Long.class);</span><br></pre></td></tr></table></figure>
+<h3 id="TupleEntry"><a href="#TupleEntry" class="headerlink" title="TupleEntry"></a>TupleEntry</h3><p><code>TupleEntry</code>适用于需要将Field元数据封装至元组中. 当<code>TupleEntry</code>创建后其<code>Fields</code>不可变更, 但其<code>Tuple</code>实例可以修改或替换, 元组中元素不可增加或移除(原因在于<code>TupleEntry</code>内部存储了一<code>Map&lt;String, Integer&gt;</code>, 该Map与<code>Fields</code>实例相关). <code>TupleEntry</code>允许通过Field名访问元组, <code>TupleEntry</code>中<code>Fields</code>形成元组的元数据(如定义了列名及数据类型等)并充当元组的Selector.  </p>
+<p><code>TupleEntry</code>使用, 参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Fields selector = <span class="keyword">new</span> Fields(<span class="string">"id"</span>, <span class="string">"ssn"</span>);</span><br><span class="line">Tuple tuple = Tuple.size(<span class="number">2</span>);</span><br><span class="line">TupleEntry tupleEntry = <span class="keyword">new</span> TupleEntry(selector, tuple);</span><br></pre></td></tr></table></figure>
+<h3 id="Scheme"><a href="#Scheme" class="headerlink" title="Scheme"></a>Scheme</h3><p>Scheme不仅可用于读取数据, 也可用于解析和转换数据, 换句话说, Scheme适用于Data Source和Data Sink数据定义. Cascading中存在以下几种预定义<code>Scheme</code>:</p>
+<ul>
+<li><strong>TextLine</strong>, 可按行分割(换行符通常为CR, CR LF, NL)</li>
+<li><strong>TextDelimited</strong>, 文本可按分割符分割, 如CSV或TSV文件, 可跳过Header, </li>
+<li><strong>SequnceFile</strong>, Hadoop SequnceFile, binary形式KV键值对</li>
+<li><strong>NullScheme</strong>, 当需要Scheme时充当占位符, 需要时可作为Scheme参数</li>
+</ul>
+<p>Cascading中较为常见的Scheme有<code>TextLine</code>, <code>TextLine</code>存在以下构造器:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果`sourceFields`仅有一项Field, 仅返回随后元组的文本行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TextLine</span><span class="params">(Fields sourceFields)</span> </span>&#123; <span class="comment">/* 构造器实现略 */</span>&#125;;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TextLine</span><span class="params">(Fields sourceFields, Fields sinkFields)</span>  </span>&#123; <span class="comment">/* 构造器实现略 */</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// `charsetName`, 字符集, 支持字符集为: UTF-8、UTF-16BE、UTF-16LE、UTF-16、ISO-8859-1、US-ASCII等</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TextLine</span><span class="params">(Fields sourceFields, Fields sinkFields, String charsetName)</span>  </span>&#123; <span class="comment">/* 构造器实现略 */</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>TextDelimited</code>, 对应Scheme可按分隔符分割, 如CSV或TSV等, 这些Scheme也支持跳过Header, <code>TextDelimited</code>类为<code>TextLine</code>子类. <code>TextDelimited</code>默认并不会写入Header, 如果构造器中指定<code>hasHeader</code>为true, <code>skipHeader</code>与<code>writeHeader</code>也将设置为true. <code>TextDelimited</code>也支持写入Header至文件中, Header中Field名称直接取自Field声明, 如果Fields声明为<code>Fields.ALL</code>或<code>Fields.UNKNOWN</code>, 将直接使用Field声明中Field名作为Header中Field名称.</p>
+<p><code>TextDelimited</code>构造器, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TextDelimited</span><span class="params">(<span class="keyword">boolean</span> hasHeader, String delimiter)</span> </span>&#123; <span class="comment">/* 构造器实现略 */</span>&#125;;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TextDelimited</span><span class="params">(<span class="keyword">boolean</span> hasHeader, String delimiter, String quote)</span> </span>&#123; <span class="comment">/* 构造器实现略 */</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TextDelimited</span><span class="params">(Fields fields)</span> </span>&#123; <span class="comment">/* 构造器实现略 */</span>&#125;;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TextDelimited</span><span class="params">(Fields fields, <span class="keyword">boolean</span> skipHeader, </span></span></span><br><span class="line"><span class="function"><span class="params">                     <span class="keyword">boolean</span> writeHeader, String delimiter)</span> </span>&#123; <span class="comment">/* 构造器实现略 */</span>&#125;;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TextDelimited</span><span class="params">(Fields fields, <span class="keyword">boolean</span> skipHeader, </span></span></span><br><span class="line"><span class="function"><span class="params">                     <span class="keyword">boolean</span> writeHeader, String delimiter, String quote)</span> </span>&#123; <span class="comment">/* 构造器实现略 */</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>TextDelimited</code>使用, 示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 没有Header, 默认按TAB分割</span></span><br><span class="line">Scheme scheme = <span class="keyword">new</span> TextDelimited();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 有Header, 按逗号分割(即CSV文件)</span></span><br><span class="line">Scheme scheme = <span class="keyword">new</span> TextDelimited(<span class="keyword">true</span>, <span class="string">","</span>);</span><br></pre></td></tr></table></figure>
+<p><code>SequenceFile</code>, Hadoop序列化文件, 包含Binary形式KV键值对, 可进行高效读写. <code>SequenceFile</code>构造器, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SequenceFile</span><span class="params">(Fields fields)</span> </span>&#123; <span class="comment">/* 构造器实现略 */</span> &#125;;</span><br></pre></td></tr></table></figure>
+<p><code>WritableSequenceFile</code>为<code>SequenceFile</code>子类, 可用于读写Hadoop Writable对象, 写时将KV键值对序列化至Sequence File, 读时KV键值对封装至Cascading元组并传入管道子组件(Pipe SubAssembly)中. <code>WritableSequenceFile</code>构造器, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">WritableSequenceFile</span><span class="params">(Fields fields, </span></span></span><br><span class="line"><span class="function"><span class="params">                            Class&lt;? extends Writable&gt; valueType)</span> </span>&#123; <span class="comment">/* 构造器实现略 */</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">WritableSequenceFile</span><span class="params">(Fields fields, </span></span></span><br><span class="line"><span class="function"><span class="params">                            Class&lt;? extends Writable&gt; keyType,</span></span></span><br><span class="line"><span class="function"><span class="params">                            Class&lt;? extends Writable&gt; valueType)</span> </span>&#123; <span class="comment">/* 构造器实现略 */</span> &#125;;</span><br></pre></td></tr></table></figure>
+<p><code>WritableSequenceFile</code>使用, 示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Tap tapValue = <span class="keyword">new</span> Hfs(<span class="keyword">new</span> WritableSequenceFile(</span><br><span class="line">                            <span class="keyword">new</span> Fields(<span class="string">"sink_text"</span>), </span><br><span class="line">                            Text.class), </span><br><span class="line">                       getOutputPath(<span class="string">"value"</span>), </span><br><span class="line">                       SinkMode.REPLACE);</span><br></pre></td></tr></table></figure>
+<p>元组也可通过Scheme描述, Scheme包含了Field定义, 如People的Scheme包含姓名、年龄、性别、联系方式、地址等, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Scheme peopleScheme = <span class="keyword">new</span> TextLine(<span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"gender"</span>, <span class="string">"age"</span>, <span class="string">"phone_number"</span>, <span class="string">"address"</span>));</span><br></pre></td></tr></table></figure>
+<p>也可通过<code>Fields</code>与<code>Types</code>数组形式组合Scheme, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Fields[] pFields = <span class="keyword">new</span> Fields[] &#123;<span class="keyword">new</span> Fields(<span class="string">"name"</span>), <span class="keyword">new</span> Fields(<span class="string">"gender"</span>), <span class="keyword">new</span> Fields(<span class="string">"age"</span>),</span><br><span class="line">    <span class="keyword">new</span> Fields(<span class="string">"phone_number"</span>), <span class="keyword">new</span> Fields(<span class="string">"address"</span>)&#125;;</span><br><span class="line">Type[] pType = <span class="keyword">new</span> Type[] &#123;String.class, String.class, Integer.class, Long.class, String.class&#125;;</span><br><span class="line"><span class="comment">// 注意Field名与类型对应</span></span><br><span class="line">Scheme pScheme = <span class="keyword">new</span> TextLine(<span class="keyword">new</span> Fields(pFields, pType));</span><br></pre></td></tr></table></figure>
+<p>也可通过Fluent接口形式指定Fields中某项成员类型, 如:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Fields pFields = <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"gender"</span>, <span class="string">"age"</span>, <span class="string">"phone_number"</span>, <span class="string">"address"</span>);</span><br><span class="line">pFields.applyType(<span class="string">"name"</span>, String.class)</span><br><span class="line">    .applyType(<span class="string">"gender"</span>, String.class)</span><br><span class="line">    .applyType(<span class="string">"age"</span>, Integer.class)</span><br><span class="line">    .applyType(<span class="string">"phone_number"</span>, Long.class)</span><br><span class="line">    .applyType(<span class="string">"address"</span>, String.class);</span><br></pre></td></tr></table></figure>
+<h2 id="数据流控"><a href="#数据流控" class="headerlink" title="数据流控"></a>数据流控</h2><p>本节主要介绍Cascading数据流处理相关概念, 如Flow、Pipe、Cascade等, Cascading主要通过定义Pipe、Flow或Cascade控制整个Data Flow处理流程. </p>
+<h3 id="Tap"><a href="#Tap" class="headerlink" title="Tap"></a>Tap</h3><p>在管道组件(Pipe Assembly)执行前, 需与Tap进行绑定, 即Data Source与Data Sink, Tap主要用途如下:</p>
+<ul>
+<li>Source Tap提供数据用于下游消费</li>
+<li>Sink Tap用于持久化数据</li>
+<li>Tap即可充当Source也可充当Sink</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/taps.jpg" alt></p>
+<p>Cascading中存在以下几种<code>Tap</code>类型:</p>
+<ul>
+<li><code>Hfs</code>, 该Tap可访问Hadoop File(文件URL通常为 hdfs:///path/to/your/data)</li>
+<li><code>Lfs</code>, <code>Hfs</code>子类, 可访问本地文件, 这些文件通常存储于Hadoop集群中, 但可通过本地文件名访问而非HDFS名 </li>
+<li><code>Dfs</code>, <code>Hfs</code>子类, 可访问HDFS文件, 但通常使用<code>Hfs</code></li>
+<li><code>FileTap</code>, 访问本地文件而非Hadoop集群文件</li>
+</ul>
+<p><code>Tap</code>使用, 示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Scheme sourceScheme = <span class="keyword">new</span> TextLine(<span class="keyword">new</span> Fields(<span class="string">"text_field"</span>));</span><br><span class="line">Scheme sinkScheme = <span class="keyword">new</span> TextLine(<span class="keyword">new</span> Fields(<span class="string">"dep"</span>, <span class="string">"stats"</span>));</span><br><span class="line">String inputPath = <span class="string">"Input Path Here"</span>;</span><br><span class="line">Tap source = <span class="keyword">new</span> HfS(sourceScheme, inputPath);</span><br><span class="line">Tap sink = <span class="keyword">new</span> Hfs(sinkScheme, SinkMode.REPLACE);</span><br></pre></td></tr></table></figure>
+<p>其中<code>SinkMode</code>可用于处理输出数据, 如防止覆写等, <code>SinkMode</code>存在以下几种选项:</p>
+<ul>
+<li><strong>KEEP</strong>, 如果文件存在写入失败</li>
+<li><strong>REPLACE</strong>, 替换文件 (Hadoop模式下先删除整个路径然后重建目录并重新分配文件)</li>
+<li><strong>UPDATE</strong>, 如果文件系统允许(Hadoop模式下不允许UPDATE, 主要在于HDFS文件为Immutable, 可追加写入但不可修改), 可复用文件 </li>
+</ul>
+<h3 id="Pipe"><a href="#Pipe" class="headerlink" title="Pipe"></a>Pipe</h3><p>数据通过管道传输,转换和计算, Pipe可用于执行数据转换、Join、分组、合并、分割等计算, 基于数据操作, Cascading中管道可分为以下几种:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/pipe-def.jpg" alt></p>
+<p>Cascading中Operation类型可以粗略地分为以下几类:</p>
+<ul>
+<li><strong>Filter</strong>, 对数据进行过滤</li>
+<li><strong>Function</strong>, 执行特定数据转换或计算方法</li>
+<li><strong>Aggregator</strong>, 对数据集进行聚合、汇总</li>
+<li><strong>Buffer</strong>, 在一定数量的数据集执行数据计算</li>
+<li><strong>Assertion</strong>, 断言, Assertion适用于单元组Pipe(如<code>Each</code>)和分组元组Pipe(如<code>Every</code>)等.</li>
+</ul>
+<h4 id="Each"><a href="#Each" class="headerlink" title="Each"></a>Each</h4><p><code>Each</code>管道常用于处理单元组, <code>Each</code>主要包括<code>Filter</code>与<code>Function</code>. <code>Each</code>示例代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基于正则过滤</span></span><br><span class="line">inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> RegexFilter(<span class="string">"ECOMM"</span>));</span><br></pre></td></tr></table></figure>
+<h4 id="Every"><a href="#Every" class="headerlink" title="Every"></a>Every</h4><p><code>Every</code>管道, 执行于一组元组之上(非单元组), 通常这些分组由<code>GroupBy</code>管道确定(<code>GroupBy</code>或<code>CoGroup</code>管道均可产生<code>Every</code> Pipe). 这些分组元组可以一次处理一项(<code>Aggregator</code>)或一次性处理所有(<code>Buffer</code>). <code>Every</code>示例代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对分组元组进行计数</span></span><br><span class="line">inPipe = <span class="keyword">new</span> GroupBy(inPipe, <span class="keyword">new</span> Fields(<span class="string">"group"</span>));</span><br><span class="line">inPipe = <span class="keyword">new</span> Every(inPipe, Fields.ALL, <span class="keyword">new</span> Count(<span class="keyword">new</span> Fields(<span class="string">"TotalRecords"</span>)), Fields.ALL);</span><br></pre></td></tr></table></figure>
+<h4 id="分组与排序"><a href="#分组与排序" class="headerlink" title="分组与排序"></a>分组与排序</h4><p><code>GroupBy</code>常用于分组, 也可用于二级排序(除非特别指定, 否则默认不会开启二级排序). 如图所示, 假定薪资数据数据源(部门,姓名,薪资,涨幅)如下所示, 需以部门分组, 薪资排序, 代码参考如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/psort.jpg" alt></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Pipe payroll = <span class="keyword">new</span> Each(<span class="string">"payroll"</span>, </span><br><span class="line">                        <span class="keyword">new</span> Fields(<span class="string">"division"</span>, <span class="string">"name"</span>, <span class="string">"salary"</span>, <span class="string">"raise"</span>), </span><br><span class="line">                        <span class="keyword">new</span> Identity());</span><br><span class="line">Fields groupFields = <span class="keyword">new</span> Fields(<span class="string">"division"</span>);</span><br><span class="line">Fields sortFields = <span class="keyword">new</span> Fields(<span class="string">"salary"</span>);</span><br><span class="line">Pipe assembly = <span class="keyword">new</span> GroupBy(payroll, groupFields, sortFields);</span><br></pre></td></tr></table></figure>
+<h4 id="Join与Merge"><a href="#Join与Merge" class="headerlink" title="Join与Merge"></a>Join与Merge</h4><p><code>Merge</code>可用于Pipe合并, 如图所示, 人力资源数据处理中存在两Pipe, 其中一Pipe负责读取库内现有数据(暂未更新), 另一Pipe读取更新后的数据, 现在需要合并两Pipe, 代码参考如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/merge.jpg" alt></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Pipe lhs = <span class="keyword">new</span> Each(<span class="string">"hrdata"</span>, </span><br><span class="line">                    <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"address"</span>, <span class="string">"phone"</span>), </span><br><span class="line">                    <span class="keyword">new</span> Identity());</span><br><span class="line">Pipe rhs = <span class="keyword">new</span> Each(<span class="string">"hrdata_update"</span>, </span><br><span class="line">                    <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"address"</span>, <span class="string">"phone"</span>), </span><br><span class="line">                    <span class="keyword">new</span> Identity());</span><br><span class="line"><span class="comment">// Merge Pipe</span></span><br><span class="line">Pipe merge = <span class="keyword">new</span> Merge(lhs, rhs);</span><br></pre></td></tr></table></figure>
+<p>Cascading中Join Pipe包括<code>CoGroup</code>与<code>HashJoin</code>. <code>CoGroup</code>对输入元组按照给定Key(可能为一项也可能为多项)分组, 然后按照分组Key执行Join或聚合, 有些类似于SQL中<code>JOIN</code>. </p>
+<p>接着以上面的人力资源数据与薪资为例, 以Name字段作为连接键进行Join, 示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/cogrp.jpg" alt></p>
+<p>代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Pipe lhs = <span class="keyword">new</span> Each(<span class="string">"hrdata"</span>, </span><br><span class="line">                    <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"address"</span>, <span class="string">"phone"</span>), </span><br><span class="line">                    <span class="keyword">new</span> Identity());</span><br><span class="line">Pipe rhs = <span class="keyword">new</span> Each(<span class="string">"payroll"</span>, </span><br><span class="line">                    <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"division"</span>, <span class="string">"salary"</span>), </span><br><span class="line">                    <span class="keyword">new</span> Identity());</span><br><span class="line">Fields joinKey = <span class="function">New <span class="title">Fields</span><span class="params">(<span class="string">"name"</span>)</span></span>;</span><br><span class="line"><span class="comment">// 需对薪资数据中Name字段重命名, 否则会造成冲突导致程序报错无法运行</span></span><br><span class="line">Fields resultFields = <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"address"</span>, <span class="string">"phone"</span>,</span><br><span class="line">                                 <span class="string">"name2"</span>, <span class="string">"division"</span>, <span class="string">"salary"</span>);</span><br><span class="line">Pipe join = <span class="keyword">new</span> CoGroup(lhs, joinKey, rhs, joinKey, resultFields);</span><br></pre></td></tr></table></figure>
+<p><code>HashJooin</code>作为一高度优化的Join, 将右边Stream加载至内存(如果满足条件, 性能比<code>CoGroup</code>要好, 原因在于如果整项数据集能加载至内存, <code>HashJoin</code>将变成Map端Join), 如果该Stream数据量过大可能会溢出部分数据至磁盘并产生内存错误. </p>
+<p>同样以上面的数据为例, 假如薪资数据集可以加载至内存, 此时可以考虑使用<code>HashJoin</code>, 示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/hashjoin.jpg" alt></p>
+<p>代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Pipe lhs = <span class="keyword">new</span> Each(<span class="string">"hrdata"</span>, </span><br><span class="line">                    <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"address"</span>, <span class="string">"phone"</span>), </span><br><span class="line">                    <span class="keyword">new</span> Identity());</span><br><span class="line">Pipe rhs = <span class="keyword">new</span> Each(<span class="string">"payroll"</span>, </span><br><span class="line">                    <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"division"</span>, <span class="string">"salary"</span>), </span><br><span class="line">                    <span class="keyword">new</span> Identity());</span><br><span class="line"></span><br><span class="line">Fields joinKey = <span class="function">New <span class="title">Fields</span><span class="params">(<span class="string">"name"</span>)</span></span>;</span><br><span class="line">Fields resultFields = <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"address"</span>, <span class="string">"phone"</span>,</span><br><span class="line">                                 <span class="string">"name2"</span>, <span class="string">"division"</span>, <span class="string">"salary"</span>);</span><br><span class="line"></span><br><span class="line">Pipe join = <span class="keyword">new</span> HashJoin(lhs, joinKey, lhs, joinKey, resultFields);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可设置Spill参数</span></span><br><span class="line">SpillableProps props = SpillableProps.spillableProps()</span><br><span class="line">    .setCompressSpill(<span class="keyword">true</span>)</span><br><span class="line">    .setMapSpillThreshold(<span class="number">50</span> * <span class="number">1000</span>);</span><br><span class="line">props.setProperties(join.getConfigDef(), ConfigDef.Mode.REPLACE);</span><br></pre></td></tr></table></figure>
+<h3 id="Flow"><a href="#Flow" class="headerlink" title="Flow"></a>Flow</h3><p>将一项或多项管道组件与Taps进行绑定, 可构成一Flow, Flow可编译为一项或多项MapReduce任务(或Tez、Apache Flink Task, 取决于后端计算引擎). Flow可视为执行于Pipe元组数据流的一系列数据操作(执行用户定义的数据处理流程). 一Flow可有多项输入输出, 每项Tap也可接收或产生一系列元组.</p>
+<p>Flow也可用于创建执行图(Execution Graph), Execution Graph通常为一系列处理器(Processor, 即与Operations绑定的管道Pipe)和连接组合, 代表着数据传输和转发流, Exection Graph通常为有向无环图(DAG, Directed Acyclic Graph), 即两个Pipe间数据流为单向(不可形成环), 整个Graph也不可形成环, 示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/flow-graph.jpg" alt></p>
+<h3 id="FlowConnector"><a href="#FlowConnector" class="headerlink" title="FlowConnector"></a>FlowConnector</h3><p><code>FlowConnector</code>将Cascading执行图(Execution Graph)转化为可执行的Job, Cascading中主要存在以下几种类型的<code>FlowConnector</code>:</p>
+<ul>
+<li>LocalFlowConnector</li>
+<li>HadoopFlowConnector</li>
+<li>Hadoop2TezFlowConnector</li>
+</ul>
+<p><code>FlowConnector</code>使用, 示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FlowConnector flowConnector = <span class="keyword">new</span> FlowConnector();</span><br><span class="line">FlowDef flowDef = FlowDef.flowDef()</span><br><span class="line">    .addSource(inPipe, srcTap)</span><br><span class="line">    .addTailSink(inPipe, sinkTap)</span><br><span class="line">flowConnector.connect(flowDef).complete();</span><br></pre></td></tr></table></figure>
+<p><code>FlowConnector</code>使用特定的<code>FlowPlanner</code>构建执行图(Execution Graph), 该<code>FlowPlanner</code>可用于向底层运行框架如Hadoop或Tez等发出请求并执行Flow. Flow可复用代码, 也可与现有的MapReduce任务进行交互, 如封装已运行的MapReduce任务于Flow中, 构建复杂的Data Flow, 编写端到端的数据应用等.</p>
+<h3 id="Cascade"><a href="#Cascade" class="headerlink" title="Cascade"></a>Cascade</h3><p>Cascading中一<code>Cascade</code>可连接一系列Flow, 允许多项Flow作为一逻辑单元执行. 当单个Flow变得过大时, 可以考虑拆分为多项Flow, 以便提高代码可读性与模块化, 这些拆分的Flow可以通过<code>Cascade</code>进行连接. </p>
+<p>一项简单的<code>Cascade</code>示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/une-cascade.jpg" alt></p>
+<p>参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// flowOne与flowTwo具体实现略, </span></span><br><span class="line"><span class="comment">// 其中flowOne输出为flowTwo输入</span></span><br><span class="line">Flow flowOne = ...</span><br><span class="line">Flow flowTwo = ...</span><br><span class="line"></span><br><span class="line">Cascade cascade = <span class="keyword">new</span> CascadeConnector()</span><br><span class="line">    .connect(flowOne, flowTwo);</span><br><span class="line">cascade.complete();</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Cascading/" <i class="fa fa-tag"> Cascading</a>
+          
+            
+            <a href="/tags/MapReduce/" <i class="fa fa-tag"> MapReduce</a>
+          
+            
+            <a href="/tags/Apache-Hadoop/" <i class="fa fa-tag"> Apache Hadoop</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/shapeless/poly/" rel="next" title="Shapeless初体验之Poly与Type Class篇">
+                <i class="fa fa-chevron-left"></i> Shapeless初体验之Poly与Type Class篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/cascading/custops/" rel="prev" title="Cascading实战之自定义操作(Custom Operations)篇">
+                Cascading实战之自定义操作(Custom Operations)篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-Flow"><span class="nav-number">1.</span> <span class="nav-text">Data Flow</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Record抽象"><span class="nav-number">2.</span> <span class="nav-text">Record抽象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tuple"><span class="nav-number">2.1.</span> <span class="nav-text">Tuple</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fields"><span class="nav-number">2.2.</span> <span class="nav-text">Fields</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TupleEntry"><span class="nav-number">2.3.</span> <span class="nav-text">TupleEntry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scheme"><span class="nav-number">2.4.</span> <span class="nav-text">Scheme</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据流控"><span class="nav-number">3.</span> <span class="nav-text">数据流控</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tap"><span class="nav-number">3.1.</span> <span class="nav-text">Tap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pipe"><span class="nav-number">3.2.</span> <span class="nav-text">Pipe</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Each"><span class="nav-number">3.2.1.</span> <span class="nav-text">Each</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Every"><span class="nav-number">3.2.2.</span> <span class="nav-text">Every</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分组与排序"><span class="nav-number">3.2.3.</span> <span class="nav-text">分组与排序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Join与Merge"><span class="nav-number">3.2.4.</span> <span class="nav-text">Join与Merge</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flow"><span class="nav-number">3.3.</span> <span class="nav-text">Flow</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FlowConnector"><span class="nav-number">3.4.</span> <span class="nav-text">FlowConnector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cascade"><span class="nav-number">3.5.</span> <span class="nav-text">Cascade</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:Akka Actor">
+<meta name="keywords" content="JVM And JVM Languages,Kotlin,High Performance Kotlin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin高性能实战 (二) -- Kotlin Property优化 (Part Two)">
+<meta property="og:url" content="https://ultradata.stream/kt/props-inspct/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:Akka Actor">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-07-26T13:22:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin高性能实战 (二) -- Kotlin Property优化 (Part Two)">
+<meta name="twitter:description" content="之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:Akka Actor">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/kt/props-inspct/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Kotlin高性能实战 (二) -- Kotlin Property优化 (Part Two) | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/kt/props-inspct/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kotlin高性能实战 (二) -- Kotlin Property优化 (Part Two)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-23 22:21:36" itemprop="dateCreated datePublished" datetime="2015-10-23T22:21:36+08:00">2015-10-23</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-07-26 21:22:36" itemprop="dateModified" datetime="2017-07-26T21:22:36+08:00">2017-07-26</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">10k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">10 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div class="note success">
+            <p>之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:</p><ul><li>Akka Actor (或者类似的Actor包)</li><li>RxJava (或类似的Reactive响应式框架, 比如Vert.x)</li></ul><p>开发高性能高并发应用程序, 以上抽象均为Message Driven或Event Driven(消息驱动或事件驱动), 但有些业务场景如果考虑使用Event-Driven建模, 未免过于重量级, 于是你需要更加轻量级的替代方案, 比如Future/Promise (异步非阻塞, 本质为占位符(Placeholder), 仅适用于单个值), 比如轻量级线程—协程. 尽管Kotlin协程本质上也是使用JVM线程池进行封装, 但Kotlin协程在JVM生态同等实现中表现出色! 最重要的是, 作为JVM语言, 不仅Java可以使用Kotlin协程, Scala/Groovy/Clojure照样也可使用Kotlin协程.</p>
+          </div>
+<p>本博文将对Kotlin Property使用过程中遇到的”坑点”进行梳理汇总, 欢迎入”坑”, 逆风成长! <a id="more"></a> 本博文要点如下:</p>
+<ul>
+<li>首先, 简单介绍下Kotlin内部类对Property访问限制问题</li>
+<li>然后, 对Kotlin伴生对象优化问题进行剖析</li>
+<li>接着, 对Kotlin中lateinit 延迟初始化问题进行探讨</li>
+<li>最后, 对Kotlin编译时常量提供使用建议</li>
+</ul>
+<h3 id="内部类中Property访问"><a href="#内部类中Property访问" class="headerlink" title="内部类中Property访问"></a>内部类中Property访问</h3><p>先来看下内部类相关的一段简单代码:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="keyword">inner</span> <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">printValue</span><span class="params">()</span></span> &#123;</span><br><span class="line">            println(value)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> value = <span class="string">"Value"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这段代码字节码反编译成Java源码如下, 可以看到编译器将类<code>Main</code>和<code>Inner</code>作为俩个单独的类, 并且生成特定的方法保证内部类能访问外部类的私有成员.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">   <span class="keyword">private</span> String value = <span class="string">"Value"</span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// $FF: synthetic method</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> access$setValue$p(Main $<span class="keyword">this</span>, <span class="meta">@NotNull</span> String var1) &#123;</span><br><span class="line">      $<span class="keyword">this</span>.value = var1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">printValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         String var1 = Main.<span class="keyword">this</span>.value;</span><br><span class="line">         System.out.println(var1);</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果细看字节码, 你会发现内部类的<code>printValue()</code>方法实际调用了外部类的静态方法<code>access$setValue$p</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="title">printValue</span><span class="params">()</span>V</span></span><br><span class="line"><span class="function">L0</span></span><br><span class="line"><span class="function">LINENUMBER 84 L0</span></span><br><span class="line"><span class="function">ALOAD 0</span></span><br><span class="line"><span class="function">GETFIELD Main$Inner.<span class="keyword">this</span>$0 : LMain</span>;</span><br><span class="line">INVOKESTATIC Main.access$getValue$p (LMain;)Ljava/lang/String;</span><br><span class="line">ASTORE <span class="number">1</span></span><br><span class="line">L1</span><br><span class="line">GETSTATIC java/lang/System.out : Ljava/io/PrintStream;</span><br><span class="line">ALOAD <span class="number">1</span></span><br><span class="line">INVOKEVIRTUAL java/io/PrintStream.println (Ljava/lang/Object;)V</span><br><span class="line">L2</span><br><span class="line">L3</span><br><span class="line">LINENUMBER <span class="number">85</span> L3</span><br><span class="line">RETURN</span><br><span class="line">L4</span><br><span class="line">LOCALVARIABLE <span class="keyword">this</span> LMain$Inner; L0 L4 <span class="number">0</span></span><br><span class="line">MAXSTACK = <span class="number">2</span></span><br><span class="line">MAXLOCALS = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>如果想让内部类<code>Inner</code>直接访问外部类<code>Main</code>的成员<code>value</code>该怎么做? 给<code>value</code>加public限定符吗? 这种方法肯定不行, 因为编译器依然会为外部类成员<code>value</code>生成setter和setter, 内部类仍通过<code>value</code>的getter和setter对其进行访问. 回顾上篇博文, 可以使用<code>@JvmField</code>解决这个问题. 对<code>value</code>添加注解<code>@JvmField</code>后, 对应字节码反编译成Java源码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">   <span class="meta">@JvmField</span></span><br><span class="line">   <span class="meta">@NotNull</span></span><br><span class="line">   <span class="keyword">public</span> String value = <span class="string">"Value"</span>;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">printValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         String var1 = Main.<span class="keyword">this</span>.value;</span><br><span class="line">         System.out.println(var1);</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="伴生对象的问题"><a href="#伴生对象的问题" class="headerlink" title="伴生对象的问题"></a>伴生对象的问题</h3><p>Kotlin中没有静态对象,没有静态方法, 但可以通过伴生对象的方式实现类似目的. 对于Kotlin伴生对象而言, 当一个类被加载至内存时才会创建对应的伴生对象. 先来看段代码, 这段代码比较简单:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Main</span> <span class="keyword">private</span> <span class="keyword">constructor</span></span>() &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> id: <span class="built_in">Int</span>? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> prevId = -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">newInstance</span><span class="params">()</span></span>: Main &#123;</span><br><span class="line">            <span class="keyword">val</span> main = Main()</span><br><span class="line">            main.id = ++prevId</span><br><span class="line">            <span class="keyword">return</span> main</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你能看出这段代码的性能呢问题吗? 不急, 可以先看下字节码, 类<code>Main</code>中包含了方法<code>&lt;clinit&gt;</code>,该方法在类加载和初始化伴生对象时被调用.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &lt;clinit&gt;()V</span><br><span class="line">NEW Main$Companion</span><br><span class="line">DUP</span><br><span class="line">ACONST_NULL</span><br><span class="line">INVOKESPECIAL Main$Companion.&lt;init&gt; (Lkotlin/jvm/internal/DefaultConstructorMarker;)V</span><br><span class="line">PUTSTATIC Main.Companion : LMain$Companion;</span><br><span class="line">L0</span><br><span class="line">LINENUMBER <span class="number">94</span> L0</span><br><span class="line">ICONST_M1</span><br><span class="line">PUTSTATIC Main.id : I</span><br><span class="line">RETURN</span><br><span class="line">MAXSTACK = <span class="number">3</span></span><br><span class="line">MAXLOCALS = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>方法<code>&lt;clinit&gt;</code>调用一个非默认构造器, 该构造器是编译器为伴生对象生成的特殊构造器:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> synthetic &lt;init&gt;(Lkotlin/jvm/internal/DefaultConstructorMarker;)V</span><br><span class="line">L0</span><br><span class="line">LINENUMBER <span class="number">92</span> L0</span><br><span class="line">ALOAD <span class="number">0</span></span><br><span class="line">INVOKESPECIAL Main$Companion.&lt;init&gt; ()V</span><br><span class="line">RETURN</span><br><span class="line">L1</span><br><span class="line">LOCALVARIABLE <span class="keyword">this</span> LMain$Companion; L0 L1 <span class="number">0</span></span><br><span class="line">LOCALVARIABLE $constructor_marker Lkotlin/jvm/internal/DefaultConstructorMarker; L0 L1 <span class="number">1</span></span><br><span class="line">MAXSTACK = <span class="number">1</span></span><br><span class="line">MAXLOCALS = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>生成的<code>Main$Companion</code>类包含一对为<code>prevId</code>生成的gettter和setter:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="title">getPrevId</span><span class="params">()</span>I</span></span><br><span class="line"><span class="function">L0</span></span><br><span class="line"><span class="function">LINENUMBER 96 L0</span></span><br><span class="line"><span class="function">INVOKESTATIC Main.access$getPrevId$<span class="title">cp</span> <span class="params">()</span>I</span></span><br><span class="line"><span class="function">IRETURN</span></span><br><span class="line"><span class="function">L1</span></span><br><span class="line"><span class="function">LOCALVARIABLE <span class="keyword">this</span> LMain$Companion</span>; L0 L1 <span class="number">0</span></span><br><span class="line">MAXSTACK = <span class="number">1</span></span><br><span class="line">MAXLOCALS = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="title">setPrevId</span><span class="params">(I)</span>V</span></span><br><span class="line"><span class="function">L0</span></span><br><span class="line"><span class="function">LINENUMBER 96 L0</span></span><br><span class="line"><span class="function">ILOAD 1</span></span><br><span class="line"><span class="function">INVOKESTATIC Main.access$setPrevId$<span class="title">cp</span> <span class="params">(I)</span>V</span></span><br><span class="line"><span class="function">RETURN</span></span><br><span class="line"><span class="function">L1</span></span><br><span class="line"><span class="function">LOCALVARIABLE <span class="keyword">this</span> LMain$Companion</span>; L0 L1 <span class="number">0</span></span><br><span class="line">LOCALVARIABLE &lt;set-?&gt; I L0 L1 <span class="number">1</span></span><br><span class="line">MAXSTACK = <span class="number">1</span></span><br><span class="line">MAXLOCALS = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>这些方法调用其他生成方法, 以便访问类<code>Main</code>中静态变量<code>prevId</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> synthetic access$getPrevId$cp()I</span><br><span class="line">   L0</span><br><span class="line">    LINENUMBER <span class="number">90</span> L0</span><br><span class="line">    GETSTATIC Main.prevId : I</span><br><span class="line">    IRETURN</span><br><span class="line">   L1</span><br><span class="line">    MAXSTACK = <span class="number">1</span></span><br><span class="line">    MAXLOCALS = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// access flags 0x1019</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> synthetic access$setPrevId$cp(I)V</span><br><span class="line">   L0</span><br><span class="line">    LINENUMBER <span class="number">90</span> L0</span><br><span class="line">    ILOAD <span class="number">0</span></span><br><span class="line">    PUTSTATIC Main.prevId : I</span><br><span class="line">    RETURN</span><br><span class="line">   L1</span><br><span class="line">    LOCALVARIABLE &lt;set-?&gt; I L0 L1 <span class="number">0</span></span><br><span class="line">    MAXSTACK = <span class="number">1</span></span><br><span class="line">    MAXLOCALS = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>类<code>Main</code>当然也包含了对<code>id</code>变量访问的其他生成方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> synthetic access$getId$p(LMain;)Ljava/lang/Integer;</span><br><span class="line"><span class="meta">@Lorg</span>/jetbrains/annotations/Nullable;() <span class="comment">// invisible</span></span><br><span class="line">L0</span><br><span class="line">LINENUMBER <span class="number">90</span> L0</span><br><span class="line">ALOAD <span class="number">0</span></span><br><span class="line">GETFIELD Main.id : Ljava/lang/Integer;</span><br><span class="line">ARETURN</span><br><span class="line">L1</span><br><span class="line">LOCALVARIABLE $<span class="keyword">this</span> LMain; L0 L1 <span class="number">0</span></span><br><span class="line">MAXSTACK = <span class="number">1</span></span><br><span class="line">MAXLOCALS = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> synthetic access$setId$p(LMain;Ljava/lang/Integer;)V</span><br><span class="line"><span class="meta">@Lorg</span>/jetbrains/annotations/Nullable;() <span class="comment">// invisible, parameter 1</span></span><br><span class="line">L0</span><br><span class="line">LINENUMBER <span class="number">90</span> L0</span><br><span class="line">ALOAD <span class="number">0</span></span><br><span class="line">ALOAD <span class="number">1</span></span><br><span class="line">PUTFIELD Main.id : Ljava/lang/Integer;</span><br><span class="line">RETURN</span><br><span class="line">L1</span><br><span class="line">LOCALVARIABLE $<span class="keyword">this</span> LMain; L0 L1 <span class="number">0</span></span><br><span class="line">LOCALVARIABLE &lt;set-?&gt; Ljava/lang/Integer; L0 L1 <span class="number">1</span></span><br><span class="line">MAXSTACK = <span class="number">2</span></span><br><span class="line">MAXLOCALS = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>从上面这一堆字节码, 可以看出什么东西? 实际上类<code>Main</code>生成了一堆不需要的函数和方法. 有更好地解决方案吗? 有, 可以重构代码如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@file:JvmName</span>(<span class="string">"Main"</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@JvmField</span></span><br><span class="line"><span class="keyword">var</span> prevId = -<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Main</span> <span class="keyword">private</span> <span class="keyword">constructor</span></span>() &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> id: <span class="built_in">Int</span>? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="meta">@JvmStatic</span></span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">newInstance</span><span class="params">()</span></span>: Main &#123;</span><br><span class="line">            <span class="keyword">val</span> main = Main()</span><br><span class="line">            main.id = ++prevId</span><br><span class="line">            <span class="keyword">return</span> main</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中, <code>@file:JvmName(Main)</code>注解告诉编译器所有的顶层成员必须包含在<code>Main</code>类中, <code>@JvmStatic</code>注解告诉编译器<code>newInstance()</code>方法作为静态方法生成. 现在只有一个额外方法生成, 对应字节码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> synthetic &lt;init&gt;(Lkotlin/jvm/internal/DefaultConstructorMarker;)V</span><br><span class="line">  L0</span><br><span class="line">   LINENUMBER <span class="number">21</span> L0</span><br><span class="line">   ALOAD <span class="number">0</span></span><br><span class="line">   INVOKESPECIAL io/xavier/property/Main$Companion.&lt;init&gt; ()V</span><br><span class="line">   RETURN</span><br><span class="line">  L1</span><br><span class="line">   LOCALVARIABLE <span class="keyword">this</span> Lio/xavier/property/Main$Companion; L0 L1 <span class="number">0</span></span><br><span class="line">   LOCALVARIABLE $constructor_marker Lkotlin/jvm/internal/DefaultConstructorMarker; L0 L1 <span class="number">1</span></span><br><span class="line">   MAXSTACK = <span class="number">1</span></span><br><span class="line">   MAXLOCALS = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<h3 id="lateinit-延迟初始化问题"><a href="#lateinit-延迟初始化问题" class="headerlink" title="lateinit 延迟初始化问题"></a>lateinit 延迟初始化问题</h3><p>有时我们需要在类初始化后初始化一些Properties, 且不希望创建一<code>nullable</code>类型, 通常我们会使用主构造器, 避免创建的实例Property没有初始化, 如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CoffeeShop</span> <span class="meta">@Inject</span> <span class="keyword">constructor</span></span>(<span class="keyword">val</span> coffee: Coffee) &#123;</span><br><span class="line">    <span class="comment">// 省略具体实现代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是在Android开发中存在一个问题, 比如<code>Activity</code>或<code>Service</code>类构造器直接由操作系统调用, 而我们并不能重写这些构造器. 一种解决方式是通过使用setter进行初始化, 如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> coffee: Coffee? = <span class="literal">null</span></span><br><span class="line">    <span class="meta">@Inject</span> <span class="keyword">set</span>(value) &#123;</span><br><span class="line">        field = value</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>还有一种方式是通过使用<code>lateinit</code>关键字并将修饰的字段放到<code>onCreate()</code>方法中, 如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">lateinit</span> <span class="keyword">var</span> name: String</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">()</span></span> &#123;</span><br><span class="line">        name = <span class="string">"Jack"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>字节码如下,可以看到类<code>Main</code>被编译成拥有正常field的Java类:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Ljava/lang/String; name</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="title">onCreate</span><span class="params">()</span>V</span></span><br><span class="line"><span class="function">    L0</span></span><br><span class="line"><span class="function">    LINENUMBER 12 L0</span></span><br><span class="line"><span class="function">    ALOAD 0</span></span><br><span class="line"><span class="function">    LDC "Jack"</span></span><br><span class="line"><span class="function">    PUTFIELD Main.name : Ljava/lang/String</span>;</span><br><span class="line">    L1</span><br><span class="line">    LINENUMBER <span class="number">13</span> L1</span><br><span class="line">    RETURN</span><br><span class="line">    L2</span><br><span class="line">    LOCALVARIABLE <span class="keyword">this</span> LMain; L0 L2 <span class="number">0</span></span><br><span class="line">    MAXSTACK = <span class="number">2</span></span><br><span class="line">    MAXLOCALS = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;init&gt;()V</span><br><span class="line">    L0</span><br><span class="line">    LINENUMBER <span class="number">7</span> L0</span><br><span class="line">    ALOAD <span class="number">0</span></span><br><span class="line">    INVOKESPECIAL java/lang/Object.&lt;init&gt; ()V</span><br><span class="line">    RETURN</span><br><span class="line">    L1</span><br><span class="line">    LOCALVARIABLE <span class="keyword">this</span> LMain; L0 L1 <span class="number">0</span></span><br><span class="line">    MAXSTACK = <span class="number">1</span></span><br><span class="line">    MAXLOCALS = <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的<code>onCreate()</code>方法中加点东西, 如:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">()</span></span> &#123;</span><br><span class="line">    name = <span class="string">"Jack"</span></span><br><span class="line"></span><br><span class="line">    println(name)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应字节码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="title">onCreate</span><span class="params">()</span>V</span></span><br><span class="line"><span class="function">L0</span></span><br><span class="line"><span class="function">LINENUMBER 84 L0</span></span><br><span class="line"><span class="function">ALOAD 0</span></span><br><span class="line"><span class="function">LDC "Jack"</span></span><br><span class="line"><span class="function">PUTFIELD Main.name : Ljava/lang/String</span>;</span><br><span class="line">L1</span><br><span class="line">LINENUMBER <span class="number">86</span> L1</span><br><span class="line">ALOAD <span class="number">0</span></span><br><span class="line">GETFIELD Main.name : Ljava/lang/String;</span><br><span class="line">DUP</span><br><span class="line">IFNONNULL L2</span><br><span class="line">LDC <span class="string">"name"</span></span><br><span class="line">INVOKESTATIC kotlin/jvm/internal/Intrinsics.throwUninitializedPropertyAccessException (Ljava/lang/String;)V</span><br><span class="line">L2</span><br><span class="line">ASTORE <span class="number">1</span></span><br><span class="line">L3</span><br><span class="line">GETSTATIC java/lang/System.out : Ljava/io/PrintStream;</span><br><span class="line">ALOAD <span class="number">1</span></span><br><span class="line">INVOKEVIRTUAL java/io/PrintStream.println (Ljava/lang/Object;)V</span><br><span class="line">L4</span><br><span class="line">L5</span><br><span class="line">LINENUMBER <span class="number">87</span> L5</span><br><span class="line">RETURN</span><br><span class="line">L6</span><br><span class="line">LOCALVARIABLE <span class="keyword">this</span> LMain; L0 L6 <span class="number">0</span></span><br><span class="line">MAXSTACK = <span class="number">2</span></span><br><span class="line">MAXLOCALS = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>其中, 访问<code>name</code>并获取该值, 会调用额外一层检测:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">IFNONNULL L2</span><br><span class="line">LDC <span class="string">"name"</span></span><br><span class="line">INVOKESTATIC kotlin/jvm/internal/Intrinsics.throwUninitializedPropertyAccessException (Ljava/lang/String;)V</span><br></pre></td></tr></table></figure>
+<p>所以从被<code>lateinit</code>关键字修饰的字段获取值时, 最好将值放到临时变量中:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">()</span></span> &#123;</span><br><span class="line">    name = <span class="string">"Jack"</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">val</span> name = <span class="keyword">this</span>.name</span><br><span class="line">    println(name)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样的话, 只会调用一次检测<code>Intrinsics.throwUninitializedPropertyAccessException</code>, 上面这段代码的字节码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="title">onCreate</span><span class="params">()</span>V</span></span><br><span class="line"><span class="function">L0</span></span><br><span class="line"><span class="function">LINENUMBER 90 L0</span></span><br><span class="line"><span class="function">ALOAD 0</span></span><br><span class="line"><span class="function">LDC "Jack"</span></span><br><span class="line"><span class="function">PUTFIELD Main.name : Ljava/lang/String</span>;</span><br><span class="line">L1</span><br><span class="line">LINENUMBER <span class="number">92</span> L1</span><br><span class="line">ALOAD <span class="number">0</span></span><br><span class="line">GETFIELD Main.name : Ljava/lang/String;</span><br><span class="line">DUP</span><br><span class="line">IFNONNULL L2</span><br><span class="line">LDC <span class="string">"name"</span></span><br><span class="line">INVOKESTATIC kotlin/jvm/internal/Intrinsics.throwUninitializedPropertyAccessException (Ljava/lang/String;)V</span><br><span class="line">L2</span><br><span class="line">ASTORE <span class="number">1</span></span><br><span class="line">L3</span><br><span class="line">LINENUMBER <span class="number">93</span> L3</span><br><span class="line">L4</span><br><span class="line">GETSTATIC java/lang/System.out : Ljava/io/PrintStream;</span><br><span class="line">ALOAD <span class="number">1</span></span><br><span class="line">INVOKEVIRTUAL java/io/PrintStream.println (Ljava/lang/Object;)V</span><br><span class="line">L5</span><br><span class="line">L6</span><br><span class="line">LINENUMBER <span class="number">94</span> L6</span><br><span class="line">RETURN</span><br><span class="line">L7</span><br><span class="line">LOCALVARIABLE name Ljava/lang/String; L3 L7 <span class="number">1</span></span><br><span class="line">LOCALVARIABLE <span class="keyword">this</span> LMain; L0 L7 <span class="number">0</span></span><br><span class="line">MAXSTACK = <span class="number">2</span></span><br><span class="line">MAXLOCALS = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>或者可以使用其他函数, 如<code>also()</code>函数, <code>also</code>函数是一个内联函数, 所以不会有太大的性能损耗.</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">()</span></span> &#123;</span><br><span class="line">    name = <span class="string">"Jack"</span></span><br><span class="line"></span><br><span class="line">    name.also &#123;</span><br><span class="line">        println(it)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="编译时常量使用建议"><a href="#编译时常量使用建议" class="headerlink" title="编译时常量使用建议"></a>编译时常量使用建议</h3><p>编译时常量(Complie-time Constant)作为只读变量在编译时进行初始化, 编译时常量一般满足以下几个要求:</p>
+<ul>
+<li>必须在顶层声明或作为对象成员</li>
+<li>不能有 getter 或 setter</li>
+<li>必须使用原始类型或字符串值进行初始化</li>
+</ul>
+<p>为更好地理解编译时常量,可以做个小测试</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> point = Point()</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">val</span> compileTime: <span class="built_in">Int</span> = <span class="number">5</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">compileTimeFunction</span><span class="params">()</span></span> = compileTime + compileTime</span><br></pre></td></tr></table></figure>
+<p>字节码如下, 可以看到编译器生成了特殊的初始化方法<code>&lt;clinit&gt;</code>对<code>point</code>进行初始化, <code>point</code>使用<code>private</code>访问限定符修饰, 意味着使用getter或setter访问.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">MainKt</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Ljava/awt/Point; point</span><br><span class="line">    <span class="meta">@Lorg</span>/jetbrains/annotations/NotNull;() <span class="comment">// invisible</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="title">getPoint</span><span class="params">()</span>Ljava/awt/Point</span>;</span><br><span class="line">    <span class="meta">@Lorg</span>/jetbrains/annotations/NotNull;() <span class="comment">// invisible</span></span><br><span class="line">    L0</span><br><span class="line">    LINENUMBER <span class="number">77</span> L0</span><br><span class="line">    GETSTATIC MainKt.point : Ljava/awt/Point;</span><br><span class="line">    ARETURN</span><br><span class="line">    L1</span><br><span class="line">    MAXSTACK = <span class="number">1</span></span><br><span class="line">    MAXLOCALS = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> I compileTime = <span class="number">5</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="title">compileTimeFunction</span><span class="params">()</span>I</span></span><br><span class="line"><span class="function">    L0</span></span><br><span class="line"><span class="function">    LINENUMBER 81 L0</span></span><br><span class="line"><span class="function">    BIPUSH 10</span></span><br><span class="line"><span class="function">    IRETURN</span></span><br><span class="line"><span class="function">    L1</span></span><br><span class="line"><span class="function">    MAXSTACK </span>= <span class="number">1</span></span><br><span class="line">    MAXLOCALS = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &lt;clinit&gt;()V</span><br><span class="line">    L0</span><br><span class="line">    LINENUMBER <span class="number">77</span> L0</span><br><span class="line">    NEW java/awt/Point</span><br><span class="line">    DUP</span><br><span class="line">    INVOKESPECIAL java/awt/Point.&lt;init&gt; ()V</span><br><span class="line">    PUTSTATIC MainKt.point : Ljava/awt/Point;</span><br><span class="line">    RETURN</span><br><span class="line">    MAXSTACK = <span class="number">2</span></span><br><span class="line">    MAXLOCALS = <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为避免<code>point</code>生成getter和setter, 回顾上篇博文, 可以考虑使用<code>@JvmField</code>注解:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@JvmField</span></span><br><span class="line"><span class="keyword">val</span> point = Point()</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">val</span> compileTime: <span class="built_in">Int</span> = <span class="number">5</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">compileTimeFunction</span><span class="params">()</span></span> = compileTime + compileTime</span><br></pre></td></tr></table></figure>
+<p>字节码如下, 可以看到<code>&lt;clinit&gt;</code>方法依然存在:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">MainKt</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> Ljava/awt/Point; point</span><br><span class="line">    <span class="meta">@Lkotlin</span>/jvm/JvmField;() <span class="comment">// invisible</span></span><br><span class="line">    <span class="meta">@Lorg</span>/jetbrains/annotations/NotNull;() <span class="comment">// invisible</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> I compileTime = <span class="number">5</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="title">compileTimeFunction</span><span class="params">()</span>I</span></span><br><span class="line"><span class="function">    L0</span></span><br><span class="line"><span class="function">    LINENUMBER 82 L0</span></span><br><span class="line"><span class="function">    BIPUSH 10</span></span><br><span class="line"><span class="function">    IRETURN</span></span><br><span class="line"><span class="function">    L1</span></span><br><span class="line"><span class="function">    MAXSTACK </span>= <span class="number">1</span></span><br><span class="line">    MAXLOCALS = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> &lt;clinit&gt;()V</span><br><span class="line">    L0</span><br><span class="line">    LINENUMBER <span class="number">78</span> L0</span><br><span class="line">    NEW java/awt/Point</span><br><span class="line">    DUP</span><br><span class="line">    INVOKESPECIAL java/awt/Point.&lt;init&gt; ()V</span><br><span class="line">    PUTSTATIC MainKt.point : Ljava/awt/Point;</span><br><span class="line">    RETURN</span><br><span class="line">    MAXSTACK = <span class="number">2</span></span><br><span class="line">    MAXLOCALS = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结论: 尽量避免使用非编译时常量作为顶级成员.</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/JVM-And-JVM-Languages/" <i class="fa fa-tag"> JVM And JVM Languages</a>
+          
+            
+            <a href="/tags/Kotlin/" <i class="fa fa-tag"> Kotlin</a>
+          
+            
+            <a href="/tags/High-Performance-Kotlin/" <i class="fa fa-tag"> High Performance Kotlin</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/kt/dlgt-props/" rel="next" title="Kotlin高性能实战 (四) -- Kotlin Delegate (Part Two)">
+                <i class="fa fa-chevron-left"></i> Kotlin高性能实战 (四) -- Kotlin Delegate (Part Two)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/mahout/data-sketch/" rel="prev" title="The Bahmani Sketch Algorithm">
+                The Bahmani Sketch Algorithm <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部类中Property访问"><span class="nav-number">1.</span> <span class="nav-text">内部类中Property访问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#伴生对象的问题"><span class="nav-number">2.</span> <span class="nav-text">伴生对象的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lateinit-延迟初始化问题"><span class="nav-number">3.</span> <span class="nav-text">lateinit 延迟初始化问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译时常量使用建议"><span class="nav-number">4.</span> <span class="nav-text">编译时常量使用建议</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

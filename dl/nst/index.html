@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="个人在公司内部做的有关Neural Style Transfer的技术分享, 有段时间了, 重新整理下.">
+<meta name="keywords" content="Computer Vision,Python,Deep Learning &amp; Machine Learning,PyTorch,Neural Style Transfer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PyTorch实战Neural Style Transfer">
+<meta property="og:url" content="https://ultradata.stream/dl/nst/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="个人在公司内部做的有关Neural Style Transfer的技术分享, 有段时间了, 重新整理下.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/tree.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/picasso.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/transfered.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/kt.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/farm.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/nst.gif">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/c-loss.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/c-math.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/s-loss.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/s-math.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst-code/code-one.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst-code/code-two.png">
+<meta property="og:updated_time" content="2019-05-11T13:02:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PyTorch实战Neural Style Transfer">
+<meta name="twitter:description" content="个人在公司内部做的有关Neural Style Transfer的技术分享, 有段时间了, 重新整理下.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/tree.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/dl/nst/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>PyTorch实战Neural Style Transfer | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/dl/nst/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PyTorch实战Neural Style Transfer
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-04-11 20:18:25" itemprop="dateCreated datePublished" datetime="2017-04-11T20:18:25+08:00">2017-04-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-11 21:02:16" itemprop="dateModified" datetime="2019-05-11T21:02:16+08:00">2019-05-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Deep-Learning-Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning & Machine Learning</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">5.6k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">5 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>个人在公司内部做的有关Neural Style Transfer的技术分享, 有段时间了, 重新整理下. <a id="more"></a> (本文偏代码实战, 数学理论推导部分较少, 如需深入了解该算法理论, 我再找找理论部分PPT, 或者你也可以自行谷歌或百度)</p>
+<p>大家好, 今天要分享的是有关Neural Style Transfer在CV(Computer Vision, 计算机视觉)处理方面的应用, (鄙人精力有限, 还请各位大佬不吝赐教).</p>
+<p>Neural Style Transfer在CV方面比较实用的技巧在于风格迁移, 比如下图为美丽的晚秋落叶图</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/tree.jpg" alt></div></p>
+<p>然后, 有一张满屏毕加索风格的艺术画</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/picasso.jpg" alt></div></p>
+<p>通过Neural Style Transfer, 对晚秋落叶图进行毕加索风格迁移, 可以得到以下一张充满立体主义与印象风格的图片</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/transfered.jpg" alt></div></p>
+<p>其中, 晚秋落叶图可称为Content Image, 毕加索风格的艺术画也称Style Image, Neural Style Transfer基本思想在于从Content Image与Style Image中提取各自特征(即内容特征与风格特征), 然后将内容特征与风格特征重新组合成目标图像, 之后不断迭代地重建目标图像, 依据是生成图像与内容和风格图像之间的差异.</p>
+<p>下面, 通过一个小例子来看下Neural Style Transfer算法大致迭代过程.</p>
+<h2 id="准备数据集"><a href="#准备数据集" class="headerlink" title="准备数据集"></a>准备数据集</h2><p>首先, 看下Content Image (橘猫图)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"></span><br><span class="line">content_image_path = <span class="string">'./dataset/kt.jpg'</span></span><br><span class="line">content_image = Image.open(content_image_path)</span><br><span class="line">content_image.show()</span><br></pre></td></tr></table></figure>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/kt.jpg" alt></div></p>
+<p>然后, 看下Style Image (经典田园风格山水画)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">style_image_path = <span class="string">'./dataset/farm.jpg'</span></span><br><span class="line">style_image = Image.open(style_image_path)</span><br><span class="line">style_image.show()</span><br></pre></td></tr></table></figure>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/farm.jpg" alt></div></p>
+<p>现在要做的是, 通过Neural Style Transfer算法对橘猫图进行风格迁移, 最终生成包含田园风格的抽象水墨图.</p>
+<h2 id="代码实战"><a href="#代码实战" class="headerlink" title="代码实战"></a>代码实战</h2><p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/nst.gif" alt></p>
+<h3 id="代码主逻辑"><a href="#代码主逻辑" class="headerlink" title="代码主逻辑"></a>代码主逻辑</h3><p>参考如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(ctnt_img_path, sty_img_path, output_path)</span>:</span></span><br><span class="line">    <span class="comment"># 为了避免再造"轮子", 可以使用PyTorch已经训练好的VGG-19模型</span></span><br><span class="line">    device, model = vgg_model_init()</span><br><span class="line">    <span class="comment"># 首先, 获取Content Image与 Style Image的Image Tensor</span></span><br><span class="line">    content_tensor = img_tensor(ctnt_img_path, device)</span><br><span class="line">    style_tensor = img_tensor(sty_img_path, device)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取Content Image的特征输出</span></span><br><span class="line">    content_features = features_extraction(</span><br><span class="line">        content_tensor,</span><br><span class="line">        model,</span><br><span class="line">        feature_layers)</span><br><span class="line">    <span class="comment"># 获取 Style Image的特征输出</span></span><br><span class="line">    style_features = features_extraction(</span><br><span class="line">        style_tensor,</span><br><span class="line">        model,</span><br><span class="line">        feature_layers)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 基于Content Image抽取的Image Tensor确定输入Tensor</span></span><br><span class="line">    input_tensor = content_tensor.clone().requires_grad_(<span class="literal">True</span>)</span><br><span class="line">    <span class="comment"># 定义优化器(Optimizer)</span></span><br><span class="line">    optimizer = optim.Adam([input_tensor], lr=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 进行迭代</span></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> range(num_epochs + <span class="number">1</span>):</span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line">        <span class="comment"># 基于Input Tensor获取输入特征</span></span><br><span class="line">        input_features = features_extraction(</span><br><span class="line">            input_tensor,</span><br><span class="line">            model,</span><br><span class="line">            feature_layers)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 计算内容损失</span></span><br><span class="line">        content_loss = check_content_loss(</span><br><span class="line">            input_features,</span><br><span class="line">            content_features,</span><br><span class="line">            content_layer)</span><br><span class="line">        <span class="comment"># 计算风格损失</span></span><br><span class="line">        style_loss = check_style_loss(</span><br><span class="line">            input_features,</span><br><span class="line">            style_features,</span><br><span class="line">            style_layers_dict)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 计算Neural Loss, 即最终损失</span></span><br><span class="line">        c_loss = content_weight * content_loss</span><br><span class="line">        s_loss = style_weight * style_loss</span><br><span class="line">        neural_loss = c_loss + s_loss</span><br><span class="line">        neural_loss.backward(retain_graph=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">        optimizer.step()</span><br><span class="line">        <span class="comment"># 打印出内容损失及风格损失</span></span><br><span class="line">        <span class="keyword">if</span> epoch % <span class="number">100</span> == <span class="number">0</span>:</span><br><span class="line">            print(</span><br><span class="line">                <span class="string">'Epoch &#123;&#125;, Content loss: &#123;:.2&#125;, style loss &#123;:.2&#125;'</span></span><br><span class="line">                .format(epoch, content_loss, style_loss))</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 保存生成图片</span></span><br><span class="line">        img_pil = img_tensor_to_pil(input_tensor[<span class="number">0</span>].cpu())</span><br><span class="line">        img_pil.save(output_path)</span><br></pre></td></tr></table></figure>
+<p>下面给出上述代码中相关方法实现, 完整代码, 请参考<a href="/dl/nst#完整代码">这里</a></p>
+<h3 id="提取图片张量"><a href="#提取图片张量" class="headerlink" title="提取图片张量"></a>提取图片张量</h3><p>其中, 对Conent Image与Style Image进行转换, 得到Image Tensor, 图片转换逻辑参考如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">img_tensor</span><span class="params">(img_path, device, h=H, w=W,</span></span></span><br><span class="line"><span class="function"><span class="params">               mean_rgb=MEAN_RGB, std_rgb=STD_RGB)</span>:</span></span><br><span class="line">    <span class="string">"""  `device`, PyTorch device, 即 Cuda 或 CPU</span></span><br><span class="line"><span class="string">        `h`- 高, `w` - 宽, </span></span><br><span class="line"><span class="string">        `mean_rgb`, `std_rgb`, 一些RGB设置参数</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    img = Image.open(img_path)</span><br><span class="line">    transformer = transforms.Compose([</span><br><span class="line">        transforms.Resize((h, w)),</span><br><span class="line">        transforms.ToTensor(),</span><br><span class="line">        transforms.Normalize(mean_rgb, std_rgb)</span><br><span class="line">    ])</span><br><span class="line">    <span class="comment"># 将PIL Image 转换成 Tensor</span></span><br><span class="line">    img_tensor = transformer(img)</span><br><span class="line">    print(img_tensor.shape, img_tensor.requires_grad)</span><br><span class="line"></span><br><span class="line">    img_tensor = img_tensor.unsqueeze(<span class="number">0</span>).to(device)</span><br><span class="line">    <span class="keyword">return</span> img_tensor</span><br></pre></td></tr></table></figure>
+<h3 id="获取中间层特征"><a href="#获取中间层特征" class="headerlink" title="获取中间层特征"></a>获取中间层特征</h3><p>获取中间层的特征输出(如抽取Content Image与Style Image特征等), 代码参考如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">features_extraction</span><span class="params">(tensor, model, layers)</span>:</span></span><br><span class="line">    features = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name, layer <span class="keyword">in</span> enumerate(model.children()):</span><br><span class="line">        tensor = layer(tensor)</span><br><span class="line">        <span class="keyword">if</span> str(name) <span class="keyword">in</span> layers:</span><br><span class="line">            features[layers[str(name)]] = tensor</span><br><span class="line">    <span class="keyword">return</span> features</span><br></pre></td></tr></table></figure>
+<h3 id="计算内容及风格损失"><a href="#计算内容及风格损失" class="headerlink" title="计算内容及风格损失"></a>计算内容及风格损失</h3><p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/c-loss.png" alt></p>
+<p>卷积神经网络中浅层卷积往往检测低级特征,深层卷积可以提取更高级的特征, 如果希望G能够与C的内容相似, 可以选择一些层的激活来代表图片表征, 事实上,选择网络的中间层（不是太浅也不要太深）有可能取得令人满意的结果. 假设选择每个特殊隐含层来使用.将C作为输入放入VGG中,并运行前向传播, 设a^{(C)} 为所选中隐含层的激活数, G亦如此,将G作为输入,并进行前向传播,a^{(G)} 为对应隐含层的激活数, 则内容损失函数可以定义为</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/c-math.png" alt></div></p>
+<p>说简单点, 利用一些新建好的网络的中间层,将其看作图片的编码,内容损失就是编码的差异. 计算内容损失, 代码参考如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> Fn</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_content_loss</span><span class="params">(pred_features, target_features, layer)</span>:</span></span><br><span class="line">    target = target_features[layer]</span><br><span class="line">    pred = pred_features[layer]</span><br><span class="line">    loss = Fn.mse_loss(pred, target)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br></pre></td></tr></table></figure>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/s-loss.png" alt></div></p>
+<p>网络的中间层是H <em> W </em> C,每一个通道其实都是差不多同一种类似的风格,如果两个通道之间的相关性很大,说明图片中要么同时出现或要么同时消失两个通道对应的风格,S(Style)图片和G(generate)图片可以各自计算出一个C * C的矩阵,每个像素是对应通道的相关（对应元素相乘）,然后比较两个矩阵的差异就是风格损失</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst/s-math.png" alt></div></p>
+<p>计算风格损失, 代码参考如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_style_loss</span><span class="params">(pred_features, target_features, style_layers_dict)</span>:</span></span><br><span class="line">    loss = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> layer <span class="keyword">in</span> style_layers_dict:</span><br><span class="line">        pred_ftr = pred_features[layer]</span><br><span class="line">        pred_gram = get_gram_matrix(pred_ftr)</span><br><span class="line">        n, c, h, w = pred_ftr.shape</span><br><span class="line">        target_gram = get_gram_matrix(target_features[layer])</span><br><span class="line"></span><br><span class="line">        layer_loss = style_layers_dict[layer] \</span><br><span class="line">            * Fn.mse_loss(pred_gram, target_gram)</span><br><span class="line">        loss += layer_loss / (n * c * h * w)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br></pre></td></tr></table></figure>
+<p>其中计算给定张量的Gram矩阵, 代码参考如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_gram_matrix</span><span class="params">(tensor)</span>:</span></span><br><span class="line">    n, c, h, w = tensor.size()</span><br><span class="line">    tensor = tensor.view(n * c, h * w)</span><br><span class="line">    gram = torch.mm(tensor, tensor.t())</span><br><span class="line">    <span class="keyword">return</span> gram</span><br></pre></td></tr></table></figure>
+<h3 id="保存生成图片"><a href="#保存生成图片" class="headerlink" title="保存生成图片"></a>保存生成图片</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">img_pil = img_tensor_to_pil(input_tensor[<span class="number">0</span>].cpu())</span><br><span class="line">img_pil.save(output_path)</span><br></pre></td></tr></table></figure>
+<p>将Image Tensor重新转换成PIL Image, 代码参考如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torchvision.transforms.functional <span class="keyword">import</span> to_pil_image</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">img_tensor_to_pil</span><span class="params">(img_tensor, std_rgb=STD_RGB, mean_rgb=MEAN_RGB)</span>:</span></span><br><span class="line">    img_tensor_ = img_tensor.clone().detach()</span><br><span class="line">    img_tensor_ *= torch.tensor(std_rgb).view(<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">    img_tensor_ += torch.tensor(mean_rgb).view(<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">    img_tensor_ = img_tensor_.clamp(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    pil_img = to_pil_image(img_tensor_)</span><br><span class="line">    <span class="keyword">return</span> pil_img</span><br></pre></td></tr></table></figure>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst-code/code-one.png" alt></p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/nst-code/code-two.png" alt></p>
+<h2 id="效果检测"><a href="#效果检测" class="headerlink" title="效果检测"></a>效果检测</h2><video id="video" controls preload="none" controlslist="nodownload" oncontextmenu="return false;">
+    <source id="mp4" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/nst.mp4" type="video/mp4">
+</video>
+
+<p>绝了, 这生成图比我小侄女画的水彩还抽象 ……  </p>
+<p><strong>优化建议</strong>: 超参数调优, 不断迭代训练; 可能漏了一些参数, 请在生产代码中补上. </p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Computer-Vision/" <i class="fa fa-tag"> Computer Vision</a>
+          
+            
+            <a href="/tags/Python/" <i class="fa fa-tag"> Python</a>
+          
+            
+            <a href="/tags/Deep-Learning-Machine-Learning/" <i class="fa fa-tag"> Deep Learning & Machine Learning</a>
+          
+            
+            <a href="/tags/PyTorch/" <i class="fa fa-tag"> PyTorch</a>
+          
+            
+            <a href="/tags/Neural-Style-Transfer/" <i class="fa fa-tag"> Neural Style Transfer</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/meta-dl/sgd-math/" rel="next" title="Meta-SGD For Deep Learning (Part One)">
+                <i class="fa fa-chevron-left"></i> Meta-SGD For Deep Learning (Part One)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/meta-dl/sgd-code/" rel="prev" title="Meta-SGD For Deep Learning (Part Two)">
+                Meta-SGD For Deep Learning (Part Two) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备数据集"><span class="nav-number">1.</span> <span class="nav-text">准备数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实战"><span class="nav-number">2.</span> <span class="nav-text">代码实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码主逻辑"><span class="nav-number">2.1.</span> <span class="nav-text">代码主逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提取图片张量"><span class="nav-number">2.2.</span> <span class="nav-text">提取图片张量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取中间层特征"><span class="nav-number">2.3.</span> <span class="nav-text">获取中间层特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算内容及风格损失"><span class="nav-number">2.4.</span> <span class="nav-text">计算内容及风格损失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保存生成图片"><span class="nav-number">2.5.</span> <span class="nav-text">保存生成图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码"><span class="nav-number">2.6.</span> <span class="nav-text">完整代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果检测"><span class="nav-number">3.</span> <span class="nav-text">效果检测</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="Meta-SGD算法, Meta Learning算法中的一种, 该算法可以快速找到模型最优参数并在多个Task内生成. 当然,该算法不仅能找到最优参, 还能找到最优学习率及更新方向. 本博文要点如下:  首先, 对Meta-SGD算法进行原理剖析 然后, 细聊Meta-SGD算法在监督型机器学习算法中的运用 最后, 聚焦Meta-SGD算法在强化学习中的运用">
+<meta name="keywords" content="Python,Deep Learning &amp; Machine Learning,Meta Machine Learning,Supervised Learning,Reinforcement Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Meta-SGD For Deep Learning (Part One)">
+<meta property="og:url" content="https://ultradata.stream/meta-dl/sgd-math/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="Meta-SGD算法, Meta Learning算法中的一种, 该算法可以快速找到模型最优参数并在多个Task内生成. 当然,该算法不仅能找到最优参, 还能找到最优学习率及更新方向. 本博文要点如下:  首先, 对Meta-SGD算法进行原理剖析 然后, 细聊Meta-SGD算法在监督型机器学习算法中的运用 最后, 聚焦Meta-SGD算法在强化学习中的运用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-05-02T14:22:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Meta-SGD For Deep Learning (Part One)">
+<meta name="twitter:description" content="Meta-SGD算法, Meta Learning算法中的一种, 该算法可以快速找到模型最优参数并在多个Task内生成. 当然,该算法不仅能找到最优参, 还能找到最优学习率及更新方向. 本博文要点如下:  首先, 对Meta-SGD算法进行原理剖析 然后, 细聊Meta-SGD算法在监督型机器学习算法中的运用 最后, 聚焦Meta-SGD算法在强化学习中的运用">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/meta-dl/sgd-math/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Meta-SGD For Deep Learning (Part One) | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/meta-dl/sgd-math/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Meta-SGD For Deep Learning (Part One)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-04-10 19:21:36" itemprop="dateCreated datePublished" datetime="2017-04-10T19:21:36+08:00">2017-04-10</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-05-02 22:22:36" itemprop="dateModified" datetime="2018-05-02T22:22:36+08:00">2018-05-02</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Deep-Learning-Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning & Machine Learning</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">4k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">4 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Meta-SGD算法, Meta Learning算法中的一种, 该算法可以快速找到模型最优参数并在多个Task内生成. 当然,该算法不仅能找到最优参, 还能找到最优学习率及更新方向. 本博文要点如下:</p>
+<ul>
+<li>首先, 对Meta-SGD算法进行原理剖析</li>
+<li>然后, 细聊Meta-SGD算法在监督型机器学习算法中的运用</li>
+<li>最后, 聚焦Meta-SGD算法在强化学习中的运用</li>
+</ul>
+<a id="more"></a>
+<h3 id="Meta-SGD-算法原理"><a href="#Meta-SGD-算法原理" class="headerlink" title="Meta-SGD 算法原理"></a>Meta-SGD 算法原理</h3><p>梯度下降主要组成部分:</p>
+<ul>
+<li>参数 $\theta$</li>
+<li>学习率 $\alpha$</li>
+<li>更新方向</li>
+</ul>
+
+<p>算法原理如下, 给定task $T$, 模型$f$,  一些模型参数$\theta$(Task分布为$p(T)$). 通过梯度下降减少模型损失并找到最优参. 还记得梯度下降的更新规则吗？
+<br>
+<center>
+$\theta=\theta -\alpha\nabla_\theta L_{T_i} (f_\theta)$
+</center>
+</p>
+
+<p>
+在训练过程中一般给$\theta$设定随机值, 给定较小的$\alpha$值或使其随时间衰退, 更新方向随着梯度变化而改变, 伴随整个训练过程找到最优参.问题是我们可以通过Meta-Machine Learning的方式学习所有梯度下降的主要元素吗？能不能找到最优的初始化参数$\theta$并在多个Task中生成？假如能找到这个最优的初始化参数, 也就意味着更少的梯度迭代训练, 从而提升算法学习效率, 然后再找到最优学习率和更新方向以便能在多个Task内生成. 这样一来的话, 拟合也更快.  假定对于每项$Task_i$对应的最优参$\theta_i^{'}$, 即
+<br>
+<center>
+$\theta_i^{'}=\theta -\alpha o \nabla_\theta L_{T_i} (f_\theta)$
+</center>
+<br>
+这里, 我们随机初始化$\alpha$并使其和$\theta$具有同样的Shape,初始化$\theta$, 以$\alpha o \nabla_\theta L_{T_i} (f_\theta)$ 作为调整期(adaptation term,或适应期). 此时, $\alpha o \nabla_\theta L_{T_i} (f_\theta)$代表着更新方向且以它的length为学习率. 值得注意的是,更新方向和$\alpha o \nabla_\theta L_{T_i} (f_\theta)$一致, 而非梯度方向, 从而隐式学习$\alpha$学习率.
+</p>
+
+<p>
+这也意味着Meta-SGD算法并不以很小的Scalar值对学习率$\alpha$进行初始化, 学习率以随机值进行初始化并保证和$\theta$一样的Shape. 然后对Task中的一些Batch进行取样, 每项Task取样K个数据点并通过梯度下降减小损失. 或者说此时的更新等式如下, 更新方向就是调整期方向, 通过$\theta$学习$\alpha$.
+<br>
+<center>
+$\theta_i^{'}=\theta -\alpha o \nabla_\theta L_{T_i} (f_\theta)$
+</center>
+<br>
+ 根据给定最优参数$\theta_i^{'}$计算梯度损失并更新模型参数$\theta$, 整个过程$\theta$和$\alpha$更新如下:
+<center>
+<br>
+$\theta=\theta - \beta\nabla_\theta \sum_{T_i \sim p(T)} L_{T_i}(f_{\theta_i^{'}})$
+<br>
+$\alpha=\alpha-\beta\nabla_\alpha \sum_{T_i \sim p(T)} L_{T_i}(f_{\theta_i^{'}})$
+</center>
+<br>
+小节: Meta-SGD算法在调整期内不仅隐式地学习了模型参数$\theta$, 还学习了学习率$\alpha$和更新方向.
+</p>
+
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<h3 id="Meta-SGD-在监督型机器学习算法中的应用"><a href="#Meta-SGD-在监督型机器学习算法中的应用" class="headerlink" title="Meta-SGD 在监督型机器学习算法中的应用"></a>Meta-SGD 在监督型机器学习算法中的应用</h3><p>可以将Meta-SGD运用于任意使用梯度下降训练的监督性学习中, 如分类或回归. 具体应用步骤如下:<br>
+</p><p>
+1. 给定模型$f$,参数$\theta$,Task分布$p(T)$. 首先随机初始化模型参数$\theta$和$\alpha$, 且保证$\alpha$与$\theta$具有相同的Shape.
+<br>
+2. 对满足分布$T_i \sim p(T)$的Task$T_i$, 对其Batch进行采样, 假定对三个Task进行采样 $T=\{T_1, T_2, T_3\}$
+<br><br>
+3. 进行内循环遍历,  对于每项Task(假定$T_i$), 采样K个数据点并准备好训练集和测试集. 在$D_i^{train}$上运用监督型算法, 使用梯度下降计算并得到最优参数$\theta_i^{'}$ (注意$\theta_i^{'}=\theta -\alpha o \nabla_\theta L_{T_i} (f_\theta)$), 对于每项Task, 取样K个数据点并在训练集$D_i^{train}$上训练得到最优参数$\theta_i^{'}$ . 如下, 对三个Task进行采样得到三个最优参数$\{\theta_1^{'},\theta_2^{'},\theta_3^{'}\}$
+<center>
+$D_i^{train}=\{(x_1, y_1), (x_2, y_2),(x_3, y_3)\}$
+<br>
+$D_i^{test}=\{ (x_1, y_1), (x_2, y_2)......(x_k, y_k) \}$
+</center>
+<br>
+4. 外循环遍历, 在测试集$D_i^{test}$上进行损失优化, 利用上一步得到的最优参数$\theta_i^{'}$进行计算, 使用测试集更新随机初始化参数$\theta$ 以及$\alpha$, 更新规则如下:
+<center>
+$\theta=\theta - \beta\nabla_\theta \sum_{T_i \sim p(T)} L_{T_i}(f_{\theta_i^{'}})$
+<br>
+$\alpha=\alpha-\beta\nabla_\alpha \sum_{T_i \sim p(T)} L_{T_i}(f_{\theta_i^{'}})$
+</center>
+5. 重复步骤2 和步骤4进行N次迭代
+</p>
+
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<p></p>
+<h3 id="Meta-SGD-在强化学习中的应用"><a href="#Meta-SGD-在强化学习中的应用" class="headerlink" title="Meta-SGD 在强化学习中的应用"></a>Meta-SGD 在强化学习中的应用</h3><p>Meta-SGD算法和任意使用梯度下降进行训练的强化学习算法兼容, 应用步骤和上面类似<br>
+</p><p>
+1. 给定模型$f$,参数$\theta$,Task分布$p(T)$. 首先随机初始化模型参数$\theta$和$\alpha$, 并保证$\alpha$与$\theta$具有相同的Shape.
+<br>
+2. 对满足分布$T_i \sim p(T)$的Task$T_i$, 对其Batch进行采样, 假定对三个Task进行采样 $T=\{T_1, T_2, T_3\}$
+<br><br>
+3. 进行内循环遍历,  对于每项Task(假定$T_i$), 在数据集$D_i^{train}$上进行轨迹采样, 通过使用梯度下降计算并得到最优参数$\theta_i^{'}$ (注意$\theta_i^{'}=\theta -\alpha o \nabla_\theta L_{T_i} (f_\theta)$), 如对三个Task进行采样得到三个最优参数$\{\theta_1^{'},\theta_2^{'},\theta_3^{'}\}$, 然后对另一个轨迹数据集$D_i^{test}$进行采样, 以便进行meta更新.
+<br><br>
+4. 外循环遍历, 在$D_i^{test}$上进行损失优化, 利用上一步得到的最优参数$\theta_i^{'}$进行计算, 并更新随机初始化参数$\theta$ 以及$\alpha$, 更新规则如下:
+<center>
+$\theta=\theta - \beta\nabla_\theta \sum_{T_i \sim p(T)} L_{T_i}(f_{\theta_i^{'}})$
+<br>
+$\alpha=\alpha-\beta\nabla_\alpha \sum_{T_i \sim p(T)} L_{T_i}(f_{\theta_i^{'}})$
+<br>
+</center>
+5. 重复步骤2 和步骤4进行N次迭代
+</p>
+
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<p></p>
+<p>本篇博文主要以数学和算法理论为主, 下篇博文将带你实战Meta-SGD算法编码. </p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Python/" <i class="fa fa-tag"> Python</a>
+          
+            
+            <a href="/tags/Deep-Learning-Machine-Learning/" <i class="fa fa-tag"> Deep Learning & Machine Learning</a>
+          
+            
+            <a href="/tags/Meta-Machine-Learning/" <i class="fa fa-tag"> Meta Machine Learning</a>
+          
+            
+            <a href="/tags/Supervised-Learning/" <i class="fa fa-tag"> Supervised Learning</a>
+          
+            
+            <a href="/tags/Reinforcement-Learning/" <i class="fa fa-tag"> Reinforcement Learning</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/dl/psi/" rel="next" title="Swarm Intelligence(集群智能)牛刀小试">
+                <i class="fa fa-chevron-left"></i> Swarm Intelligence(集群智能)牛刀小试
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dl/nst/" rel="prev" title="PyTorch实战Neural Style Transfer">
+                PyTorch实战Neural Style Transfer <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Meta-SGD-算法原理"><span class="nav-number">1.</span> <span class="nav-text">Meta-SGD 算法原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Meta-SGD-在监督型机器学习算法中的应用"><span class="nav-number">2.</span> <span class="nav-text">Meta-SGD 在监督型机器学习算法中的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Meta-SGD-在强化学习中的应用"><span class="nav-number">3.</span> <span class="nav-text">Meta-SGD 在强化学习中的应用</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

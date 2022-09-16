@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="分布式系统, 从设计、开发调试到部署上线、后期维护, 每个过程并非易事.">
+<meta name="keywords" content="Golang,Software Architecture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漫谈Golang软件架构 (一) -- 分布式系统">
+<meta property="og:url" content="https://ultradata.stream/go/distros/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="分布式系统, 从设计、开发调试到部署上线、后期维护, 每个过程并非易事.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/lyr-arch.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/lyr-dsgn.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/obj-lyr.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/btrnt.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/supre.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/ldr-elct.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/oly-one-ldr.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/3PC.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/theory-cap.png">
+<meta property="og:updated_time" content="2018-06-11T14:16:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="漫谈Golang软件架构 (一) -- 分布式系统">
+<meta name="twitter:description" content="分布式系统, 从设计、开发调试到部署上线、后期维护, 每个过程并非易事.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/lyr-arch.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/go/distros/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>漫谈Golang软件架构 (一) -- 分布式系统 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/go/distros/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">漫谈Golang软件架构 (一) -- 分布式系统
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-01-06 20:25:29" itemprop="dateCreated datePublished" datetime="2018-01-06T20:25:29+08:00">2018-01-06</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-06-11 22:16:18" itemprop="dateModified" datetime="2018-06-11T22:16:18+08:00">2018-06-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">7.3k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">7 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>分布式系统, 从设计、开发调试到部署上线、后期维护, 每个过程并非易事.<a id="more"></a> 分布式系统复杂, 具有挑战性, 比单机系统更容易出错. Java之父—James Gosling曾提出八个有关分布式计算的谬论:</p>
+<ul>
+<li>网络可靠</li>
+<li>延迟为零</li>
+<li>带宽无限</li>
+<li>网络安全</li>
+<li>拓扑不变</li>
+<li>传输代价为零</li>
+<li>网络同构</li>
+<li>管理人员”无所不能”</li>
+</ul>
+<p>对于这些谬论, 暂且一笑了之, 但在20年前, 真的很难预测, 特别是分布式计算. 今天我们依然面临这些限制: 网络不可靠,不安全,带宽有限,网络的拓扑结构将发生变化,其组件的配置方式不同. 意识到这些限制将有助于我们设计更好的分布式系统.</p>
+<h2 id="分布式系统架构"><a href="#分布式系统架构" class="headerlink" title="分布式系统架构"></a>分布式系统架构</h2><h3 id="分层架构"><a href="#分层架构" class="headerlink" title="分层架构"></a>分层架构</h3><p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/lyr-arch.png" alt="Layers distributed"></div></p>
+<p>如图, 分层架构中的每一层聚合了下一层的相关职责和抽象. 严格类型分层系统中, 每层组件只能和同一层组件或下一层组价交互. 分布式系统中存在多个节点, 这种分层架构也可以称为N阶架构, 如典型的Web应用包含以下几层:</p>
+<ul>
+<li>展现层, UI相关特性</li>
+<li>HTTP服务层, 处理HTTP/HTTPS请求、HTTP持久化连接、SSL/TLS加密、逆向缓存、负载均衡等</li>
+<li>业务逻辑层, 基于具体业务规则进行处理, 代码部署至Web容器或Web相关框架中</li>
+<li>数据层, 与数据库进行交互, 代码复用, 初期数据层可与业务逻辑层放在一起.</li>
+</ul>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/lyr-dsgn.png" alt="分层设计示意图"></div></p>
+<p>尽量保持客户端代码简单, 以便获得最大复用灵活性以及拓展性(通常服务端代码比客户端代码更容易变更和部署). 当然, 有时客户端代码封装了好几层, 以便进行如延迟优化等.</p>
+<h3 id="基于对象系统"><a href="#基于对象系统" class="headerlink" title="基于对象系统"></a>基于对象系统</h3><p>最简单的分布式系统由对象构成, 对象间彼此通过远程过程调用(RPC)或远程方法调用(RMI)进行交互. </p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/obj-lyr.png" alt="Object Based System"></div></p>
+<p>每个节点一般包括以下三层</p>
+<ul>
+<li>代理/框架层, 存在客户端代理以及服务器主框架, 客户端代理转发请求给实际服务器对象及远程引用层</li>
+<li>远程引用层, 负责执行调用语义, 具体通信委托给传输层</li>
+<li>传输层, 负责连接管理及远程对象追踪</li>
+</ul>
+<p>基于对象系统, 通常有以下两类生态</p>
+<ul>
+<li>CORBA(通用对象请求代理体系结构, Common Object Request Broker Architecture), 由对象管理组织(OMG)定义, Java中RPC框架常用此技术</li>
+<li>DCOM(分布式组件对象模型, Distributed Component Object Model), 由微软赞助</li>
+</ul>
+<p>在Go语言中, Go标准库有rpc包允许开发人员通过远程过程调用导出任意对象方法<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 简单实现一个乘法服务</span></span><br><span class="line"><span class="keyword">type</span> Args <span class="keyword">struct</span> &#123;</span><br><span class="line">    A, B <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MultiplyService <span class="keyword">struct</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Arith)</span> <span class="title">Do</span><span class="params">(args *Args, reply *<span class="keyword">int</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">    *reply = args.A * args.B</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面代码中的服务可以通过rpc包在远程过程调用中使用<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    service := <span class="built_in">new</span>(MuliplyService)</span><br><span class="line">    rpc.Register(MuliplyService)</span><br><span class="line">    rpc.HandleHTTP()</span><br><span class="line"></span><br><span class="line">    l, err := net.Listen(<span class="string">"tcp"</span>, <span class="string">":1234"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(<span class="string">"listen error:"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">go</span> http.Serve(l, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>客户端代码<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">client, err:= rpc.DialHTTP(<span class="string">"tcp"</span>, serverAddress + <span class="string">":1234"</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(<span class="string">"dialing: "</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">args := &amp;server.Args&#123;<span class="number">10</span>, <span class="number">12</span>&#125;</span><br><span class="line"><span class="keyword">var</span> reply <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line">client.Call(<span class="string">"Multiply.Do"</span>, args, &amp;reply)</span><br><span class="line">fmt.Printf(<span class="string">"%d*%d=%d"</span>, args.A, args.B, reply)</span><br></pre></td></tr></table></figure></p>
+<p>基于对象系统架构, 近几年不再流行, 主要有以下几点原因</p>
+<ul>
+<li>试图为远程对象进行封装并伪造本地引用, 实际上远程行为和本地未必相同, 此类架构并没有更好的处理方式</li>
+<li>调用双方在进行通信时必须正常运行, 不太符合实际情况, 如应用构建时未必</li>
+<li>部分架构, 如CORBA变得原来越复杂</li>
+</ul>
+<h3 id="P2P架构"><a href="#P2P架构" class="headerlink" title="P2P架构"></a>P2P架构</h3><p>所有对等节点分担部分负载或共享资源, P2P架构中, 所有节点既可以充当客户端, 也可以充当服务端. </p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/btrnt.png" alt="Bit Torrent"></div></p>
+<p>分布式哈希表, 也是一种P2P结构, 一种结构化的P2P. 分布式哈希表可以跨节点, 可以通过一致性哈希(Consistent Hashing)算法构建分布式哈希表. 一致性哈希算法主要思想是通过使用同一哈希函数对Keys和托管缓存的Server进行哈希, 这样做的理由是将缓存映射为哈希值, 如果移除缓存, 只需移除对应哈希值即可, 其他缓存无需变更.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/supre.png" alt="Superpeers"></div></p>
+<p>P2P网络中, 有时也可变得具有等级, 如Superpeer. 这些Superpeers负责内部集群通信, 也可以与其他Superpeer进行交互, 这种类型的架构有CDN(内容分发网络), 每一个Edge服务器充当一个peer.</p>
+<h3 id="分布式计算"><a href="#分布式计算" class="headerlink" title="分布式计算"></a>分布式计算</h3><ul>
+<li>Map-Reduce并行处理框架, 在大数据生态组件中很常见, 如Hadoop</li>
+<li>分布式内存计算模型, 如大数据生态组件Spark, RDD(分布式弹性数据集) + 内存计算, 快速而高效地进行数据处理</li>
+<li>MPP, 多并行处理, 如Impala</li>
+</ul>
+<h3 id="流式处理"><a href="#流式处理" class="headerlink" title="流式处理"></a>流式处理</h3><ul>
+<li>微批处理模型, 如Apache Spark/Storm、Samza等流式处理框架, 适合无状态计算</li>
+<li>State Transformation, 框架本身拥有一种状态维护机制, 如Apache Flink/Apex, 适合有状态计算.</li>
+</ul>
+<h3 id="事件驱动架构"><a href="#事件驱动架构" class="headerlink" title="事件驱动架构"></a>事件驱动架构</h3><p>通常, 单体应用可通过微服务进行分解, 每项微服务为避免耦合可以拥有自己的数据库, 这也使得分布式事务成为可能, 但也存在不足之处:</p>
+<ul>
+<li>与使用单个数据库事务相比, 拟合时间长, 容易出错</li>
+<li>所有微服务不一定使用关系型数据库, 有的微服务可能根据具体业务需求使用NoSQL数据库, 如MongoDB等</li>
+</ul>
+<p>遇到这种情况可以考虑Event-Driven. 事件驱动(Event-Driven), 通过事件响应对行为进行分解, 进行事件驱动建模时, 一个事件Event通常意味着重要的状态变更, 比如购物付款后订单状态由未支付变为已经支付等. 事件驱动架构设计, 常用的设计模式有</p>
+<ul>
+<li>Event Sourcing, 事件溯源, 通过追加日志形式, 实现事务或分布式事务 </li>
+<li>CQRS, 指令查询责任分离, 指令更新和查询进行分离, 查询部分并不负责更新写入, 反之亦然, 实现最终一致性(Eventual Consistency)</li>
+<li>Event Stream, 适用于源源不断无边界的事件建模, 流式处理常用模式之一</li>
+</ul>
+<h3 id="Actor模型"><a href="#Actor模型" class="headerlink" title="Actor模型"></a>Actor模型</h3><p>可以通过使用Actor进行异步非阻塞计算, 适用于消息驱动建模. 每个Actor拥有自己的邮箱, 通过交换消息进行通信, 每个Actor拥有内部状态可以影响消息回复. Actor语义和管道-协程语义区别如下:</p>
+<ul>
+<li>每个Actor通过邮箱进行唯一性区分, 进行消息处理时由特定Actor进行处理, 管道是通用型, 意味着多个协程可以监听同一管道.</li>
+<li>管道基于内存, Actor通过邮箱可以跨主机多节点进行通信.</li>
+<li>Actor模型基于Actor原语, 管道-协程基于CSP(顺序化通信进程)</li>
+<li>容错方面, Actor存在灵活的Supervise监督机制和Let it crash思想(意味着当一个Actor crash时, Supervisor会推选出另一Actor继续进行未完成的任务),而管道-协程需要开发人员手动添加容错处理逻辑.</li>
+</ul>
+<p>Actor模型遵循分治原则, 将任务进行切分直到每个任务足够小, 能被部分顺序化代码处理. Actor进行消息交换时, 生产者和消费者不需要同时存活, 处理速率可以不对等.</p>
+<h2 id="分布式系统中共识算法"><a href="#分布式系统中共识算法" class="headerlink" title="分布式系统中共识算法"></a>分布式系统中共识算法</h2><p>分布式系统中为保持数据一致性, 对于数据更新达成共识, 常见的实现形式有</p>
+<ul>
+<li>Leader选举, 集群节点中推选一个节点作为Leader负责协同、交互等.</li>
+<li>分布式锁管理, 多节点间处理互斥访问.</li>
+<li>分布式事务, 多节点间通过分布式事务保持数据一致性.</li>
+</ul>
+<p>在设计分布式共识算法时, 需要注意以下几点</p>
+<ul>
+<li>真实性, 推选出来的值必须在提议值内</li>
+<li>生命周期, 共识进程应该在一定时间内中止</li>
+<li>共识, 所有参与节点认可提议值</li>
+</ul>
+<h3 id="Leader选举"><a href="#Leader选举" class="headerlink" title="Leader选举"></a>Leader选举</h3><p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/ldr-elct.png" alt="Leader Election"></div></p>
+<p>在多个集群节点中推选出Leader, 通常有以下两种常见策略</p>
+<ul>
+<li>基于ID选举, 每项实例ID唯一, 不管什么时候发生选举, 实例与ID最小或最大节点进行ID交换. 基于环拓扑实例的Leader选举算法, 复杂度在O(n^2)到O(nlogn)之间, 取决于具体算法实现. </li>
+<li>互斥竞争, 实例间共享互斥锁进行争用, 获取锁的实例推选为Leader.</li>
+</ul>
+<p>通常为防止Leader故障进行重新选举, 在Leader和其他实例间存在一种保活机制. 选举中一般会用到选举计数器, 进行消息交换时, 选举计数器封装在负载中, 以避免在同一选举中同一节点同时投票给俩不同节点推选为Leader.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/oly-one-ldr.png" alt="Only Vote For One Leader"></div></p>
+<h3 id="多阶段提交"><a href="#多阶段提交" class="headerlink" title="多阶段提交"></a>多阶段提交</h3><p>提议进程发送提议值给每项参与进程, 每项进程要么接受提议要么回绝提议, 提议进程根据收到所有参与进程的回复, 判定是否达成一致. 分布式提交主要有两种类型:</p>
+<ul>
+<li>两阶段提交</li>
+<li>三阶段提交</li>
+</ul>
+<h4 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h4><p>假定提议进程P0, 以及其他参与进程P1…PN(或执行进程)需要更新值, 在两阶段提交中, P0与其他进程进行协同, 以便达成一致, 主要阶段如下:</p>
+<ul>
+<li>准备阶段, P0发送消息”Prepare update v = x”给其他执行进程[P1…PN], 每项执行进程可以投票”Prepared”或”No”, 如果存在其他并发事务执行进程可以投票”No”, 或存在局部Stage已经改变可以投票”Prepared”</li>
+<li>提交阶段, 收到所有进程的回复后, P0要么发送提交消息”commit”要么发送取消消息, 每项执行进程根据回复完成事务.</li>
+</ul>
+<p>为了便于处理类似于重启之类的状况, 每个进程记录自身当前状态并在发送消息前持久化, 如所有执行进程回复消息”Prepared”, P0可以记录处于提交阶段. 两阶段提交容易在提交阶段产生错误:</p>
+<ul>
+<li>P0可能在准备阶段奔溃. 此时其它所有执行进程阻塞, 直到P0上线, 系统由于共识产生中断. P0也可以判断崩溃节点是否重新上线或中止事务.</li>
+<li>如果其中一个执行进程在提交阶段奔溃, P0并不能判断该进程是在提交前还是在提交后产生故障.</li>
+</ul>
+<p>小结: 两阶段提交最大的缺点在于阻塞, 如果在重要阶段其中一个进程死亡, 可能会导致”中断不止”.</p>
+<h4 id="三阶段提交"><a href="#三阶段提交" class="headerlink" title="三阶段提交"></a>三阶段提交</h4><p>非阻塞的提交协议在于单进程故障是否影响其他进程判定事务是否提交还是中止, 为了实现这种目的, 可将提交阶段分成俩部分</p>
+<ul>
+<li>预提交阶段, 在接收到执行进程的”Prepared”消息后, P0进入预提交阶段. P0发送”precommit”消息给所有的执行进程, 在此阶段并不进行实际提交.</li>
+<li>提交阶段, 如果P0在预提交阶段接收到所有执行进程的回复消息”Yes”, 便发送提交消息”commit”至所有的执行进程, 然后完成事务. 如果任一执行进程在预提交阶段回复”No”或没有回复,事务中止.</li>
+</ul>
+<p>三阶段提交算法本质上还是两阶段提交, 不过在提交阶段多个了预提交而已. 目前, 绝大多数大数据分布式框架如Flink采用含有预提交的两阶段算法保证恰好一次及时消费语义性.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/3PC.png" alt="提交示意图"></div></p>
+<p>预提交阶段有助于算法从节点故障中恢复, 每项进程可能会产生超时, 假如执行进程未接收来自P0回复, 可推选出新的Coordinator继续完成事务. 新的Coordinator通过对执行进程进行Query检测当前的事务状态. 另一方面, 如果有一执行进程回复新的Coordinator没有接收到”precommit”消息, 新的Coordinator判定P0是在提交阶段前发生故障, 因为其他执行进程没有任何变更, 可以安全地中断此次事务.含有预提交的两阶段算法, 也存在一定不足, 如容易受网络环境影响.</p>
+<h3 id="Paxos共识算法"><a href="#Paxos共识算法" class="headerlink" title="Paxos共识算法"></a>Paxos共识算法</h3><p>Paxos协议灵活, 比两阶段提交算法具有更好的容错性. Paxos算法实现中节点有以下三种角色</p>
+<ul>
+<li>提议者(Proposer), 该节点驱动共识处理 </li>
+<li>接收者(Acceptor), 这些节点可以独立接受或回绝提议</li>
+<li>学习者(Learner), 并不直接影响共识构建进程, 基于接收者的接收值进行学习, 通常学习者和接收者打包于同一组件中.</li>
+</ul>
+<p>Paxos基本步骤和两阶段提交有些类似, Paxos中提议者发送俩种类型消息给接收者—Prepare以及Accept. 在Prepare准备阶段, 除了发送提议值还发送提议序列数, 提议数为单调调增的正数, 具有唯一性. 提议数由两部分组成: 节点标识及对应节点计数器, 当接受者收到有冲突的提议时, 选择提议数最大的提议. Accepter须记住已经接收的最大提议数以及回复其他请求的最大提议数. Paxos主要步骤如下</p>
+<p>阶段一:</p>
+<ul>
+<li>Prepare, 构造提议消息,消息包含提议值v及提议数N(比进程之前使用过的任何数字大), 发送给大多数接收者</li>
+<li>Promise, 当一接收者收到Prepare消息后, 检测提议数是否比之前接收过的提议数大, 是的话记录提议值并更新提议数N, 不是的话忽略该消息(尽管没有必要回复, 但回复NACK可以加速算法拟合). 若接收者接受提议, 须发送包含之前提议数及提议值消息回复Proposer提议者. 整个过程中, 一个接收者可以接收多条提议.</li>
+</ul>
+<p>阶段二:</p>
+<ul>
+<li>接收请求, 一旦提议者接收到绝大多数节点消息时, 算法进入Acceptance(接收)阶段. 基本上提议者希望接收者进行提交, 存在以下几种情况:<ol>
+<li>如果绝大多数接收者回复NACK消息或回复失败, 提议者放弃提议回到初始状态或初始阶段</li>
+<li>如果没有一个接受者接收提议, 提议者可能选择初始值v以及提议数N</li>
+<li>如果任一接收者接收过提议, 提议值和提议序列数对提议者可用, 假如此时接受的提议值v、最大提议序列数w, Paxos协议迫使提议者更新提议数为w, 以防止之前死亡过的提议者重新上线分化整个共识进程.</li>
+</ol>
+</li>
+</ul>
+<p>提议者发送包含选定值的消息Accept给所有接收者, </p>
+<ul>
+<li>接收, 当接受者接收Accept消息后, 检测以下几种情况:<ol>
+<li>消息值是否是之前接收提议中值</li>
+<li>消息中序列数是否是所有接受者认可的最大提议数</li>
+<li>如果上面两个条件都满足, 接收者发送Accept消息给提议者, 否则发送Reject消息</li>
+</ol>
+</li>
+</ul>
+<p>为使多个提议者进行提议时拟合更快, 一般通过Leader选举与Paxos协议结合使用保证多节点间达成共识. 实际上, Zookeeper协同服务主要由Paxos协议和Leader选举实现.</p>
+<h3 id="Raft共识算法"><a href="#Raft共识算法" class="headerlink" title="Raft共识算法"></a>Raft共识算法</h3><p>Raft和Paxos共识算法类似, 与Paxos相比具有更少的状态, 算法也比Paxos简单. 任意给定时间, 每项Raft允许的实例状态有: Leader、Follower或Candidate. 刚开始,每项实例作为Follower, 在此期间, 实例很消极仅回复消息, 如基于Log结构消息从Leader处复制状态或回复Candidate的选举消息. 如果一定时间内没有接收消息, 该实例可推选自身为Candidate, 开始进行选举并有可能被推选为Leader. 处于Candidate状态的实例, 向其它对等实例请求投票, 收到绝大多数投票的实例被推选为Leader. 推选为Leader的实例, 主要职责有:</p>
+<ul>
+<li>处理写入请求, 如客户端的状态变更请求</li>
+<li>处理读取请求, 如不允许读取老数据(Stale read, 或陈旧数据)</li>
+<li>复制状态给所有的Follower</li>
+</ul>
+<p>Raft算法中, 处理写入请求过程一般产生追加日志, Leader将追加日志持久化, 然后对Follower复制进行初始化. 日志在Raft协议中很重要, 共识问题基本转化成了日志副本问题. 如果所有实例具有相同日志项且日志项具有相同顺序, 可以认为系统处于一致性状态. 当大多数节点实例成功复制可视为写入提交, 对于N个实例集群而言, 绝大多数意味着至少(N/2+1)个节点. 写入提交机制, 可能会阻塞客户端写入, 直到已经提交. 一旦日志项提交, 可在实例上运行有限状态机. 有限状态机上可托管特定应用代码, 如处理状态变更, 当然应用代码须具有确定性, 因为所有节点以相同顺序运行相同的数据, 输出也应该相同. </p>
+<h2 id="分布式系统中一致性问题"><a href="#分布式系统中一致性问题" class="headerlink" title="分布式系统中一致性问题"></a>分布式系统中一致性问题</h2><ul>
+<li><strong>ACID</strong>, 关系型数据库中ACID(Atomicity原子性, Consistency一致性, Isolation隔离性, Durability持续性)特性, 缺点在于拓展性不佳</li>
+<li><p><strong>CAP理论</strong>, 分布式系统CAP理论, 不能同时取得一致性、可用性和分区容错性</p>
+<p>  <div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/theory-cap.png" alt>   </div></p>
+</li>
+<li><p><strong>BASE原理</strong>, Basically Available(基本可用)、Soft state(软状态) 及 Eventual Consistency(最终一致性) 三个短语缩略. 其核心思想是即使无法做到强一致性(Strong Consistency,CAP的一致性就是强一致性), 但应用可以采用适合的方式达到最终一致性(Eventual Consitency).</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Golang/" <i class="fa fa-tag"> Golang</a>
+          
+            
+            <a href="/tags/Software-Architecture/" <i class="fa fa-tag"> Software Architecture</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/torch/jit/" rel="next" title="PyTorch JIT浅酌">
+                <i class="fa fa-chevron-left"></i> PyTorch JIT浅酌
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/go/api-build/" rel="prev" title="漫谈Golang软件架构 (二) -- API构建">
+                漫谈Golang软件架构 (二) -- API构建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式系统架构"><span class="nav-number">1.</span> <span class="nav-text">分布式系统架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分层架构"><span class="nav-number">1.1.</span> <span class="nav-text">分层架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于对象系统"><span class="nav-number">1.2.</span> <span class="nav-text">基于对象系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#P2P架构"><span class="nav-number">1.3.</span> <span class="nav-text">P2P架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式计算"><span class="nav-number">1.4.</span> <span class="nav-text">分布式计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流式处理"><span class="nav-number">1.5.</span> <span class="nav-text">流式处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件驱动架构"><span class="nav-number">1.6.</span> <span class="nav-text">事件驱动架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Actor模型"><span class="nav-number">1.7.</span> <span class="nav-text">Actor模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式系统中共识算法"><span class="nav-number">2.</span> <span class="nav-text">分布式系统中共识算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Leader选举"><span class="nav-number">2.1.</span> <span class="nav-text">Leader选举</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多阶段提交"><span class="nav-number">2.2.</span> <span class="nav-text">多阶段提交</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#两阶段提交"><span class="nav-number">2.2.1.</span> <span class="nav-text">两阶段提交</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三阶段提交"><span class="nav-number">2.2.2.</span> <span class="nav-text">三阶段提交</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Paxos共识算法"><span class="nav-number">2.3.</span> <span class="nav-text">Paxos共识算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raft共识算法"><span class="nav-number">2.4.</span> <span class="nav-text">Raft共识算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式系统中一致性问题"><span class="nav-number">3.</span> <span class="nav-text">分布式系统中一致性问题</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

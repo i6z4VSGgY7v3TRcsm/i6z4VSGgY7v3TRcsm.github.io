@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:Akka Actor">
+<meta name="keywords" content="JVM And JVM Languages,Kotlin,High Performance Kotlin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin高性能实战 (一) -- Kotlin Range">
+<meta property="og:url" content="https://ultradata.stream/kt/range/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:Akka Actor">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/range-uml.png">
+<meta property="og:updated_time" content="2017-07-26T12:30:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin高性能实战 (一) -- Kotlin Range">
+<meta name="twitter:description" content="之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:Akka Actor">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/range-uml.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/kt/range/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Kotlin高性能实战 (一) -- Kotlin Range | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/kt/range/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kotlin高性能实战 (一) -- Kotlin Range
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-23 20:21:36" itemprop="dateCreated datePublished" datetime="2015-10-23T20:21:36+08:00">2015-10-23</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-07-26 20:30:12" itemprop="dateModified" datetime="2017-07-26T20:30:12+08:00">2017-07-26</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">16k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">15 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div class="note success">
+            <p>之所以想写这个系列的Kotlin笔记, 主要原因在于Kotlin协程丰富了JVM生态. 有人说Kotlin语法像Scala, 但个人感觉Kotlin比Java更像C++, 比如Kotlin在闭包上使用了大量的内联(inline)技巧进行性能优化. 尽管Java也有一些协程相关的包可以用, 但远不如Kotlin协程优雅, 更具表现力. 尽管你可以使用:</p><ul><li>Akka Actor (或者类似的Actor包)</li><li>RxJava (或类似的Reactive响应式框架, 比如Vert.x)</li></ul><p>开发高性能高并发应用程序, 以上抽象均为Message Driven或Event Driven(消息驱动或事件驱动), 但有些业务场景如果考虑使用Event-Driven建模, 未免过于重量级, 于是你需要更加轻量级的替代方案, 比如Future/Promise (异步非阻塞, 本质为占位符(Placeholder), 仅适用于单个值), 比如轻量级线程—协程. 尽管Kotlin协程本质上也是使用JVM线程池进行封装, 但Kotlin协程在JVM生态同等实现中表现出色! 最重要的是, 作为JVM语言, 不仅Java可以使用Kotlin协程, Scala/Groovy/Clojure照样也可使用Kotlin协程.</p>
+          </div>
+<p>Kotlin Range性能优化建议:</p>
+<ul>
+<li>对Range进行遍历时, 尽量避免传入该Range引用进行迭代, 请直接对该Range进行遍历 (见常用方法小节)</li>
+<li>使用Range时注意保持类型一致并避免使用<code>nullable</code>(可为空)类型变量 (见性能优化小节)</li>
+<li>同样的容器遍历逻辑, 在Range和数组都能实现的情况下, 尽量使用Range (见Benchmark小节)</li>
+</ul>
+<a id="more"></a>
+<h2 id="Kotlin-Range"><a href="#Kotlin-Range" class="headerlink" title="Kotlin Range"></a>Kotlin Range</h2><p>Kotlin中创建一个range比较简单, 可以使用<code>rangeTo</code>函数 或使用<code>..</code>操作符创建. 这里先给出Kotlin Range的类图, 便于后续源码剖析, 需要指出的是<code>IntProgression</code>中的迭代器方法<code>iterator()</code>虽返回<code>IntIterator</code>, 但其具体实现却由<code>IntIterator</code>的子类<code>IntProgressionIterator</code>实现,在Kotlin源码中<code>IntProgressionIterator</code>为一内部类. <code>LongProgression</code>、<code>CharProgression</code> 与之类似.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/range-uml.png" alt="Range UML"></p>
+<h3 id="Kotlin-Range常用方法"><a href="#Kotlin-Range常用方法" class="headerlink" title="Kotlin Range常用方法"></a>Kotlin Range常用方法</h3><p>常见方法有: <code>step()</code>, <code>reversed()</code>, <code>rangeTo()</code>等, 如</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// `step` </span></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> (<span class="number">0</span>..<span class="number">10</span>).step(<span class="number">2</span>)) &#123;</span><br><span class="line">    println(i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// `reversed`</span></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0</span>.rangeTo(<span class="number">10</span>).reversed) &#123;</span><br><span class="line">    println(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对Range进行遍历时, 避免传入该Range引用, 直接对该Range进行迭代即可, 这样做的话编译器会对字节码进行优化.</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> value = args[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">if</span> (value <span class="keyword">in</span> <span class="number">0</span>.rangeTo(<span class="number">10</span>)) &#123;</span><br><span class="line">        print(value)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>字节码反编译成Java源码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(@NotNull String[] args)</span> </span>&#123;</span><br><span class="line">   Intrinsics.checkParameterIsNotNull(args, <span class="string">"args"</span>);</span><br><span class="line">   String var2 = args[<span class="number">0</span>];</span><br><span class="line">   <span class="keyword">int</span> value = Integer.parseInt(var2);</span><br><span class="line">   <span class="keyword">if</span> (<span class="number">0</span> &lt;= value) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="number">10</span> &gt;= value) &#123;</span><br><span class="line">         System.out.println(value);</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但如果遍历时传入该<code>range</code>引用, 如下, 将会创建无必要的<code>IntRange</code>对象(或<code>LongRange</code>/<code>CharRange</code>等)</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> range = <span class="number">0</span>..<span class="number">100</span></span><br><span class="line"><span class="keyword">if</span> (value <span class="keyword">in</span> range) &#123;</span><br><span class="line">    print(value)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// JVM字节码对应Java源码</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    byte var3 = 0;</span></span><br><span class="line"><span class="comment">    IntRange range = new IntRange(var3, 100);</span></span><br><span class="line"><span class="comment">    if (range.contains(value)) &#123;</span></span><br><span class="line"><span class="comment">        System.out.println(value);</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<h3 id="Range-性能优化"><a href="#Range-性能优化" class="headerlink" title="Range 性能优化"></a>Range 性能优化</h3><p><code>Range</code>可以在<code>when</code>中使用, 如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> httpResponseCode: <span class="built_in">Int</span> = HttpService.responseCodeStr().toInt</span><br><span class="line"><span class="keyword">when</span> (httpResponseCode) &#123;</span><br><span class="line">    <span class="keyword">in</span> <span class="number">100</span>..<span class="number">200</span> -&gt; println(<span class="string">"Informational responses"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">200</span>..<span class="number">300</span> -&gt; println(<span class="string">"Success"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">300</span>..<span class="number">400</span> -&gt; println(<span class="string">"Redirection"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">400</span>..<span class="number">500</span> -&gt; println(<span class="string">"Client error"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">500</span>..<span class="number">600</span> -&gt; println(<span class="string">"Server error"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>字节码反编译成Java源码如下, 可以看出整段代码利用<code>if</code>语句对HTTP响应码的<code>Range</code>进行判断, 没有太大性能问题.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">String var2 = HttpService.responseCodeStr();</span><br><span class="line"><span class="keyword">int</span> value = Integer.parseInt(var2);</span><br><span class="line">String var3;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="number">100</span> &lt;= value) &#123;</span><br><span class="line">   <span class="keyword">if</span> (<span class="number">200</span> &gt;= value) &#123;</span><br><span class="line">      var3 = <span class="string">"Informational responses"</span>;</span><br><span class="line">      System.out.println(var3);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="number">200</span> &lt;= value) &#123;</span><br><span class="line">   <span class="keyword">if</span> (<span class="number">300</span> &gt;= value) &#123;</span><br><span class="line">      var3 = <span class="string">"Success"</span>;</span><br><span class="line">      System.out.println(var3);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="number">300</span> &lt;= value) &#123;</span><br><span class="line">   <span class="keyword">if</span> (<span class="number">400</span> &gt;= value) &#123;</span><br><span class="line">      var3 = <span class="string">"Redirection"</span>;</span><br><span class="line">      System.out.println(var3);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="number">400</span> &lt;= value) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">500</span> &gt;= value) &#123;</span><br><span class="line">      var3 = <span class="string">"Client error"</span>;</span><br><span class="line">      System.out.println(var3);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="number">500</span> &lt;= value) &#123;</span><br><span class="line">   <span class="keyword">if</span> (<span class="number">600</span> &gt;= value) &#123;</span><br><span class="line">      var3 = <span class="string">"Server error"</span>;</span><br><span class="line">      System.out.println(var3);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果改变<code>httpResponseCode</code>类型, 如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> httpResponseCode: <span class="built_in">Int</span>? = HttpService.responseCodeStr().toIntOrNull()</span><br><span class="line"><span class="keyword">when</span> (httpResponseCode) &#123;</span><br><span class="line">    <span class="keyword">in</span> <span class="number">100</span>..<span class="number">200</span> -&gt; println(<span class="string">"Informational responses"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">200</span>..<span class="number">300</span> -&gt; println(<span class="string">"Success"</span>)</span><br><span class="line">    <span class="comment">// 与上面Kotlin代码一样, 如上</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时字节码反编译成Java源码如下, <code>IntRange</code>源码后面会覆盖(包括<code>CollectionsKt.contains()</code>等), 现在主要关注代码主逻辑</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">Integer value = StringsKt.toIntOrNull(HttpService.responseCodeStr());</span><br><span class="line"><span class="keyword">byte</span> var3 = <span class="number">100</span>;</span><br><span class="line">String var4;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (CollectionsKt.contains((Iterable)(<span class="keyword">new</span> IntRange(var3, <span class="number">200</span>)), value)) &#123;</span><br><span class="line">   var4 = <span class="string">"Informational responses"</span>;</span><br><span class="line">   System.out.println(var4);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">   <span class="keyword">short</span> var5 = <span class="number">200</span>;</span><br><span class="line">   <span class="keyword">if</span> (CollectionsKt.contains((Iterable)(<span class="keyword">new</span> IntRange(var5, <span class="number">300</span>)), value)) &#123;</span><br><span class="line">      var4 = <span class="string">"Success"</span>;</span><br><span class="line">      System.out.println(var4);</span><br><span class="line">   &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      var5 = <span class="number">300</span>;</span><br><span class="line">      <span class="keyword">if</span> (CollectionsKt.contains((Iterable)(<span class="keyword">new</span> IntRange(var5, <span class="number">400</span>)), value)) &#123;</span><br><span class="line">         var4 = <span class="string">"Redirection"</span>;</span><br><span class="line">         System.out.println(var4);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         var5 = <span class="number">400</span>;</span><br><span class="line">         <span class="keyword">if</span> (CollectionsKt.contains((Iterable)(<span class="keyword">new</span> IntRange(var5, <span class="number">500</span>)), value)) &#123;</span><br><span class="line">            var4 = <span class="string">"Client error"</span>;</span><br><span class="line">            System.out.println(var4);</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            var5 = <span class="number">500</span>;</span><br><span class="line">            <span class="keyword">if</span> (CollectionsKt.contains((Iterable)(<span class="keyword">new</span> IntRange(var5, <span class="number">600</span>)), value)) &#123;</span><br><span class="line">               var4 = <span class="string">"Server error"</span>;</span><br><span class="line">               System.out.println(var4);</span><br><span class="line">            &#125;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到上面这段代码封装了很多东西, 先是将HTTP响应码范围封装成<code>IntRange</code>, 然后强制类型转换成<code>Iterable</code>容器类型, 再调用Kotlin库中<code>CollectionsKt.contains()</code>方法进行判断, 注意到整段逻辑采用大量嵌套的<code>if-else</code>语句实现. 对比上面俩段Java源码, 明显第一段Java代码更加简洁高效. 中间我们做了什么, 不过将一个变量类型由<code>Int</code>改成了<code>Int?</code>. </p>
+<p>如果将<code>httpResponseCode</code>转变成<code>Double</code>类型会怎样?</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> httpResponseCode: <span class="built_in">Double</span> = HttpService.responseCodeStr().toDouble()</span><br><span class="line"><span class="keyword">when</span> (httpResponseCode) &#123;</span><br><span class="line">    <span class="keyword">in</span> <span class="number">100</span>..<span class="number">200</span> -&gt; println(<span class="string">"Informational responses"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">200</span>..<span class="number">300</span> -&gt; println(<span class="string">"Success"</span>)</span><br><span class="line">    <span class="comment">// 与上面Kotlin代码一样, 如上</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>字节码反编译成Java源码如下, 和上面改成<code>Int?</code>类型的Java源码类似, 同样面临性能损耗</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">String var3 = HttpService.responseCodeStr();</span><br><span class="line"><span class="keyword">double</span> value = Double.parseDouble(var3);</span><br><span class="line"><span class="keyword">byte</span> var5 = <span class="number">100</span>;</span><br><span class="line">String var6;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (RangesKt.intRangeContains((ClosedRange)(<span class="keyword">new</span> IntRange(var5, <span class="number">200</span>)), value)) &#123;</span><br><span class="line">   var6 = <span class="string">"Informational responses"</span>;</span><br><span class="line">   System.out.println(var6);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">   <span class="keyword">short</span> var7 = <span class="number">200</span>;</span><br><span class="line">   <span class="keyword">if</span> (RangesKt.intRangeContains((ClosedRange)(<span class="keyword">new</span> IntRange(var7, <span class="number">300</span>)), value)) &#123;</span><br><span class="line">      var6 = <span class="string">"Success"</span>;</span><br><span class="line">      System.out.println(var6);</span><br><span class="line">   &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      var7 = <span class="number">300</span>;</span><br><span class="line">      <span class="keyword">if</span> (RangesKt.intRangeContains((ClosedRange)(<span class="keyword">new</span> IntRange(var7, <span class="number">400</span>)), value)) &#123;</span><br><span class="line">         var6 = <span class="string">"Redirection"</span>;</span><br><span class="line">         System.out.println(var6);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         var7 = <span class="number">400</span>;</span><br><span class="line">         <span class="keyword">if</span> (RangesKt.intRangeContains((ClosedRange)(<span class="keyword">new</span> IntRange(var7, <span class="number">500</span>)), value)) &#123;</span><br><span class="line">            var6 = <span class="string">"Client error"</span>;</span><br><span class="line">            System.out.println(var6);</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            var7 = <span class="number">500</span>;</span><br><span class="line">            <span class="keyword">if</span> (RangesKt.intRangeContains((ClosedRange)(<span class="keyword">new</span> IntRange(var7, <span class="number">600</span>)), value)) &#123;</span><br><span class="line">               var6 = <span class="string">"Server error"</span>;</span><br><span class="line">               System.out.println(var6);</span><br><span class="line">            &#125;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解决方式, 在<code>when</code>语句中将Http响应码同样转成<code>Double</code>类型即可, 如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> httpResponseCode = HttpService.responseCodeStr().toDouble()</span><br><span class="line"><span class="keyword">when</span>(httpResponseCode) &#123;</span><br><span class="line">    <span class="keyword">in</span> <span class="number">100.0</span>..<span class="number">200.0</span> -&gt; println(<span class="string">"Informational responses"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">200.0</span>..<span class="number">300.0</span> -&gt; println(<span class="string">"Success"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">300.0</span>..<span class="number">400.0</span> -&gt; println(<span class="string">"Redirection"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">400.0</span>..<span class="number">500.0</span> -&gt; println(<span class="string">"Client error"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">500.0</span>..<span class="number">600.0</span> -&gt; println(<span class="string">"Server error"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应字节码反编译成Java源码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">String var3 = HttpService.responseCodeStr();</span><br><span class="line"><span class="keyword">double</span> value = Double.parseDouble(var3);</span><br><span class="line">String var5;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (value &gt;= <span class="number">100.0</span>D &amp;&amp; value &lt;= <span class="number">200.0</span>D) &#123;</span><br><span class="line">   var5 = <span class="string">"Informational responses"</span>;</span><br><span class="line">   System.out.println(var5);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (value &gt;= <span class="number">200.0</span>D &amp;&amp; value &lt;= <span class="number">300.0</span>D) &#123;</span><br><span class="line">   var5 = <span class="string">"Success"</span>;</span><br><span class="line">   System.out.println(var5);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (value &gt;= <span class="number">300.0</span>D &amp;&amp; value &lt;= <span class="number">400.0</span>D) &#123;</span><br><span class="line">   var5 = <span class="string">"Redirection"</span>;</span><br><span class="line">   System.out.println(var5);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (value &gt;= <span class="number">400.0</span>D &amp;&amp; value &lt;= <span class="number">500.0</span>D) &#123;</span><br><span class="line">   var5 = <span class="string">"Client error"</span>;</span><br><span class="line">   System.out.println(var5);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (value &gt;= <span class="number">500.0</span>D &amp;&amp; value &lt;= <span class="number">600.0</span>D) &#123;</span><br><span class="line">   var5 = <span class="string">"Server error"</span>;</span><br><span class="line">   System.out.println(var5);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结论: 使用Range时注意保持类型一致并避免使用<code>nullable</code>类型变量.</p>
+<h3 id="Range-源码剖析"><a href="#Range-源码剖析" class="headerlink" title="Range 源码剖析"></a>Range 源码剖析</h3><p>首先来看段示例代码:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> int = args[<span class="number">0</span>].toInt()</span><br><span class="line">    <span class="keyword">if</span> (int <span class="keyword">in</span> <span class="number">0</span>..<span class="number">10</span>) &#123;</span><br><span class="line">        println(int)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这段代码字节码反编译成Java源码如下, 可以看到这里的<code>range</code>逻辑主要由<code>if</code>语句实现, 对起始值和结束值进行判断.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(@NotNull String[] args)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// Kotlin会对传入参数进行判断,检测传入入参是否为空</span></span><br><span class="line">   Intrinsics.checkParameterIsNotNull(args, <span class="string">"args"</span>);</span><br><span class="line"></span><br><span class="line">   String var2 = args[<span class="number">0</span>];</span><br><span class="line">   <span class="keyword">int</span> value = Integer.parseInt(var2);</span><br><span class="line">   <span class="keyword">if</span> (<span class="number">0</span> &lt;= value) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="number">10</span> &gt;= value) &#123;</span><br><span class="line">         System.out.println(value);</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假如将传入的命令行参数改成可选, 会怎样? 如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> value = args[<span class="number">0</span>].toIntOrNull()</span><br><span class="line">    <span class="keyword">if</span> (value <span class="keyword">in</span> <span class="number">0</span>..<span class="number">10</span>) &#123;</span><br><span class="line">        println(value)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应Java源码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(@NotNull String[] args)</span> </span>&#123;</span><br><span class="line">   Intrinsics.checkParameterIsNotNull(args, <span class="string">"args"</span>);</span><br><span class="line"></span><br><span class="line">   Integer value = StringsKt.toIntOrNull(args[<span class="number">0</span>]);</span><br><span class="line">   <span class="keyword">byte</span> var2 = <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">if</span> (CollectionsKt.contains((Iterable) (<span class="keyword">new</span> IntRange(var2, <span class="number">10</span>)), value)) &#123;</span><br><span class="line">      System.out.println(value);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先对上面代码中<code>contains</code>函数进行源码剖析, 再来看<code>IntRange</code>源码</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;@kotlin.internal.OnlyInputTypes T&gt;</span> Iterable<span class="type">&lt;T&gt;</span>.<span class="title">contains</span><span class="params">(element: <span class="type">T</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> <span class="keyword">is</span> Collection)</span><br><span class="line">        <span class="keyword">return</span> contains(element)</span><br><span class="line">    <span class="keyword">return</span> indexOf(element) &gt;= <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// `indexOf` 源码</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;@kotlin.internal.OnlyInputTypes T&gt;</span> Iterable<span class="type">&lt;T&gt;</span>.<span class="title">indexOf</span><span class="params">(element: <span class="type">T</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> <span class="keyword">is</span> List) <span class="keyword">return</span> <span class="keyword">this</span>.indexOf(element)</span><br><span class="line">    <span class="keyword">var</span> index = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> (item <span class="keyword">in</span> <span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (element == item)</span><br><span class="line">            <span class="keyword">return</span> index</span><br><span class="line">        index++</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>点开<code>IntRange</code>源码, 如下, <code>IntRange</code>继承了<code>IntProgression</code>类并实现了<code>ClosedRange</code>接口.</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IntRange</span></span>(start: <span class="built_in">Int</span>, endInclusive: <span class="built_in">Int</span>) : IntProgression(start, endInclusive, <span class="number">1</span>), ClosedRange&lt;<span class="built_in">Int</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">val</span> start: <span class="built_in">Int</span> <span class="keyword">get</span>() = first</span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">val</span> endInclusive: <span class="built_in">Int</span> <span class="keyword">get</span>() = last</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">contains</span><span class="params">(value: <span class="type">Int</span>)</span></span>: <span class="built_in">Boolean</span> = first &lt;= value &amp;&amp; value &lt;= last</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">isEmpty</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> = first &gt; last</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">equals</span><span class="params">(other: <span class="type">Any</span>?)</span></span>: <span class="built_in">Boolean</span> =</span><br><span class="line">        other <span class="keyword">is</span> IntRange &amp;&amp; (isEmpty() &amp;&amp; other.isEmpty() ||</span><br><span class="line">        first == other.first &amp;&amp; last == other.last)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">hashCode</span><span class="params">()</span></span>: <span class="built_in">Int</span> =</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) -<span class="number">1</span> <span class="keyword">else</span> (<span class="number">31</span> * first + last)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">toString</span><span class="params">()</span></span>: String = <span class="string">"<span class="variable">$first</span>..<span class="variable">$last</span>"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="comment">/** An empty range of values of type Int. */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">val</span> EMPTY: IntRange = IntRange(<span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Ranges.kt</code>源码中还包含了<code>CharRange</code>和<code>LongRange</code>, 类似地, <code>CharRange</code>继承了<code>CharProgression</code>类, <code>LongRange</code>继承了<code>LongProgression</code>类, 它们均实现了<code>ClosedRange</code>接口. </p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// `ClosedRange`接口 及 `IntProgression`类(`LongProgression`/`CharProgression`有些类似) 源码</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ClosedRange</span>&lt;<span class="type">T: Comparable&lt;T</span>&gt;&gt; </span>&#123;</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">val</span> start: T</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">val</span> endInclusive: T</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">contains</span><span class="params">(value: <span class="type">T</span>)</span></span>: <span class="built_in">Boolean</span> = value &gt;= start &amp;&amp; value &lt;= endInclusive</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">fun</span> <span class="title">isEmpty</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> = start &gt; endInclusive</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以看到 `IntProgression` 实现了`Iterable` 接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">IntProgression</span> <span class="keyword">internal</span> <span class="keyword">constructor</span></span>(start: <span class="built_in">Int</span>, endInclusive: <span class="built_in">Int</span>, step: <span class="built_in">Int</span>) : Iterable&lt;<span class="built_in">Int</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">init</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (step == <span class="number">0</span>) <span class="keyword">throw</span> kotlin.IllegalArgumentException(<span class="string">"Step must be non-zero"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">val</span> first: <span class="built_in">Int</span> = start</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">val</span> last: <span class="built_in">Int</span> = getProgressionLastElement(start.toInt(), endInclusive.toInt(), step).toInt()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">val</span> step: <span class="built_in">Int</span> = step</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">iterator</span><span class="params">()</span></span>: IntIterator = IntProgressionIterator(first, last, step)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">isEmpty</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> = <span class="keyword">if</span> (step &gt; <span class="number">0</span>) first &gt; last <span class="keyword">else</span> first &lt; last</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">equals</span><span class="params">(other: <span class="type">Any</span>?)</span></span>: <span class="built_in">Boolean</span> =</span><br><span class="line">        other <span class="keyword">is</span> IntProgression &amp;&amp; (isEmpty() &amp;&amp; other.isEmpty() ||</span><br><span class="line">        first == other.first &amp;&amp; last == other.last &amp;&amp; step == other.step)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">hashCode</span><span class="params">()</span></span>: <span class="built_in">Int</span> =</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) -<span class="number">1</span> <span class="keyword">else</span> (<span class="number">31</span> * (<span class="number">31</span> * first + last) + step)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">toString</span><span class="params">()</span></span>: String = <span class="keyword">if</span> (step &gt; <span class="number">0</span>) <span class="string">"<span class="variable">$first</span>..<span class="variable">$last</span> step <span class="variable">$step</span>"</span> <span class="keyword">else</span> <span class="string">"<span class="variable">$first</span> downTo <span class="variable">$last</span> step <span class="subst">$&#123;-step&#125;</span>"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">fun</span> <span class="title">fromClosedRange</span><span class="params">(rangeStart: <span class="type">Int</span>, rangeEnd: <span class="type">Int</span>, step: <span class="type">Int</span>)</span></span>: IntProgression = IntProgression(rangeStart, rangeEnd, step)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// `IntProgressionIterator` 源码如下</span></span><br><span class="line"><span class="keyword">internal</span> <span class="class"><span class="keyword">class</span> <span class="title">IntProgressionIterator</span></span>(first: <span class="built_in">Int</span>, last: <span class="built_in">Int</span>, <span class="keyword">val</span> step: <span class="built_in">Int</span>) : IntIterator() &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> finalElement = last</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> hasNext: <span class="built_in">Boolean</span> = <span class="keyword">if</span> (step &gt; <span class="number">0</span>) first &lt;= last <span class="keyword">else</span> first &gt;= last</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> next = <span class="keyword">if</span> (hasNext) first <span class="keyword">else</span> finalElement</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">hasNext</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> = hasNext</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">nextInt</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">val</span> value = next</span><br><span class="line">        <span class="keyword">if</span> (value == finalElement) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!hasNext) <span class="keyword">throw</span> kotlin.NoSuchElementException()</span><br><span class="line">            hasNext = <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            next += step</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> value</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Kotlin-Range-性能测试"><a href="#Kotlin-Range-性能测试" class="headerlink" title="Kotlin Range 性能测试"></a>Kotlin Range 性能测试</h2><p>结合上面的源码剖析, 由于<code>IntRange</code>类继承了<code>IntProgression</code>类, 而<code>IntProgression</code>实现了<code>Iterable</code>接口, 因此可以对<code>IntRange</code>调用<code>forEach</code>方法, 类似地, <code>LongRange</code>、<code>CharRange</code>同样也可以调用<code>forEach</code>方法. 下面对Range做些性能测试:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> range = <span class="number">0</span>..<span class="number">1_000</span></span><br><span class="line"><span class="keyword">val</span> array = Array(<span class="number">1_000</span>) &#123; it &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">rangeLoop</span><span class="params">(blackhole: <span class="type">Blackhole</span>)</span></span> &#123;</span><br><span class="line">    range.forEach &#123;</span><br><span class="line">        blackhole.consume(it)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">rangeSequenceLoop</span><span class="params">(blackhole: <span class="type">Blackhole</span>)</span></span> &#123;</span><br><span class="line">    range.asSequence().forEach &#123;</span><br><span class="line">        blackhole.consume(it)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">arrayLoop</span><span class="params">(blackhole: <span class="type">Blackhole</span>)</span></span> &#123;</span><br><span class="line">    array.forEach &#123;</span><br><span class="line">        blackhole.consume(it)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">arraySequenceLoop</span><span class="params">(blackhole: <span class="type">Blackhole</span>)</span></span> &#123;</span><br><span class="line">    array.asSequence().forEach &#123;</span><br><span class="line">        blackhole.consume(it)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果如下, 可以看到<code>range</code>版本循环要快于数组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Benchmark                  Mode Cnt Score      Error   Units</span><br><span class="line">rangeLoop                  avgt 200 3156.754 ± 27.725  ns/op</span><br><span class="line">rangeSequenceLoop          avgt 200 5286.066 ± 81.330  ns/op</span><br><span class="line">arrayLoop                  avgt 200 2640.670 ± 8.357   ns/op</span><br><span class="line">arraySequenceLoop          avgt 200 2817.694 ± 44.780  ns/op</span><br></pre></td></tr></table></figure>
+<p>整段代码字节码反编译Java源码如下, 可以看到<code>range</code>先被强制类型转化为<code>Iterable</code>类型, 然后再调用迭代器方法并使用<code>while</code>循环进行迭代,这也在一定程度上解释了<code>range</code>遍历要快于数组.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">rangeLoop</span><span class="params">(@NotNull Blackhole blackhole)</span> </span>&#123;</span><br><span class="line">   Intrinsics.checkParameterIsNotNull(blackhole, <span class="string">"blackhole"</span>);</span><br><span class="line">   Iterable $receiver$iv = (Iterable)MyBenchmarkKt.getRange();</span><br><span class="line">   Iterator var3 = $receiver$iv.iterator();</span><br><span class="line"></span><br><span class="line">   <span class="comment">// `rangeLoop`使用`while`循环, 而`arrayLoop`使用简单的`for`循环</span></span><br><span class="line">   <span class="keyword">while</span>(var3.hasNext()) &#123;</span><br><span class="line">      <span class="keyword">int</span> element$iv = ((IntIterator)var3).nextInt();</span><br><span class="line">      blackhole.consume(element$iv);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">rangeSequenceLoop</span><span class="params">(@NotNull Blackhole blackhole)</span> </span>&#123;</span><br><span class="line">   Intrinsics.checkParameterIsNotNull(blackhole, <span class="string">"blackhole"</span>);</span><br><span class="line">   Sequence $receiver$iv = CollectionsKt.asSequence((Iterable)MyBenchmarkKt.getRange());</span><br><span class="line">   Iterator var3 = $receiver$iv.iterator();</span><br><span class="line"></span><br><span class="line">   <span class="keyword">while</span>(var3.hasNext()) &#123;</span><br><span class="line">      Object element$iv = var3.next();</span><br><span class="line">      <span class="keyword">int</span> it = ((Number)element$iv).intValue();</span><br><span class="line">      blackhole.consume(it);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">arrayLoop</span><span class="params">(@NotNull Blackhole blackhole)</span> </span>&#123;</span><br><span class="line">   Intrinsics.checkParameterIsNotNull(blackhole, <span class="string">"blackhole"</span>);</span><br><span class="line">   Object[] $receiver$iv = (Object[])MyBenchmarkKt.getArray();</span><br><span class="line">   <span class="keyword">int</span> var3 = $receiver$iv.length;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">for</span>(<span class="keyword">int</span> var4 = <span class="number">0</span>; var4 &lt; var3; ++var4) &#123;</span><br><span class="line">      Object element$iv = $receiver$iv[var4];</span><br><span class="line">      <span class="keyword">int</span> it = ((Number)element$iv).intValue();</span><br><span class="line">      blackhole.consume(it);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">arraySequenceLoop</span><span class="params">(@NotNull Blackhole blackhole)</span> </span>&#123;</span><br><span class="line">   Intrinsics.checkParameterIsNotNull(blackhole, <span class="string">"blackhole"</span>);</span><br><span class="line">   Sequence $receiver$iv = ArraysKt.asSequence((Object[])MyBenchmarkKt.getArray());</span><br><span class="line">   Iterator var3 = $receiver$iv.iterator();</span><br><span class="line"></span><br><span class="line">   <span class="keyword">while</span>(var3.hasNext()) &#123;</span><br><span class="line">      Object element$iv = var3.next();</span><br><span class="line">      <span class="keyword">int</span> it = ((Number)element$iv).intValue();</span><br><span class="line">      blackhole.consume(it);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再来看个例子, 在<code>range</code>上调用高阶函数, 如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">rangeLoop</span><span class="params">(blackhole: <span class="type">Blackhole</span>)</span></span></span><br><span class="line">        = range</span><br><span class="line">            .map &#123; it * <span class="number">2</span> &#125;</span><br><span class="line">            .first &#123; it % <span class="number">2</span> == <span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">rangeSequenceLoop</span><span class="params">(blackhole: <span class="type">Blackhole</span>)</span></span></span><br><span class="line">        = range.asSequence()</span><br><span class="line">            .map &#123; it * <span class="number">2</span> &#125;</span><br><span class="line">            .first &#123; it % <span class="number">2</span> == <span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">arrayLoop</span><span class="params">(blackhole: <span class="type">Blackhole</span>)</span></span></span><br><span class="line">    = array</span><br><span class="line">            .map &#123; it * <span class="number">2</span> &#125;</span><br><span class="line">            .first &#123; it % <span class="number">2</span> == <span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">arraySequenceLoop</span><span class="params">(blackhole: <span class="type">Blackhole</span>)</span></span></span><br><span class="line">    = array.asSequence()</span><br><span class="line">            .map &#123; it * <span class="number">2</span> &#125;</span><br><span class="line">            .first &#123; it % <span class="number">2</span> == <span class="number">0</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果如下, 同样<code>range</code>版本高阶方法迭代要快于数组.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Benchmark             Mode  Cnt  Score      Error     Units</span><br><span class="line">rangeLoop             avgt. 200  8268.058 ± 179.797   ns/op</span><br><span class="line">rangeSequenceLoop     avgt  200  16.109   ± 0.128     ns/op</span><br><span class="line">arrayLoop             avgt  200  6490.003 ± 124.134   ns/op</span><br><span class="line">arraySequenceLoop     avgt  200  14.841   ± 0.483     ns/op</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/JVM-And-JVM-Languages/" <i class="fa fa-tag"> JVM And JVM Languages</a>
+          
+            
+            <a href="/tags/Kotlin/" <i class="fa fa-tag"> Kotlin</a>
+          
+            
+            <a href="/tags/High-Performance-Kotlin/" <i class="fa fa-tag"> High Performance Kotlin</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/kt/dlgt-class/" rel="next" title="Kotlin高性能实战 (四) -- Kotlin Delegate (Part One)">
+                <i class="fa fa-chevron-left"></i> Kotlin高性能实战 (四) -- Kotlin Delegate (Part One)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/kt/optmz-props/" rel="prev" title="Kotlin高性能实战 (二) -- Kotlin Property优化(Part One)">
+                Kotlin高性能实战 (二) -- Kotlin Property优化(Part One) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kotlin-Range"><span class="nav-number">1.</span> <span class="nav-text">Kotlin Range</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kotlin-Range常用方法"><span class="nav-number">1.1.</span> <span class="nav-text">Kotlin Range常用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Range-性能优化"><span class="nav-number">1.2.</span> <span class="nav-text">Range 性能优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Range-源码剖析"><span class="nav-number">1.3.</span> <span class="nav-text">Range 源码剖析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kotlin-Range-性能测试"><span class="nav-number">2.</span> <span class="nav-text">Kotlin Range 性能测试</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

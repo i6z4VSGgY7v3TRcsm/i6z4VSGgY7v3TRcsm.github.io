@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="命名实体识别作为自然语言处理(NLP)中重要一环, 有助于后续语义感知与语义知识库构建. 实体存在于文本中, 可以基于预定义范畴(通常这些范畴基于上下文语境或特定场景)进行分类.">
+<meta name="keywords" content="Deep Learning &amp; Machine Learning,Rust,NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust大法试水NLP之命名实体识别">
+<meta property="og:url" content="https://ultradata.stream/rust/crf-ner/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="命名实体识别作为自然语言处理(NLP)中重要一环, 有助于后续语义感知与语义知识库构建. 实体存在于文本中, 可以基于预定义范畴(通常这些范畴基于上下文语境或特定场景)进行分类.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/rs/dataset.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/crf-01.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/crf-02.png">
+<meta property="og:updated_time" content="2019-04-15T14:21:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust大法试水NLP之命名实体识别">
+<meta name="twitter:description" content="命名实体识别作为自然语言处理(NLP)中重要一环, 有助于后续语义感知与语义知识库构建. 实体存在于文本中, 可以基于预定义范畴(通常这些范畴基于上下文语境或特定场景)进行分类.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/rs/dataset.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/rust/crf-ner/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Rust大法试水NLP之命名实体识别 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/rust/crf-ner/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rust大法试水NLP之命名实体识别
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-05-06 20:11:18" itemprop="dateCreated datePublished" datetime="2016-05-06T20:11:18+08:00">2016-05-06</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-15 22:21:36" itemprop="dateModified" datetime="2019-04-15T22:21:36+08:00">2019-04-15</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Deep-Learning-Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning & Machine Learning</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">5.4k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">5 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>命名实体识别作为自然语言处理(NLP)中重要一环, 有助于后续语义感知与语义知识库构建. 实体存在于文本中, 可以基于预定义范畴(通常这些范畴基于上下文语境或特定场景)进行分类. <a id="more"></a> </p>
+<div class="note info">
+            <p>目前比较流行的NLP相关算法思想, 主要分为以下两大流派:</p><ul><li>概率图模型(基于概率论和图论)</li><li>基于人工神经网络的深度学习算法理论</li></ul><p>常见的概率图模型主要有:</p><ul><li>朴素贝叶斯模型</li><li>隐式马科夫模型</li><li>条件随机场模型</li><li>最大熵模型</li></ul>
+          </div>
+<p>CRF(条件随机场, Conditional Random Fields)算法, 作为概率图模型中的一种, 可用于NLP语言模型设计, CRF算法也可用于命名实体识别. CRF算法基于历史标签的上下文信息进行分类, 标签中上文信息越丰富, 预测效果越佳. 有关CRF算法理论部分, 请自行谷歌或百度, 本文不再展开讨论.</p>
+<p>为提高CRF算法效率, 通常需要对输入文本进行词性标注, 如将语句中的名词、动词、副词、介词等短语进行序列化标注, 这些序列化标注工作以前全靠人工手动标注, 但伴随着深度学习大热, 开始涌现一批自动化文本标注工具. 常见的开源文本标注工具, 参考如下:</p>
+<ul>
+<li>GATE, General Architecture and Text Engineering(通用架构与文本引擎), 老牌文本标注工具, 免费且开源</li>
+<li>Brat, 基于在线环境的快速标注工具, 支持协作式文本标注</li>
+<li>Anafora，免费, 开源, 基于Web的文本标注工具</li>
+</ul>
+<h2 id="准备数据集"><a href="#准备数据集" class="headerlink" title="准备数据集"></a>准备数据集</h2><p>本文将使用Kaggle网站提供的一<a href="https://www.kaggle.com/abhinavwalia95/entity-annotated-corpus" target="_blank" rel="noopener">实体标记语料数据集</a>进行CFR算法训练与预测, 该数据集包含以下等25项字段(由于字段太多, 仅挑出几个说明):</p>
+<ul>
+<li>lemma, 语句词元或词根</li>
+<li>next-lemma, 语句下一词元</li>
+<li>next-next-lemma, 基于上一词元接着出现的词元</li>
+<li>word, 也称Token, 单词</li>
+<li>tag, 当前Token的IOB标注</li>
+</ul>
+<p>该实体标记语料数据样本参考如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/rs/dataset.jpg" alt></p>
+<h2 id="代码实战"><a href="#代码实战" class="headerlink" title="代码实战"></a>代码实战</h2><p>代码主逻辑参考如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> args: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; = env::args().collect();</span><br><span class="line">    <span class="keyword">let</span> data_path = &amp;args[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 首先, 进行数据解析与抽取</span></span><br><span class="line">    <span class="keyword">let</span> data = extract_data(&amp;data_path).unwrap();</span><br><span class="line">    <span class="comment">// 然后, 按照经典的Cross Validation思想进行迭代训练, </span></span><br><span class="line">    <span class="comment">// 对语料数据集进行分割, 主要分割为训练集与测试集</span></span><br><span class="line">    <span class="comment">// 指定特征矩阵以及标签向量</span></span><br><span class="line">    <span class="keyword">let</span> (test_data, train_data) = dataset_splitter(&amp;data, <span class="number">0.2</span>);</span><br><span class="line">    <span class="keyword">let</span> (xseq_train, yseq_train) = create_xseq_yseq(&amp;train_data);</span><br><span class="line">    <span class="keyword">let</span> (xseq_test, yseq_test) = create_xseq_yseq(&amp;test_data);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 进行CRF算法训练与预测, 并输出该算法主要评估指标--准确率</span></span><br><span class="line">    crfmodel_training(xseq_train, yseq_train, <span class="string">"model.crfsuite"</span>).unwrap();</span><br><span class="line">    <span class="keyword">let</span> preds = model_prediction(xseq_test, <span class="string">"model.crfsuite"</span>).unwrap();</span><br><span class="line">    check_accuracy(&amp;preds, &amp;yseq_test);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完整代码, 请参考<a href="https://github.com/dot-delta/crf-ner-rust" target="_blank" rel="noopener">这里</a>. 下面细分步骤进行说明, 对代码进行分解.</p>
+<h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><p>首先新建一Rust项目, 参考指令如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cargo new crf-named-entity-recognition --bin</span><br></pre></td></tr></table></figure>
+<p>进入该项目主目录, 在Cargo.toml中添加以下依赖:</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">csv</span> = <span class="string">"1.0.7"</span></span><br><span class="line"><span class="attr">serde</span> = <span class="string">"1"</span></span><br><span class="line"><span class="attr">serde_derive</span> = <span class="string">"1"</span></span><br><span class="line"><span class="attr">rand</span> = <span class="string">"0.6.5"</span></span><br><span class="line"><span class="attr">crfsuite</span> = <span class="string">"0.2.6"</span></span><br></pre></td></tr></table></figure>
+<p>以上Crates中, <code>crfsuite</code>主要用于CRF算法训练与预测, <code>serde</code>与<code>serde_derive</code>处理数据序列化与反序列化, <code>csv</code>用于抽取语料样本数据, <code>rand</code>主要用于数据混排.</p>
+<h3 id="数据抽取"><a href="#数据抽取" class="headerlink" title="数据抽取"></a>数据抽取</h3><p>由于语料数据集为CSV格式, 数据抽取方法参考如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义结构体`NER`, 该ADT(抽象数据类型或代数数据类型)主要用于描述语料数据集上每一行需要抽取的数据</span></span><br><span class="line"><span class="comment">// 包括: 词根(或词元), 下一词元, 单词, 标签 (可以选取更多特征, 本文为了说明仅选用较少特征)</span></span><br><span class="line"><span class="meta">#[derive(Debug, Deserialize, Clone)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">NER</span></span> &#123;     <span class="comment">//命名实体识别(Named Entity Recognition, NER)</span></span><br><span class="line">    lemma: <span class="built_in">String</span>,</span><br><span class="line">    <span class="meta">#[serde(rename=<span class="meta-string">"next-lemma"</span>)]</span></span><br><span class="line">    next_lemma: <span class="built_in">String</span>,</span><br><span class="line">    word: <span class="built_in">String</span>,</span><br><span class="line">    tag: <span class="built_in">String</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">extract_data</span></span>(path: &amp;<span class="built_in">String</span>) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">Vec</span>&lt;NER&gt;, <span class="built_in">Box</span>&lt;Error&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> rdr = csv::Reader::from_path(path)?;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> data = <span class="built_in">Vec</span>::new();</span><br><span class="line">    <span class="keyword">for</span> result <span class="keyword">in</span> rdr.deserialize() &#123;</span><br><span class="line">        <span class="keyword">let</span> r: NER = result?;</span><br><span class="line">        data.push(r);   </span><br><span class="line">    &#125;</span><br><span class="line">    data.shuffle(&amp;<span class="keyword">mut</span> thread_rng());</span><br><span class="line">    <span class="literal">Ok</span>(data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="数据集切分"><a href="#数据集切分" class="headerlink" title="数据集切分"></a>数据集切分</h3><p>语料数据抽取完毕, 下面进行数据集分割, 主要分为语料训练集与语料测试集(在训练集上算法训练, 在测试集上进行算法预测), 代码参考如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">dataset_splitter</span></span>(data: &amp;[NER], test_size: <span class="built_in">f32</span>) -&gt; (<span class="built_in">Vec</span>&lt;NER&gt;, <span class="built_in">Vec</span>&lt;NER&gt;) &#123;</span><br><span class="line">    <span class="keyword">let</span> test_size: <span class="built_in">f32</span> = data.len() <span class="keyword">as</span> <span class="built_in">f32</span> * test_size;</span><br><span class="line">    <span class="keyword">let</span> test_size = test_size.round() <span class="keyword">as</span> <span class="built_in">usize</span>;</span><br><span class="line">    <span class="keyword">let</span> (test_data, train_data) = data.split_at(test_size);</span><br><span class="line">    (test_data.to_vec(), train_data.to_vec())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>指定CFR算法训练的Attribute(本例为词元及下一词元)矩阵与预测标签(本例为语料中的Tag, 标注字段)向量, 代码参考如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> crfsuite::Attribute;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">create_xseq_yseq</span></span>(data: &amp;[NER]) -&gt; (<span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;Attribute&gt;&gt;, <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> xseq = <span class="built_in">vec!</span>[];</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> yseq = <span class="built_in">vec!</span>[];</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> data &#123;</span><br><span class="line">        <span class="keyword">let</span> seq = <span class="built_in">vec!</span>[Attribute::new(item.lemma.clone(), <span class="number">1.0</span>),</span><br><span class="line">            Attribute::new(item.next_lemma.clone(), <span class="number">0.5</span>)];</span><br><span class="line">        xseq.push(seq);</span><br><span class="line">        yseq.push(item.tag.clone());   </span><br><span class="line">    &#125;</span><br><span class="line">    (xseq, yseq)   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法训练"><a href="#算法训练" class="headerlink" title="算法训练"></a>算法训练</h3><p>进行CRF算法训练, 代码参考如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> crfsuite::&#123;Attribute, CrfError&#125;;</span><br><span class="line"><span class="keyword">use</span> crfsuite::&#123;Trainer, Algorithm, GraphicalModel&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">crfmodel_training</span></span>(xseq: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;Attribute&gt;&gt;, </span><br><span class="line">                     yseq: <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;, </span><br><span class="line">                     model_name: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Result</span>&lt;(), <span class="built_in">Box</span>&lt;CrfError&gt;&gt;&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> trainer = Trainer::new(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// AROW(权重向量自适应归一化, Adaptive Regularization of Weight Vector)</span></span><br><span class="line">    trainer.select(Algorithm::AROW, GraphicalModel::CRF1D)?;</span><br><span class="line">    trainer.append(&amp;xseq, &amp;yseq, <span class="number">0i32</span>)?;</span><br><span class="line">    trainer.train(model_name, -<span class="number">1i32</span>)?;</span><br><span class="line"></span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述方法中, 对权重向量使用Adaptive regularization(自适应归一化)算法, 除了该算法外, 其它备选算法参考如下:</p>
+<ul>
+<li>基于L-BFGS方法的梯度下降算法, 可用于查找对象函数局部最小值, 充分利用对象函数值及梯度值</li>
+<li>基于L2系数归一化的SGD, 结合了梯度下降及拥有L2系数的损失函数, 可避免数据过拟合</li>
+<li>感知机均值法(Averaged Perceptron), 二分类方法, 使用包含权重均值及Bias的标准感知机算法</li>
+<li>Passive Aggressive, 防止分类错误导致权重变更(Aggressive风格)</li>
+</ul>
+<h3 id="算法预测"><a href="#算法预测" class="headerlink" title="算法预测"></a>算法预测</h3><p>CRF算法预测, 参考代码如下:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> crfsuite::&#123;Model, Attribute, CrfError&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">model_prediction</span></span>(xtest: <span class="built_in">Vec</span>&lt;<span class="built_in">Vec</span>&lt;Attribute&gt;&gt;, </span><br><span class="line">                    model_name: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;, <span class="built_in">Box</span>&lt;CrfError&gt;&gt;&#123;</span><br><span class="line">    <span class="keyword">let</span> model = Model::from_file(model_name)?;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> tagger = model.tagger()?;</span><br><span class="line">    <span class="keyword">let</span> preds = tagger.tag(&amp;xtest)?;</span><br><span class="line">    <span class="literal">Ok</span>(preds)   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法评估"><a href="#算法评估" class="headerlink" title="算法评估"></a>算法评估</h3><p>算法评估, 打印准确率:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">check_accuracy</span></span>(predicted: &amp;[<span class="built_in">String</span>], actual: &amp;[<span class="built_in">String</span>]) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> hits = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> correct_hits = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (pred, actl) <span class="keyword">in</span> predicted.iter().zip(actual) &#123;</span><br><span class="line">        <span class="keyword">if</span> actl != <span class="string">"0"</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> pred == actl &amp;&amp; actl != <span class="string">"0"</span> &#123;</span><br><span class="line">                correct_hits += <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            hits += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"accuracy=&#123;&#125; (&#123;&#125;/&#123;&#125;) correct"</span>,</span><br><span class="line">        correct_hits <span class="keyword">as</span> <span class="built_in">f32</span> / hits <span class="keyword">as</span> <span class="built_in">f32</span>,</span><br><span class="line">        correct_hits,</span><br><span class="line">        hits);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="效果检测"><a href="#效果检测" class="headerlink" title="效果检测"></a>效果检测</h2><p>运行上面代码, 进行CRF算法训练与预测, 迭代效果如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/crf-01.png" alt></p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/crf-02.png" alt></p>
+<p>可以看到算法准确率为80.9%, 该算法还存在改进空间, 由于本例训练的数据集较小(大概1-2千项Record, 为了算法选型目的最开始使用小批量数据查看效果), 后续可以适当增大数据集, 改善算法质量.</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Deep-Learning-Machine-Learning/" <i class="fa fa-tag"> Deep Learning & Machine Learning</a>
+          
+            
+            <a href="/tags/Rust/" <i class="fa fa-tag"> Rust</a>
+          
+            
+            <a href="/tags/NLP/" <i class="fa fa-tag"> NLP</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/rust/fasttext/" rel="next" title="Rust大法试水NLP之语句分类与预测">
+                <i class="fa fa-chevron-left"></i> Rust大法试水NLP之语句分类与预测
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/rust/inference/" rel="prev" title="Rust大法试水NLP之语义推断引擎构建篇">
+                Rust大法试水NLP之语义推断引擎构建篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备数据集"><span class="nav-number">1.</span> <span class="nav-text">准备数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实战"><span class="nav-number">2.</span> <span class="nav-text">代码实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加依赖"><span class="nav-number">2.1.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据抽取"><span class="nav-number">2.2.</span> <span class="nav-text">数据抽取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集切分"><span class="nav-number">2.3.</span> <span class="nav-text">数据集切分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法训练"><span class="nav-number">2.4.</span> <span class="nav-text">算法训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法预测"><span class="nav-number">2.5.</span> <span class="nav-text">算法预测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法评估"><span class="nav-number">2.6.</span> <span class="nav-text">算法评估</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果检测"><span class="nav-number">3.</span> <span class="nav-text">效果检测</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将介绍Apache Phoenix与常见Hadoop生态组件交互.">
+<meta name="keywords" content="Big Data,Apache Phoenix,Apache HBase">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云中漫步, Apache Phoenix与常见Hadoop生态组件交互">
+<meta property="og:url" content="https://ultradata.stream/bigdata/hbase/phoenix-integ/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将介绍Apache Phoenix与常见Hadoop生态组件交互.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云中漫步, Apache Phoenix与常见Hadoop生态组件交互">
+<meta name="twitter:description" content="本文将介绍Apache Phoenix与常见Hadoop生态组件交互.">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/hbase/phoenix-integ/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>云中漫步, Apache Phoenix与常见Hadoop生态组件交互 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/hbase/phoenix-integ/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">云中漫步, Apache Phoenix与常见Hadoop生态组件交互
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">14k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">12 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将介绍Apache Phoenix与常见Hadoop生态组件交互. <a id="more"></a></p>
+<h2 id="与Spark集成"><a href="#与Spark集成" class="headerlink" title="与Spark集成"></a>与Spark集成</h2><p>Apache Phoenix可与Spark集成, 充分利用Spark API对Phoenix表数据读写提供原生支持. 提交Spark任务时, 可以将依赖包phoenix-spark-phoenix_version-Hbase-hbase_version.jar路径作为参数传入或加入到Spark类路径中, 参考指令如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ bin/spark-submit.sh --jar /path/to/phoenix-spark-&lt;phoenix_version&gt;-Hbase-&lt;hbase_version&gt;.jar \</span><br><span class="line">      <span class="comment"># Spark任务Jar包, 运行类及参数等</span></span><br><span class="line">      <span class="comment"># 其它配置项, 如driver-memory、executor-memory、executors等略</span></span><br></pre></td></tr></table></figure>
+<p>通过使用Spark RDD对Phoenix表间数据进行读写, 参考代码如下, 该任务从<code>ORDERS</code>表中读取数据并计算每位顾客消费金额, 并将结果数据存储至<code>CUSTOMER_STATS</code>表中.</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.<span class="type">SparkConf</span></span><br><span class="line"><span class="keyword">import</span> org.apache.spark.rdd.<span class="type">RDD</span></span><br><span class="line"><span class="keyword">import</span> java.math.<span class="type">BigDecimal</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">PhoenixAppSparkRDD</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">        <span class="keyword">val</span> zkQuorum = <span class="type">Some</span>(<span class="string">"zk-n1:2181"</span>)</span><br><span class="line">        <span class="keyword">val</span> master = <span class="string">"spark-master"</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>()</span><br><span class="line">            .setAppName(<span class="string">"Phoenix-Spark-RDD-Write"</span>)</span><br><span class="line">            .setMaster(master)</span><br><span class="line">        <span class="keyword">val</span> sc = <span class="keyword">new</span> <span class="type">SparkContext</span>(conf)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> inputTable = <span class="string">"ORDERS"</span></span><br><span class="line">        <span class="keyword">val</span> inputColumns = <span class="type">Seq</span>(<span class="string">"ORDER_ID"</span>, <span class="string">"CUST_ID"</span>, <span class="string">"AMOUNT"</span>)</span><br><span class="line">        <span class="keyword">val</span> outputTable = <span class="string">"CUSTOMER_STATS"</span></span><br><span class="line"></span><br><span class="line">        runPhoenixAppRDD(sc, zkQuorum, inputTable, inputColumns, outputTable)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">runPhoenixAppRDD</span></span>(sc: <span class="type">SparkContext</span>,</span><br><span class="line">                         zkQuorum: <span class="type">Option</span>[<span class="type">String</span>],</span><br><span class="line">                         inputTable: <span class="type">String</span>, </span><br><span class="line">                         inputColumns: <span class="type">Seq</span>[<span class="type">String</span>],</span><br><span class="line">                         outputTable: <span class="type">String</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">val</span> rdd: <span class="type">RDD</span>[<span class="type">Map</span>[<span class="type">String</span>, <span class="type">AnyRef</span>]] = </span><br><span class="line">            sc.phoenixTableAsRDD(inputTable, inputColumns, zkQuorum)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">val</span> customerId = inputColumns(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">val</span> amountCol = inputColumns(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> result = rdd.map &#123; row =&gt; </span><br><span class="line">            <span class="keyword">val</span> key = row(customerId).asInstanceOf[<span class="type">Long</span>]</span><br><span class="line">            <span class="keyword">val</span> amount = row(amountCol).asInstanceOf[<span class="type">BigDecimal</span>]</span><br><span class="line">            (key, amount.doubleValue())</span><br><span class="line">        &#125;</span><br><span class="line">        .reduceByKey(_+_)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> outputColumns = <span class="type">Seq</span>(customerId, amountCol)</span><br><span class="line">        result.saveToPhoenix(outputTable, outputColumns, zkQuorum)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可通过使用Spark DataFrame对Phoenix表间数据进行读写, 参考代码如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.<span class="type">SparkConf</span></span><br><span class="line"><span class="keyword">import</span> org.apache.spark.rdd.<span class="type">RDD</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">PhoenixAppSparkDF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">        <span class="keyword">val</span> zkQuorum = <span class="type">Some</span>(<span class="string">"zk-n1:2181"</span>)</span><br><span class="line">        <span class="keyword">val</span> master = <span class="string">"spark-master"</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>()</span><br><span class="line">            .setAppName(<span class="string">"Phoenix-Spark-DataFrame-Write"</span>)</span><br><span class="line">            .setMaster(master)</span><br><span class="line">        <span class="keyword">val</span> sc = <span class="keyword">new</span> <span class="type">SparkContext</span>(conf)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> inputTable = <span class="string">"ORDERS"</span></span><br><span class="line">        <span class="keyword">val</span> inputColumns = <span class="type">Seq</span>(<span class="string">"ORDER_ID"</span>, <span class="string">"CUST_ID"</span>, <span class="string">"AMOUNT"</span>)</span><br><span class="line">        <span class="keyword">val</span> outputTable = <span class="string">"CUSTOMER_STATS"</span></span><br><span class="line"></span><br><span class="line">        runPhoenixAppDF(sc, zkQuorum, inputTable, inputColumns, outputTable)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">runPhoenixAppDF</span></span>(sc: <span class="type">SparkContext</span>,</span><br><span class="line">                        zkQuorum: <span class="type">Option</span>[<span class="type">String</span>],</span><br><span class="line">                        inputTable: <span class="type">String</span>, </span><br><span class="line">                        inputColumns: <span class="type">Seq</span>[<span class="type">String</span>],</span><br><span class="line">                        outputTable: <span class="type">String</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">val</span> df = sc.phoenixTableAsDataFrame(inputTable, inputColumns, zkQuorum)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">val</span> customerId = inputColumns(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">val</span> amountCol = inputColumns(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> result = df.rdd.map &#123; row =&gt; </span><br><span class="line">            <span class="keyword">val</span> key = row.getString(<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">val</span> amount = row.geString(<span class="number">2</span>)</span><br><span class="line">            (key.toLong, amount.toDouble)</span><br><span class="line">        &#125;</span><br><span class="line">        .reduceByKey(_+_)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> outputColumns = <span class="type">Seq</span>(customerId, amountCol)</span><br><span class="line">        result.saveToPhoenix(outputTable, outputColumns, zkQuorum)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>目前Phoenix-Spark插件暂不支持从Phoenix表中批量加载数据, 对于Java用户而言, 使用DataFrame API相对简单, 因为<code>PhoenixRDD</code>暂不支持直接从Java调用.</p>
+<h2 id="与Hive集成"><a href="#与Hive集成" class="headerlink" title="与Hive集成"></a>与Hive集成</h2><p>用户可以使用自定义<code>PhoenixHiveHandler</code>从Apache Phoenix表中读取数据至Hive表中. 首先要将phoenix-phoenix_version-hbase-hbase_version-hive.jar加入Hive环境变量(类路径)中, 可以参考以下命令行:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 开启Hive Shell, 键入以下指令, Jar包路径可以是本地文件路径也可以是HDFS、S3等其它分布式文件系统路径</span></span><br><span class="line">ADD JAR /path-to/phoenix-&lt;phoenix_version&gt;-Hbase-&lt;hbase_version&gt;-hive.jar</span><br></pre></td></tr></table></figure>
+<p>或者在开启Hive终端时指定Jar包路径:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bin/hive  --auxpath=/path-to/phoenix-&lt;phoenix_version&gt;-Hbase-&lt;hbase_version&gt;-hive.jar</span><br></pre></td></tr></table></figure>
+<p>也可以写入Hive配置文件hive-site.xml中, 参考如下:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.aux.jars.path<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/path-to/phoenix-<span class="tag">&lt;<span class="name">phoenix_version</span>&gt;</span>-Hbase-<span class="tag">&lt;<span class="name">hbase_version</span>&gt;</span>-hive.jar<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>解决完Jar包依赖问题, 现在可以建表读取数据了, 可以在Hive中创建内部表或外部表, 区别在于数据表及数据生命周期的管理者不同, 如果是内部表, 数据及生命周期由Hive管理; 若为外部表, 只有元数据由Hive管理. 建表语句参考如下, 注意<code>TBLPROPERTIES</code>中<code>phoenix.column.mapping</code>映射Hive表中每一列至Phoenix, 映射关系为: Hive列:Phenix列, 任何需要传入Phoenix表中属性均可以通过使用<code>TBLPROPERTIES</code>传入.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建外部表, orders订单表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">EXTERNAL</span> <span class="keyword">TABLE</span> orders</span><br><span class="line">(</span><br><span class="line">     <span class="keyword">id</span> <span class="built_in">int</span>,</span><br><span class="line">     custid <span class="built_in">int</span>,</span><br><span class="line">     order_date <span class="built_in">date</span>,</span><br><span class="line">     amount <span class="keyword">double</span>,</span><br><span class="line">     quantity <span class="built_in">int</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">STORED</span> <span class="keyword">BY</span> <span class="string">'org.apache.phoenix.hive.PhoenixStorageHandler'</span></span><br><span class="line"></span><br><span class="line">TBLPROPERTIES (</span><br><span class="line">      <span class="string">"phoenix.table.name"</span> = <span class="string">"orders"</span>,</span><br><span class="line">      <span class="string">"phoenix.zookeeper.quorum"</span> = <span class="string">"zk_quorum"</span>,</span><br><span class="line">      <span class="string">"phoenix.rowkeys"</span> = <span class="string">"id, custid"</span>,</span><br><span class="line">      <span class="string">"phoenix.column.mapping"</span> = <span class="string">"id:order_id, custid:cust_id,</span></span><br><span class="line"><span class="string">              order_date:order_date, amount:amount, quantity:quantity"</span>,</span><br><span class="line">      <span class="string">"phoenix.table.options"</span>  = <span class="string">"SALT_BUCKETS=10"</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>执行以上指令, 更新Hive元数据存储同时也会创建一张Phoenix表, 或者说, 外部表即订单表orders元数据将由Hive管理, 而实际数据存储于Phoenix表中.</p>
+<h2 id="与MR集成"><a href="#与MR集成" class="headerlink" title="与MR集成"></a>与MR集成</h2><p>尽管Phoenix通过使用HBase底层API支持<code>SELECT</code>、<code>UPSERT</code>等子句拓展, 但有时需要执行一些大批量处理任务如构建索引、聚合大表等, 此时Driver API容易出现瓶颈(如客户端消耗过多内存、影响应用性能等), 该种情况下可以考虑使用MapReduce对Phoenix表进行读写. Phoenix可使用<code>DBInputFormat</code>及<code>DBOutputFormat</code> API进行MapReduce读写. 如用户可以从Phoenix表中读取数据, 执行如<code>SELECT</code>查询, 将底层Byte Stream转化为自定义<code>Writable</code>类. 自定义<code>InputFormat</code>类<code>PhoenixInputFormat</code>, 内部基于输入查询计算查询计划并根据输入Split数量进行优化, <code>PhoenixOutputFormat</code>将数据写入HBase前将Java类型数据序列化至Byte Stream.</p>
+<p>Apache Phoenix与MapReduce集成时, 需将依赖包phoenix-client-phoenix_version.jar打入MapReduce任务Jar包中, 确保Drive程序可以访问Phoenix表并执行查询计划. 示例代码参考如下, 该MapReduce任务从<code>ORDERS</code>表中读取数据并计算每位顾客消费金额, 并将结果数据存储至<code>ORDER_STATS</code>表中.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configured;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.DoubleWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.LongWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.NullWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Writable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.db.DBWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.util.Tool;</span><br><span class="line"><span class="keyword">import</span> org.apache.phoenix.mapreduce.PhoenixOutputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.phoenix.mapreduce.util.PhoenixMapReduceUtil;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> java.io.DataInput;</span><br><span class="line"><span class="keyword">import</span> java.io.DataOutput;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.sql.PreparedStatement;</span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSet;</span><br><span class="line"><span class="keyword">import</span> java.sql.SQLException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderStatsApp</span> <span class="keyword">extends</span> <span class="title">Configured</span> <span class="title">implemnts</span> <span class="title">Tool</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(OrderStatsApp.class);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> status = ToolRunner.run(<span class="keyword">new</span> OrderStatsApp(), args);</span><br><span class="line">        System.exit(status);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">run</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> Configuration configuration = HBaseConfiguration.create(getConf());</span><br><span class="line">            setConf(configuration);</span><br><span class="line">            <span class="keyword">final</span> Job job = Job.getInstance(configuraion, <span class="string">"phoenix-mr-job-order-stats"</span>);</span><br><span class="line">            <span class="keyword">final</span> String selectQuery = <span class="string">"SELECT ORDER_ID, CUST_ID, AMOUNT FROM ORDERS"</span>;</span><br><span class="line"></span><br><span class="line">            PhoenixMapReduceUtil.setInput(job, OrderWritable.class, <span class="string">"ORDERS"</span>, selectQuery);</span><br><span class="line">            PhoenixMapReduceUtil.setOutput(job, <span class="string">"ORDER_STATS"</span>, <span class="string">"CUST_ID"</span>, <span class="string">"AMOUNT"</span>);</span><br><span class="line"></span><br><span class="line">            job.setMapperClass(OrderMapper.class);</span><br><span class="line">            job.setReducerClass(OrderReducer.class);</span><br><span class="line">            job.setOutputFormatClass(PhoenixOutputFormat.class);</span><br><span class="line"></span><br><span class="line">            job.setMapOutputKeyClass(LongWritable.class);</span><br><span class="line">            job.setMapOutputValueClass(DoubleWritable.class);</span><br><span class="line">            job.setOutputKeyClass(NullWritable.class);</span><br><span class="line">            job.setOutputValueClass(OrderWritable.class);</span><br><span class="line"></span><br><span class="line">            TableMapReduceUtil.addDependencyJars(job);</span><br><span class="line">            job.waitForCompletion(<span class="keyword">true</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOG.error(String.format(</span><br><span class="line">                <span class="string">"An exception [%s] occurred while performing the job: "</span>, </span><br><span class="line">                e.getMessage()));</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderMapper</span> <span class="keyword">extends</span> </span></span><br><span class="line"><span class="class">        <span class="title">Mapper</span>&lt;<span class="title">NullWritable</span>, <span class="title">OrderWritable</span>, <span class="title">LongWritable</span>, <span class="title">DoubleWritable</span>&gt; </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> LongWritable customerId = <span class="keyword">new</span> LongWritable();</span><br><span class="line">        <span class="keyword">private</span> DoubleWritable amount = <span class="keyword">new</span> DoubleWritable();</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(NullWritable key, OrderWritbale order, Context context)</span> </span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            customerId.set(order.customerId);</span><br><span class="line">            amount.set(order.amount);</span><br><span class="line">            context.write(customerId, amount);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderReducer</span> <span class="keyword">extends</span> </span></span><br><span class="line"><span class="class">        <span class="title">Reducer</span>&lt;<span class="title">LongWritable</span>, <span class="title">DoubleWritable</span>, <span class="title">NullWritable</span>, <span class="title">OrderWritable</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(LongWritable key, </span></span></span><br><span class="line"><span class="function"><span class="params">                             Iterable&lt;DoubleWritable&gt; amounts, </span></span></span><br><span class="line"><span class="function"><span class="params">                             Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            <span class="keyword">double</span> totalValue = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (DoubleWritable amount: amounts) &#123;</span><br><span class="line">                totalValue += amount.get()</span><br><span class="line">            &#125;</span><br><span class="line">            context.write(NullWritable.get(), <span class="keyword">new</span> OrderWritable(key.get(), totalValue));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderWritable</span> <span class="keyword">implements</span> <span class="title">DBWritable</span>, <span class="title">Writable</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> Long customerId;</span><br><span class="line">        <span class="keyword">private</span> Double amount;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">OrderWritable</span> <span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">OrderWritable</span><span class="params">(Long customerId, Double amount)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.customerId = customerId;</span><br><span class="line">            <span class="keyword">this</span>.amount = amount;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(PreparedStatement preparedStatement)</span> </span>&#123;</span><br><span class="line">            preparedStatement.setLong(<span class="number">1</span>, customerId);</span><br><span class="line">            preparedStatement.setDouble(<span class="number">2</span>, amount);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFields</span><span class="params">(ResultSet resultSet)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">            customerId = resultSet.getLong(<span class="string">"CUST_ID"</span>);</span><br><span class="line">            amount = resultSet.getDouble(<span class="string">"AMOUNT"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(DataOutput dataOutput)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">            dataOutput.writeLong(customerId);</span><br><span class="line">            dataOutput.writeDouble(amount);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFields</span><span class="params">(DataInput dataInput)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.customerId = dataInput.readLong();</span><br><span class="line">            <span class="keyword">this</span>.amount = dataInput.readDouble();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通常, 创建索引是一同步过程(非异步), 如果在大表上创建索引, 拓展困难. Apache Phoenix与MapReduce集成, 也支持异步创建索引.</p>
+<h2 id="与Flume集成"><a href="#与Flume集成" class="headerlink" title="与Flume集成"></a>与Flume集成</h2><p>Flume通常由Source、Channel、Sink组成, 支持Push(推送)和Pull(拉取)数据, 管道(Channel)作为Buffer队列避免数据陡增, 当管道中Events写入目的Sink并作为事务中一部分被Sink移除时才可视为已持久化, Sink可插拔, Phoenix提供自定义Sink, 便于与Flume集成.  </p>
+<p>进行集成时, Phoenix Flume插件需在Flume中注册, 可以拷贝Jar包phoenix-flume-phoenix_version-HBase-hbase_version.jar至$FLUME_HOME/plugins.d/phoenix-sink/lib目录下. </p>
+<p>以下参考配置为从Kafka集群Stream数据至Apache Phoenix, 假定配置文件为phoenix-agent.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 主要组件配置, Source为Kafka, Sink为Phoenix</span></span><br><span class="line">agent.sources=kcollector</span><br><span class="line">agent.sinks=phoenix-sink</span><br><span class="line">agent.channels=memoryChannel</span><br><span class="line"></span><br><span class="line"><span class="comment"># Source配置</span></span><br><span class="line">agent.sources.kcollector.type = org.apache.flume.source.kafka.KafkaSource</span><br><span class="line">agent.sources.kcollector.channels = memoryChannel</span><br><span class="line">agent.sources.kcollector.zookeeperConnect = zk-n1:2181</span><br><span class="line">agent.sources.kcollector.topic = phoenix-consumer</span><br><span class="line">agent.sources.kcollector.groupId = flume_to_phoenix</span><br><span class="line">agent.sources.kcollector.kafka.consumer.timeout.ms = 100</span><br><span class="line"></span><br><span class="line"><span class="comment"># Channel配置</span></span><br><span class="line">agent.channels.memoryChannel.type=memory</span><br><span class="line">agent.channels.memoryChannel.byteCapacityBufferPercentage=20</span><br><span class="line">agent.channels.memoryChannel.transactionCapacity=100</span><br><span class="line"></span><br><span class="line"><span class="comment"># Sink配置</span></span><br><span class="line">agent.sinks.phoenix-sink.type=org.apache.phoenix.flume.sink.PhoenixSink</span><br><span class="line">agent.sinks.phoenix-sink.channel=memoryChannel</span><br><span class="line">agent.sinks.phoenix-sink.batchSize=100</span><br><span class="line">agent.sinks.phoenix-sink.table=PHNIX_TEST</span><br><span class="line">agent.sinks.phoenix-sink.ddl=CREATE TABLE IF NOT EXISTS PHNIX_TEST(uid VARCHAT NOT NULL, msg VARCHAR CONSTRAINT pk PRIMARY KEY(uid))</span><br><span class="line">agent.sinks.phoenix-sink.zookeeperQuorum=zk-n1</span><br><span class="line">agent.sinks.phoenix-sink.serializer=REGEX</span><br><span class="line">agent.sinks.phoenix-sink.serializer.rowkeyType=uuid</span><br><span class="line">agent.sinks.phoenix-sink.serializer.regex=([^]*)</span><br><span class="line">agent.sinks.phoenix-sink.serializer.columns=msg</span><br></pre></td></tr></table></figure>
+<p>开启终端运行以下命令行, 将Kafka中生产的每一条消息, 转化为String并写入Apache Phoenix中.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bin/flume-ng agent -f conf/phoenix-agent.conf -c ./conf -n agent</span><br></pre></td></tr></table></figure>
+<h2 id="与Pig集成"><a href="#与Pig集成" class="headerlink" title="与Pig集成"></a>与Pig集成</h2><p>用户可以通过使用<code>PhoenixHBaseLoader</code>以及<code>PhoenixHBaseStorage</code>加载、存储数据至Phoenix表中. 首先需要将Jar包phoenix-pig-phoenix_version-HBase-hbase_version.jar在Pig中注册, 参考Pig脚本如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REGISTER /path/to/phoenix-pig-&lt;phoenix_version&gt;-HBase-&lt;hbase_version&gt;.jar</span><br></pre></td></tr></table></figure>
+<p>也可以在开启Pig终端时将Jar包路径作为参数传入, 参考指令如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pig -Dpig.additional.jars.uris=/path/to/phoenix-pig-&lt;phoenix_version&gt;-HBase-&lt;hbase_version&gt;.jar script.pig</span><br></pre></td></tr></table></figure>
+<p>访问Phoenix表数据, 参考Pig脚本如下, <code>PhoenixHBaseLoader</code>内部将<code>LOAD</code>子句转化成<code>SELECT</code>查询并从表中多个Region获取数据.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 指定表名</span></span><br><span class="line">REGISTER hdfs://pig/lib/phoenix-pig-&lt;phoenix_version&gt;-HBase-&lt;hbase_version&gt;.jar</span><br><span class="line">ORDER = <span class="keyword">LOAD</span> <span class="string">'hbase://table/ORDERS'</span> </span><br><span class="line">    <span class="keyword">USING</span> org.apache.phoenix.pig.PhoenixHBaseLoader(<span class="string">'zookeeper_quorum_uri'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 指定表中列</span></span><br><span class="line">REGISTER hdfs://pig/lib/phoenix-pig-&lt;phoenix_version&gt;-HBase-&lt;hbase_version&gt;.jar</span><br><span class="line">ORDER = <span class="keyword">LOAD</span> <span class="string">'hbase://table/ORDERS/ORDER_ID, CUST_ID'</span> </span><br><span class="line">    <span class="keyword">USING</span> org.apache.phoenix.pig.PhoenixHBaseLoader(<span class="string">'zookeeper_quorum_uri'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 指定SQL语句</span></span><br><span class="line">REGISTER hdfs://pig/lib/phoenix-pig-&lt;phoenix_version&gt;-HBase-&lt;hbase_version&gt;.jar</span><br><span class="line">ORDER = <span class="keyword">LOAD</span> <span class="string">'hbase://query/SELECT ORDER_ID, CUST_ID FROM ORDERS'</span> </span><br><span class="line">    <span class="keyword">USING</span> org.apache.phoenix.pig.PhoenixHBaseLoader(<span class="string">'zookeeper_quorum_uri'</span>);</span><br></pre></td></tr></table></figure>
+<p>存储数据至Phoenix, <code>PhoenixHBaseStorage</code>内部将Pig数据类型映射成对应Phoenix数据类型并序列化.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">REGISTER hdfs://pig/lib/phoenix-pig-&lt;phoenix_version&gt;-HBase-&lt;hbase_version&gt;.jar</span><br><span class="line">A = <span class="keyword">LOAD</span> <span class="string">'/path/to/data'</span> </span><br><span class="line">    <span class="keyword">USING</span> PigStorage(<span class="string">'\t'</span>) <span class="keyword">AS</span> (a:chararray, b:chararray, c:datetime);</span><br><span class="line"></span><br><span class="line">STORE A INTO 'hbase://phoenix-table' USING </span><br><span class="line">    org.apache.phoenix.pig.PhoenixHBaseStorage('$&#123;zookeeper.quorum&#125;', '-batchSize 100');</span><br></pre></td></tr></table></figure>
+<p>注意, 在<code>LOAD</code>子句中不能使用<code>AGGREGATE</code>、<code>GROUP BY</code>、<code>LIMIT</code>或<code>DISTINCT</code>等关键字.</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Apache-Phoenix/" <i class="fa fa-tag"> Apache Phoenix</a>
+          
+            
+            <a href="/tags/Apache-HBase/" <i class="fa fa-tag"> Apache HBase</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/drill/netanalysis/" rel="next" title="Query Enigne大作战 -- Apache Drill之网络报文分析">
+                <i class="fa fa-chevron-left"></i> Query Enigne大作战 -- Apache Drill之网络报文分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/shapeless/dependent-types/" rel="prev" title="Shapeless初体验之依赖类型(Dependent Types)">
+                Shapeless初体验之依赖类型(Dependent Types) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#与Spark集成"><span class="nav-number">1.</span> <span class="nav-text">与Spark集成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与Hive集成"><span class="nav-number">2.</span> <span class="nav-text">与Hive集成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与MR集成"><span class="nav-number">3.</span> <span class="nav-text">与MR集成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与Flume集成"><span class="nav-number">4.</span> <span class="nav-text">与Flume集成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与Pig集成"><span class="nav-number">5.</span> <span class="nav-text">与Pig集成</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

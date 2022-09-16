@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="RxJava, 作为一高性能异步、非阻塞、响应式框架, 最早由Netflix技术团队推出. 近些年伴随着Reactive(响应式)大热, Event Stream俨然不能解决广大开发者的难题, Reactive Stream开始走向”台前”.  RxJava自诞生之日便开始服务于Netflix内部流式处理、后端服务Reactive优化, 经过Netflix内部层层考验, 顺利开源, 服务于广大社区">
+<meta name="keywords" content="JVM And JVM Languages,RxJava,Reactive,Backpressure">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava中Backpressure处理小结">
+<meta property="og:url" content="https://ultradata.stream/jvm/rxjava-backpressure/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="RxJava, 作为一高性能异步、非阻塞、响应式框架, 最早由Netflix技术团队推出. 近些年伴随着Reactive(响应式)大热, Event Stream俨然不能解决广大开发者的难题, Reactive Stream开始走向”台前”.  RxJava自诞生之日便开始服务于Netflix内部流式处理、后端服务Reactive优化, 经过Netflix内部层层考验, 顺利开源, 服务于广大社区">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-06-11T13:31:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava中Backpressure处理小结">
+<meta name="twitter:description" content="RxJava, 作为一高性能异步、非阻塞、响应式框架, 最早由Netflix技术团队推出. 近些年伴随着Reactive(响应式)大热, Event Stream俨然不能解决广大开发者的难题, Reactive Stream开始走向”台前”.  RxJava自诞生之日便开始服务于Netflix内部流式处理、后端服务Reactive优化, 经过Netflix内部层层考验, 顺利开源, 服务于广大社区">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/jvm/rxjava-backpressure/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>RxJava中Backpressure处理小结 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/jvm/rxjava-backpressure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RxJava中Backpressure处理小结
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-05-12 22:20:36" itemprop="dateCreated datePublished" datetime="2016-05-12T22:20:36+08:00">2016-05-12</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-06-11 21:31:11" itemprop="dateModified" datetime="2017-06-11T21:31:11+08:00">2017-06-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">6.4k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">6 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>RxJava, 作为一高性能异步、非阻塞、响应式框架, 最早由Netflix技术团队推出. 近些年伴随着Reactive(响应式)大热, Event Stream俨然不能解决广大开发者的难题, Reactive Stream开始走向”台前”.  RxJava自诞生之日便开始服务于Netflix内部流式处理、后端服务Reactive优化, 经过Netflix内部层层考验, 顺利开源, 服务于广大社区开发者.<a id="more"></a> RxJava支持Reactive Stream, 因而也对Backpressure处理方面有着不错的支持度.</p>
+<h2 id="Callbacks-amp-ObserveOn"><a href="#Callbacks-amp-ObserveOn" class="headerlink" title="Callbacks &amp; ObserveOn"></a>Callbacks &amp; ObserveOn</h2><p>当订阅者进行订阅时, 传入的Subscriber一般需实现<code>onNext()</code>、<code>onCompleted()</code>、<code>onError()</code>方法, 点开Subscriber源码, 发现还有一回调方法<code>onStart()</code>, <code>onStart()</code>在任何Event或通知委派至Subscriber前调用, 可以参考下面这段示例代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Subscriber&lt;Integer&gt; subscriber = <span class="keyword">new</span> Subscriber&lt;Integer&gt; &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 指示上游数据源, 刚开始期望接收的Item数量</span></span><br><span class="line">        request(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// onNext, onCompleted, onError 方法实现略</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Observable</span><br><span class="line">    .range(<span class="number">1</span>, <span class="number">10</span>)</span><br><span class="line">    .subscribe(subscriber)</span><br></pre></td></tr></table></figure>
+<p>其中, 若在<code>onStart()</code>内部调用 <code>request(Long.MAX_VALUE)</code>或跳过调用<code>request</code>方法, 等效于尽可能快地请求事件, 因此在<code>onStart()</code>中尽可能早调用<code>request</code>方法, 否则下游数据开始消费时不能及时变更请求.  假定以Subscriber预先Buffer一定数量的Event, 然后在方便时请求一定的Chunk, Subcriber也可能在接收更多Events时等待一段时间、空闲一会儿(如为减轻下游压力). 但在客户端代码中调用<code>request(N)</code>比较少见, 一般位于Source和最终Subscriber间不同的Operator会充分利用Backpressure机制控制Pipeline中数据流.</p>
+<p><code>observeOn()</code>操作符对Backpressure机制友好, 假定<code>observeOn()</code>操作符订阅上游的Observable, 调度接收的Event, 若上游Event生产速率与下游Scheduler及Subscriber消费速率匹配不上, 由于<code>observeOn()</code>操作符创建的Subcriber, 自带Backpressure机制, 仅请求一定数量的值, 而上游的Observable仅在达到一定数量的Events后触发. 当<code>observeOn()</code>发现当前Batch的Event被下游订阅者Subscriber成功处理完成, 会向上游数据源请求更多Events, 通过该种方式, 尽管跨越了线程界限、以及生产者和消费者间异步本质, 消费者并不会因此”泛洪”.</p>
+<h2 id="Observable"><a href="#Observable" class="headerlink" title="Observable"></a>Observable</h2><p>Backpressure机制, 允许订阅者Subscribers及所有临时操作符从生产者请求一定数量的Event, 默认情况下上游的<code>Observable</code>尽可能快地生产Event, 但由于下游请求的出现, 在某种程度上会”拖慢”(Slow down)生产者, 以便生产者生产特定数量Event. </p>
+<p>在RxJava中存在某一类操作符(Operator), 如 <code>observeOn()</code>, 使用比较严格, 如果上游<code>Observable</code>由于某些原因推送较多数据, 超出下游消费速率, 可能造成<code>observeOn()</code>内部 buffer溢出. 以下为一段示例代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Observable&lt;Integer&gt; <span class="title">customRange</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Observable.create(subscriber -&gt; &#123;</span><br><span class="line">        <span class="keyword">int</span> i = from;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; from + count ) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!subscriber.isUnsubscribed()) &#123;</span><br><span class="line">                subscriber.onNext(i++);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        subscriber.onCompleted();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以通过取消订阅中止上面这段代码, 但现在要求不能取消订阅、可以”降速限流”. 下游操作符可以准确知道想要接收多少Event, 但上游源也可选择忽视请求. 为处理Backpressure问题, 上面的Range实现可改写如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Observable&lt;Integer&gt; <span class="title">customRangeBackPressure</span><span class="params">(<span class="keyword">int</span> from, <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Observable.create(<span class="keyword">new</span> OnSubscribeRange(from, count));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OnSubscribeRange</span> <span class="keyword">implements</span> <span class="title">Observable</span>.<span class="title">OnSubscribe</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">// 略去构造器代码</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(<span class="keyword">final</span> Subscriber&lt;? <span class="keyword">super</span> Integer&gt; child)</span> </span>&#123;</span><br><span class="line">        child.setProducer(<span class="keyword">new</span> RangeProducer(child, start, end));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义实现 Producer 具有挑战性 -- 须有状态、线程安全, 而且要快非常快</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RangeProducer</span> <span class="keyword">implements</span> <span class="title">Producer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">(<span class="keyword">long</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 在子订阅者上调用 onNext() 方法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实际上, 由<code>range()</code>等其它操作符产生的<code>Observable</code>不再”eagerly”地去推送数据至订阅者<code>Subscribers</code>, 相反会去处理数据请求(如<code>Subscriber</code>内调用的<code>request(N)</code>), 然后开始生产事件, 当然产生的数据量不能远超请求数据量.</p>
+<h2 id="SyncOnSubscribe"><a href="#SyncOnSubscribe" class="headerlink" title="SyncOnSubscribe"></a>SyncOnSubscribe</h2><p>通常有多种方式构造Observable支持下游Backpressure请求, 最简单的方式可以使用RxJava自带的工厂方法<code>range()</code> 或 <code>from(Iterable&lt;T&gt;)</code>. <code>from(Iterable&lt;T&gt;)</code>方法创建的Iterable自带Backpressure机制, 这意味着Observable不会一次性从Iterable触发所有值.  以下代码, 将具有Backpressure机制的Observable封装JDBC中的<code>ResultSet</code>至一stream, 注意到<code>ResultSet</code>是拉取(Pull)方式, 与Observable有些类似.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class ResultSetIterator implements Iterator&lt;Object[]&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ResultSet rs;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ResultSetIterator</span><span class="params">(ResultSet rs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.rs = rs;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span> </span><br><span class="line">    <span class="function">pubic <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !rs.isLast();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object[] next() &#123;</span><br><span class="line">        rs.next();</span><br><span class="line">        <span class="keyword">return</span> toArray(rs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Iterable&lt;Object[]&gt; iterable(<span class="keyword">final</span> ResultSet rs) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Iterable&lt;Object[]&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span> </span><br><span class="line">            <span class="keyword">public</span> Iterator&lt;Object[]&gt; iterator() &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ResultSetIterator(rs);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用示例:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Connection connection = <span class="comment">// Some DB Connection</span></span><br><span class="line">PreparedStatement stm = Connection.prepareStatement(<span class="string">"YOUR SQL HERE"</span>);</span><br><span class="line">stm.setFetchSize(<span class="number">1000</span>);</span><br><span class="line">ResultSet rs = stm.executeQuery();</span><br><span class="line"></span><br><span class="line">Observable&lt;Object[]&gt; result = Observable.from(</span><br><span class="line">        ResultSetIterator.iterable(rs)</span><br><span class="line">    )</span><br><span class="line">    .doAfterTerminate(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            rs.close();</span><br><span class="line">            statement.close();</span><br><span class="line">            connection.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">            log.warn(<span class="string">"Unable to close"</span>, e);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<p>注意到, 支持Backpressure机制Low-level级别可以通过自定义实现生产者(Producer)实现, 可以考虑使用RxJava中的SyncOnSubscribe, 其使用参考如下, 且下面这段代码中<code>Observable.OnSubcribe</code>基于拉取(Pull), 自带Backpressure支持.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> rx.observables.SyncOnSubcribe;</span><br><span class="line"></span><br><span class="line">Observable.OnSubscribe&lt;Double&gt; onSubscribe = </span><br><span class="line">    SyncOnSubcribe.createStateless(</span><br><span class="line">        observer -&gt; observer.onNext(Math.random())</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">Observable&lt;Double&gt; rand = Observable.create(onSubscribe);</span><br></pre></td></tr></table></figure>
+<p>上面这段代码中<code>rand</code>虽作为一普通的Observable, 但全面支持Backpressure机制, 假如Subscriber或Pipeline中其它Operator请求Events数量有限, Observable准许请求. <code>rand</code>无状态, 如需创建有状态的操作符, 可以参考下面这段代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注意此处状态值不可变, 可以考虑使用BigInteger避免内存溢出</span></span><br><span class="line">Observable.OnSubscribe&lt;Long&gt; onSubscribe =</span><br><span class="line">    SyncOnSubscribe.createStateful(</span><br><span class="line">        () -&gt; <span class="number">0L</span>,</span><br><span class="line">        (cur, observer) -&gt; &#123;</span><br><span class="line">            observer.onNext(cur);</span><br><span class="line">            <span class="keyword">return</span> cur + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">Observable&lt;Long&gt; naturals = Observable.create(onSubscribe);</span><br></pre></td></tr></table></figure>
+<p>但如果想在迭代时使用单个状态变量, 也可以这样做:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Observable.onSubscribe&lt;Object[]&gt; onSubscribe = SyncOnSubscribe.createSingleState(</span><br><span class="line">    () -&gt; resultSet,</span><br><span class="line">    (rs, observer) -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            rs.next();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">            observer.onError(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    rs -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 关闭Statement, 数据库连接等</span></span><br><span class="line">            rs.close();</span><br><span class="line">            statement.close();</span><br><span class="line">            connection.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">            log.warn(<span class="string">"Unable to close"</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
+<li>避免Subcriber中分配过多工作量, 可以考虑Off-loading对应的Work至如flatMap()等高阶函数中.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如在subscribe()方法中存储Events至数据库中</span></span><br><span class="line">source.subscribe(<span class="keyword">this</span>::store);</span><br><span class="line"><span class="comment">// 可以考虑让 Store更加Reactive (如返回存储记录的 Observable&lt;UUID&gt;)</span></span><br><span class="line"><span class="comment">// 然后触发订阅并产生副作用</span></span><br><span class="line">source.flatMap(<span class="keyword">this</span>::store)</span><br><span class="line">      .subscribe(uuid -&gt; log.debug(<span class="string">"Stored: &#123;&#125;"</span>, uuid));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者考虑使用批量的UUID减少日志输出产生的Overhead</span></span><br><span class="line">source.flatMap(<span class="keyword">this</span>::store)</span><br><span class="line">      .buffer(<span class="number">100</span>)</span><br><span class="line">      .subscribe(</span><br><span class="line">          hundredUuids -&gt; log.debug(<span class="string">"Stored: &#123;&#125;"</span>, hundredUuids)</span><br><span class="line">      );</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过避免在subscribe()方法中执行长时间运行的任务, 可以减少Backpressure处理等.</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/JVM-And-JVM-Languages/" <i class="fa fa-tag"> JVM And JVM Languages</a>
+          
+            
+            <a href="/tags/RxJava/" <i class="fa fa-tag"> RxJava</a>
+          
+            
+            <a href="/tags/Reactive/" <i class="fa fa-tag"> Reactive</a>
+          
+            
+            <a href="/tags/Backpressure/" <i class="fa fa-tag"> Backpressure</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/cloud-native/srvcmesh/" rel="next" title="漫谈云原生设计模式之熔断器、API网关、Service Mesh">
+                <i class="fa fa-chevron-left"></i> 漫谈云原生设计模式之熔断器、API网关、Service Mesh
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/jvm/metaspace/" rel="prev" title="有必要对Java 8中Metaspace进行适当监控吗?">
+                有必要对Java 8中Metaspace进行适当监控吗? <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Callbacks-amp-ObserveOn"><span class="nav-number">1.</span> <span class="nav-text">Callbacks &amp; ObserveOn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Observable"><span class="nav-number">2.</span> <span class="nav-text">Observable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SyncOnSubscribe"><span class="nav-number">3.</span> <span class="nav-text">SyncOnSubscribe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

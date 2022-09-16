@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="微服务架构开发相关软件框架有很多, 为了避免重复造”轮子”, 本文将对微服务架构中常用到的软件框架进行小结.">
+<meta name="keywords" content="Microservices">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Frameworks of Microservices In Java">
+<meta property="og:url" content="https://ultradata.stream/microsrvc/netflix-whole-sale-packages/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="微服务架构开发相关软件框架有很多, 为了避免重复造”轮子”, 本文将对微服务架构中常用到的软件框架进行小结.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-07-11T15:22:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Frameworks of Microservices In Java">
+<meta name="twitter:description" content="微服务架构开发相关软件框架有很多, 为了避免重复造”轮子”, 本文将对微服务架构中常用到的软件框架进行小结.">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/microsrvc/netflix-whole-sale-packages/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Frameworks of Microservices In Java | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/microsrvc/netflix-whole-sale-packages/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Frameworks of Microservices In Java
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-04-01 23:21:36" itemprop="dateCreated datePublished" datetime="2017-04-01T23:21:36+08:00">2017-04-01</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-07-11 23:22:36" itemprop="dateModified" datetime="2017-07-11T23:22:36+08:00">2017-07-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/Microservices/" itemprop="url" rel="index"><span itemprop="name">Microservices</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">3.3k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">3 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>微服务架构开发相关软件框架有很多, 为了避免重复造”轮子”, 本文将对微服务架构中常用到的软件框架进行小结. <a id="more"></a></p>
+<h2 id="服务注册和发现"><a href="#服务注册和发现" class="headerlink" title="服务注册和发现"></a>服务注册和发现</h2><p>Eureka, 不仅可以用于服务注册和发现, 还可用于中间层的负载均衡.</p>
+<h2 id="服务通信"><a href="#服务通信" class="headerlink" title="服务通信"></a>服务通信</h2><p>Ribbon, 支持HTTP、TCP和UDP协议, 支持异步通信和响应式模型. Ribbon还具有缓存和批(Batch)特性, Ribbon可与Eureka结合使用进行负载均衡, 与Hystrix结合使用进行容错或熔断器操作.</p>
+<h2 id="熔断器"><a href="#熔断器" class="headerlink" title="熔断器"></a>熔断器</h2><p>Hystrix, 常用于容错和熔断器操作, 可防止错误拓展扩散, 实时监控服务和property变化, 支持并发.</p>
+<h2 id="代理服务器"><a href="#代理服务器" class="headerlink" title="代理服务器"></a>代理服务器</h2><p>Zuul, 作为代理服务器或Edge服务器, 为外部应用提供服务, 如UI客户端、Android/iOS应用或其它第三方服务等. Zuul允许动态路由并监控请求, 支持验证.</p>
+<h2 id="构建"><a href="#构建" class="headerlink" title="构建"></a>构建</h2><p>Nebula, 如果你使用Gradle进行打包编译, Netflix Nebula插件是个不错的选择, Nebula插件允许你快速高效地对微服务进行编译打包, 该插件还可以减少很多Gradle模板代码.</p>
+<h2 id="分布式配置管理"><a href="#分布式配置管理" class="headerlink" title="分布式配置管理"></a>分布式配置管理</h2><p>Archaius, 分布式配置管理工具, 通过Archaius, 你可以:</p>
+<ul>
+<li>进行线程安全的配置操作</li>
+<li>使用轮询框架检测Property变更</li>
+<li>使用动态或静态类型Property</li>
+<li>在有序的层级配置中使用回调</li>
+<li>使用JConsole对Property进行审查或操作</li>
+<li>在分布式环境中配置不同的Property</li>
+</ul>
+<h2 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h2><p>如果你使用Mesos容器进行微服务部署, 可使用Fenzo作为调度器</p>
+<h2 id="部署交付"><a href="#部署交付" class="headerlink" title="部署交付"></a>部署交付</h2><p>Spinnaker/Aminator, 如果你使用AWS EC2, Animator可以构建AMI镜像, Spinnaker部署AMI镜像至AWS</p>
+<h2 id="可用性监控"><a href="#可用性监控" class="headerlink" title="可用性监控"></a>可用性监控</h2><p>如果你的微服务部署至云端, 如AWS等, 可以考虑使用Simaian Army作为可用性监控工具, Simaian Army使用以下服务进行监控:</p>
+<ul>
+<li>Chaos Monkey, 该服务区分一组系统并随机中止组内一个系统, 一般运行在可控时间范围内, 如运行在工作时间以便工程师接到警报并响应.</li>
+<li>Janitor Monkey, 该服务找到没有用的资源并及时清理, 通过一些列给定规则进行资源清理.</li>
+<li>Conformity Monkey, 该服务调度可配置, 找到没有遵循预定义规则的实例, 发出通知给实例所有者.</li>
+<li>Security Monkey, 监控账号政策变更或不安全配置, 主要用于安全监控.</li>
+</ul>
+<h2 id="运维监控"><a href="#运维监控" class="headerlink" title="运维监控"></a>运维监控</h2><p>Atlas, 提供近实时监控信息, 可记录多维时序数据, 可拓展, 内存存储因而可以快速呈现大量Metrics报表. </p>
+<h2 id="远程主机监控"><a href="#远程主机监控" class="headerlink" title="远程主机监控"></a>远程主机监控</h2><p>Vector, 可在安装了PCP(Performance Co-Pilot)远程主机上进行性能监控, 便于对性能问题进行排查或更好地理解系统运行.</p>
+<h2 id="AWS资源监控"><a href="#AWS资源监控" class="headerlink" title="AWS资源监控"></a>AWS资源监控</h2><p>Edda, 可监控AWS资源动态变化, Edda通过使用AWS API对AWS资源进行轮询并记录结果, Edda主要特征如下:</p>
+<ul>
+<li>动态查询, Edda提供了 Rest API, 支持矩阵参数及字段选择器进行数据筛选</li>
+<li>历史变更, Edda维护AWS所有资源记录历史, 有助于进行问题排查.</li>
+<li>多配制, 支持从多地区多账号轮询信息并行数据汇总, 支持不同的配置项如AWS、Crawler、Elector以及MongoDB等.</li>
+</ul>
+<h2 id="Why-Netflix全家桶"><a href="#Why-Netflix全家桶" class="headerlink" title="Why Netflix全家桶?"></a>Why Netflix全家桶?</h2><p>可能你已经发现了, 貌似上面大多数软件框架都是Netflix的. So, Why Netflix全家桶? Well, Netflix虽然是一家以在线流视频为主营业务的科技公司, 但是该公司在响应式编程(Reactive Programming),JVM性能优化方面一直走在前面, 比如大名鼎鼎的RxJava, 最早由Netflix推出并开源, 然后影响了大批JVM攻城狮, 并在Akka几位创始人的推动下组织Reactive Manifesto并发布宣言, Reactive Manifesto宣言无论对于后端开发还是分布式系统开发, 均具有深远影响.</p>
+<div class="note success">
+            <p>The part above should be the end of this post. God, D**N it, sometimes I hate myself. Since this post was on Netflix’s Microservices whole-sale packages, I got my story to be told. The interpreting language of this post usually goes with Chinese (Since this is the offical language of the Dynasty of Heaven (“大天朝”官方语言)), check it below.</p><p>个人接触Nexflix “全家桶”纯属意外, 曾经比较关注Akka, 然后从Akka CTO Roland Kuhn博士(德国人, 现在自己开公司, 于是便成了Akka前CTO)那里接触到Reactive/Reactive Manifesto, 接着RxJava, 最后Netflix进入眼帘, 自然地, Netflix微服务 “全家桶”必不可少.  </p><p>Since this little story went behind Akka, there’re something you need to know about Akka (Trust me, you should not be biased enough especially if you’re in China). Like, Akka provides</p><ul><li><strong>多并行、并发原语支持</strong>, 如共享内存Agent(类似于Clojure中Agent), 并行数据结构如CRDT(请不要认为Akka只有Actor, Future/Promise)</li><li><strong>分布式设计模式</strong>, 如Event Sourcing/Event Stream/CQRS/Saga  </li><li><strong>分布式建模设计</strong>, 如DDD(领域驱动设计, Domain Driven Design)/DDDD(分布式领域驱动设计, Distributed Domain Driven Design)</li><li><strong>流式处理</strong>, High Watermark(高压水印)、Backpressure并非Apache Flink的”独创”、Flink也并非这方面处理的”集大成者”</li><li><strong>系统集成</strong>, 类似于OSGI/Apache Karaf系统集成模块</li><li><strong>分布式组件二次开发</strong>, 大数据热门组件如Flink(依赖Akka Cluster进行内部通信)、Spark(源码使用Akka Actor进行了很多封装处理, 如使用Akka进行RPC调用等)</li></ul><p>至今仍给人以震撼. </p><p>If you used to be a user of Akka, you should be familiar with these patterns: Circuit Breaker, Saga, Event Sourcing, CQRS (These patterns are common in Microservices), even with DDD(Domain Driven Design).</p><p>The whole text should be in Chinese(the offical language of the Dynasty of Heaven (“大天朝”官方语言)), but this language requires <strong>EXTREME SIMPLICITY</strong>、<strong>POINT-STRIKEN</strong> . So, all my points were clear in this language. And this’s it, thank you for reading.</p>
+          </div>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Microservices/" <i class="fa fa-tag"> Microservices</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/go/face-detection/" rel="next" title="Golang大法玩转人脸识别">
+                <i class="fa fa-chevron-left"></i> Golang大法玩转人脸识别
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dl/psi/" rel="prev" title="Swarm Intelligence(集群智能)牛刀小试">
+                Swarm Intelligence(集群智能)牛刀小试 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务注册和发现"><span class="nav-number">1.</span> <span class="nav-text">服务注册和发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务通信"><span class="nav-number">2.</span> <span class="nav-text">服务通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#熔断器"><span class="nav-number">3.</span> <span class="nav-text">熔断器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理服务器"><span class="nav-number">4.</span> <span class="nav-text">代理服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建"><span class="nav-number">5.</span> <span class="nav-text">构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式配置管理"><span class="nav-number">6.</span> <span class="nav-text">分布式配置管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调度器"><span class="nav-number">7.</span> <span class="nav-text">调度器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署交付"><span class="nav-number">8.</span> <span class="nav-text">部署交付</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可用性监控"><span class="nav-number">9.</span> <span class="nav-text">可用性监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运维监控"><span class="nav-number">10.</span> <span class="nav-text">运维监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#远程主机监控"><span class="nav-number">11.</span> <span class="nav-text">远程主机监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AWS资源监控"><span class="nav-number">12.</span> <span class="nav-text">AWS资源监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-Netflix全家桶"><span class="nav-number">13.</span> <span class="nav-text">Why Netflix全家桶?</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

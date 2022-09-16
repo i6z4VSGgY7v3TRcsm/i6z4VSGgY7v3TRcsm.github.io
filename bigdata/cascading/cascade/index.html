@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将介绍Cascading中Cascade相关概念及使用技巧.">
+<meta name="keywords" content="Big Data,Cascading,MapReduce,Apache Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cascading实战之Cascade篇">
+<meta property="og:url" content="https://ultradata.stream/bigdata/cascading/cascade/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将介绍Cascading中Cascade相关概念及使用技巧.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/cascade-ex.jpg">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cascading实战之Cascade篇">
+<meta name="twitter:description" content="本文将介绍Cascading中Cascade相关概念及使用技巧.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/cascade-ex.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/cascading/cascade/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Cascading实战之Cascade篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/cascading/cascade/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Cascading实战之Cascade篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">7.5k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">7 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将介绍Cascading中Cascade相关概念及使用技巧. <a id="more"></a> Cascading中Cascade通常指一系列Flow, 不同独立的Flow可放在一起生成执行图(Execution Graph), 如果Cascade中有一项Flow依赖其他Flow输出, 该Flow并不会立即执行, 直至所依赖的Flow完成、输入数据满足条件才会执行. </p>
+<h2 id="Flow-Build"><a href="#Flow-Build" class="headerlink" title="Flow Build"></a>Flow Build</h2><p>或许你可能会问, 为何要使用Cascade, 而非含SubAssembly的Big Flow构建自定义、复杂的数据工作流(Workflow)? 但Cascade可以更好地解决以下问题:</p>
+<ul>
+<li>为了更好地复用组件及Debug调试, 需要将Workflow分解成足够小而独立的逻辑单元</li>
+<li>需要使用已有的MapReduce任务作为Workflow中一部分</li>
+<li>需要使用外部组件交互作为Workflow中一部分</li>
+<li>需要使用现有的Flow与新的Workflow进行交互、协调</li>
+</ul>
+<p>将多项Flow连接起来, 形成Cascade, 参考代码如下, 注意传入的Flow顺序并不重要, Cascading通过使用<code>CascadeConnector</code>辨识Flow中依赖(基于这些Flow的Tap自动有序连接, 可以将这些Tap(通常为文件)视为Flow的连接, 一项Flow的输出可能为另一项Flow的输入, 基于这些Tap及Flow依赖关系, 可以有序地将Flow连起来), 如果这些Flow不存在Tap依赖, 可以并行执行.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CascadeConnector connector = <span class="keyword">new</span> CascadeConnector();</span><br><span class="line">Cascade cascade = connector.connect(flow1, flow2, flow3, flow4);</span><br></pre></td></tr></table></figure>
+<p>假如flow2和flow3分别依赖flow1输出, 而flow4输入数据依赖于flow2和flow3输出数据, 由于flow2和flow3彼此并不依赖可以并行运行, 若Data 1a和Data 1b数据比输入数据Input Data还要新则会跳过flow1(Data 2和Data 3与之类似), 整个Cascade中Flow执行示意图参考如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/cascade-ex.jpg" alt></p>
+<h2 id="Skip-Flow"><a href="#Skip-Flow" class="headerlink" title="Skip Flow"></a>Skip Flow</h2><p>执行Cascade时, 可以允许跳过执行某项Flow, 有时Workflow中某项Flow已经完成, 没有必要再重新运行可以选择跳过. Cascading中Flow跳过策略有以下两种:</p>
+<ul>
+<li><strong>cascading.flow.FlowSkipIfSinkExists</strong>, 如果Sink Tap存在则跳过对应Flow, 如果Sink Tap的SinkMode值为REPLACE, 该Sink Tap也可视为Stale(陈旧). </li>
+<li><strong>cascading.flow.FlowSkipIfSinkNotStale</strong>, 默认Flow跳过策略, 如果Sink资源比Feeding Source(数据生成源)要老或Sink并不存在, Sink Tap可以视为Stale(陈旧); 如果Sink Tap的SinkMode值为REPLACE, 该Sink Tap也可视为Stale.</li>
+</ul>
+<p>也可实现自定义Skip策略, 只需实现<code>cascading.flow.FlowSkipStrategy</code>接口, 并实现<code>boolean skipFlow(Flow flow)</code>方法即可. 下面这段代码, 展示了如何跳过某项Flow(代码中Flow1使用语句分割器分割语句, Flow2在Flow1基础上对语句进行分词, 当两项Flow组成Cascade运行时, 若Flow1生成的语句输出已经存在, 基于FlowSkip策略, 此时会跳过Flow1. 可以参考第二次代码运行日志, 可以清楚地看到将跳过Flow1: “[pool-1-thread-1] INFO cascading.cascade.Cascade -[Flow2+Flow1] skipping flow: Flow1”).</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cascading.cascade.Cascade;</span><br><span class="line"><span class="keyword">import</span> cascading.cascade.CascadeConnector;</span><br><span class="line"><span class="keyword">import</span> cascading.flow.Flow;</span><br><span class="line"><span class="keyword">import</span> cascading.flow.FlowSkipIfSinkExists;</span><br><span class="line"><span class="keyword">import</span> cascading.flow.FlowSkipStrategy;</span><br><span class="line"><span class="keyword">import</span> cascading.flow.local.LocalFlowConnector;</span><br><span class="line"><span class="keyword">import</span> cascading.pipe.Each;</span><br><span class="line"><span class="keyword">import</span> cascading.pipe.Every;</span><br><span class="line"><span class="keyword">import</span> cascading.pipe.GroupBy;</span><br><span class="line"><span class="keyword">import</span> cascading.pipe.Pipe;</span><br><span class="line"><span class="keyword">import</span> cascading.scheme.Scheme;</span><br><span class="line"><span class="keyword">import</span> cascading.scheme.local.TextDelimited;</span><br><span class="line"><span class="keyword">import</span> cascading.tap.SinkMode;</span><br><span class="line"><span class="keyword">import</span> cascading.tap.Tap;</span><br><span class="line"><span class="keyword">import</span> cascading.tap.local.FileTap;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.Fields;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestCascade</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 输入文本</span></span><br><span class="line">        Fields fieldDeclarationInput = <span class="keyword">new</span> Fields(<span class="string">"document"</span>, <span class="string">"text"</span>);</span><br><span class="line">        <span class="comment">// 基于文本断句(分句)</span></span><br><span class="line">        Fields fieldDeclarationInterm = <span class="keyword">new</span> Fields(<span class="string">"document"</span>, <span class="string">"sentum"</span>, <span class="string">"sentence"</span>);</span><br><span class="line">        <span class="comment">// 基于语句分词</span></span><br><span class="line">        Fields fieldDeclarationOutput = <span class="keyword">new</span> Fields(<span class="string">"docname"</span>, <span class="string">"sentnum"</span>, <span class="string">"wordnum"</span>, <span class="string">"word"</span>);</span><br><span class="line"></span><br><span class="line">        Scheme inputScheme = <span class="keyword">new</span> TextDelimited(fieldDeclarationInput, <span class="keyword">true</span>, <span class="string">"\t"</span>);</span><br><span class="line">        Scheme intermScheme = <span class="keyword">new</span> TextDelimited(fieldDeclarationInterm, <span class="string">"\t"</span>);</span><br><span class="line">        Scheme outputScheme = <span class="keyword">new</span> TextDelimited(fieldDeclarationOutput, <span class="string">"\t"</span>);</span><br><span class="line"></span><br><span class="line">        Tap srcTap = <span class="keyword">new</span> FileTap(inputScheme, args[<span class="number">0</span>]);</span><br><span class="line">        Tap sink1Tap = <span class="keyword">new</span> FileTap(intermScheme, args[<span class="number">1</span>]);</span><br><span class="line">        Tap sink2Tap = <span class="keyword">new</span> FileTap(outputScheme, args[<span class="number">2</span>], SinkMode.REPLACE);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Flow1基于输入文本分句, SentenceFunction封装了语句分割逻辑</span></span><br><span class="line">        Pipe pipe1 = <span class="keyword">new</span> Pipe(<span class="string">"InPipe1"</span>);</span><br><span class="line">        pipe1 = <span class="keyword">new</span> Each(pipe1, <span class="keyword">new</span> SentenceFunction);</span><br><span class="line">        Flow flow1 = <span class="keyword">new</span> LocalFlowConnector().connect(<span class="string">"Flow1"</span>, srcTap, sink1Tap, pipe1);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Flow2在Flow1基础上对语句进行分词, TokenBuffer封装了分词逻辑</span></span><br><span class="line">        Pipe pipe2 = <span class="keyword">new</span> Pipe(<span class="string">"InPipe2"</span>);</span><br><span class="line">        pipe2 = <span class="keyword">new</span> GroupBy(pipe2, <span class="keyword">new</span> Fields(<span class="string">"document"</span>), <span class="keyword">new</span> Fields(<span class="string">"sentnum"</span>));</span><br><span class="line">        pipe2 = <span class="keyword">new</span> Every(pipe2, <span class="keyword">new</span> TokenBuffer(), fieldDeclarationOutput);</span><br><span class="line">        Flow flow2 = <span class="keyword">new</span> LocalFlowConnector().connect(<span class="string">"Flow2"</span>, sink1Tap, sink2Tap, pipe2);</span><br><span class="line"></span><br><span class="line">        CascadeConnector connector= <span class="keyword">new</span> CascadeConnector();</span><br><span class="line">        Cascade cascade = connector.connect(flow2, flow1);</span><br><span class="line">        <span class="comment">// 指定FlowSkip策略</span></span><br><span class="line">        cascade.setFlowSkipStrategy(<span class="keyword">new</span> FlowSkipIfSinkExists());</span><br><span class="line">        cascade.complete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一次运行该程序时, 没有输出文件, 该Cascading程序运行日志参考如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[cascade Flow2+Flow1] INFO cascading.cascade.Cascade -[Flow2+Flow1] starting</span><br><span class="line">[cascade Flow2+Flow1] INFO cascading.cascade.Cascade -[Flow2+Flow1] parallel execution is enabled: <span class="literal">true</span></span><br><span class="line">[cascade Flow2+Flow1] INFO cascading.cascade.Cascade -[Flow2+Flow1] starting flows: 2</span><br><span class="line">[cascade Flow2+Flow1] INFO cascading.cascade.Cascade -[Flow2+Flow1] allocating threads: 2</span><br><span class="line">[pool-1-thread-1] INFO cascading.cascade.Cascade -[Flow2+Flow1] starting flow: Flow1</span><br><span class="line">[pool-1-thread-1] INFO cascading.flow.Flow -[Flow1] at least one sink does not exist</span><br><span class="line">[flow Flow1] INFO cascading.flow.Flow -[Flow1] starting</span><br><span class="line">[flow Flow1] INFO cascading.flow.Flow - </span><br><span class="line">    [Flow1] <span class="built_in">source</span>: FileTap[<span class="string">"TextDelimited[['document', 'text']]"</span>][<span class="string">"/data/files/sent.txt"</span>]</span><br><span class="line">[flow Flow1] INFO cascading.flow.Flow - </span><br><span class="line">    [Flow1] sink: FileTap[<span class="string">"TextDelimited[['document', 'sentnum', 'sentence']]"</span>][<span class="string">"/data/files/sent.txt"</span>]</span><br><span class="line">[flow Flow1] INFO cascading.flow.Flow -[Flow1] parallel execution is enabled: <span class="literal">true</span></span><br><span class="line">[flow Flow1] INFO cascading.flow.Flow -[Flow1] starting <span class="built_in">jobs</span>: 1</span><br><span class="line">[flow Flow1] INFO cascading.flow.Flow -[Flow1] allocating threads: 1</span><br><span class="line">[pool-2-thread-1] INFO cascading.flow.FlowStep -[Flow1] starting step: <span class="built_in">local</span></span><br><span class="line">[pool-1-thread-1] INFO cascading.cascade.Cascade -[Flow2+Flow1] completed flow: Flow1</span><br><span class="line">[pool-1-thread-2] INFO cascading.cascade.Cascade -[Flow2+Flow1] starting flow: Flow2</span><br><span class="line">[pool-1-thread-2] INFO cascading.flow.Flow -[Flow2] at least one sink is marked <span class="keyword">for</span> delete</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -[Flow2] starting</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow - </span><br><span class="line">    [Flow2] <span class="built_in">source</span>: FileTap[<span class="string">"TextDelimited[['document', 'sentnum', 'sentence']]"</span>][<span class="string">"/data/files/sent1.txt"</span>]</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow - </span><br><span class="line">    [Flow2] sink: FileTap[<span class="string">"TextDelimited[['documentname', 'sentnumber', 'wordnum', 'word']]"</span>][<span class="string">"/data/files/tok1.txt"</span>]</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -[Flow2] parallel execution is enabled: <span class="literal">true</span></span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -[Flow2] starting <span class="built_in">jobs</span>: 1</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -[Flow2] allocating threads: 1</span><br><span class="line">[pool-5-thread-1] INFO cascading.flow.FlowStep -[Flow2] starting step: <span class="built_in">local</span></span><br><span class="line">[pool-1-thread-2] INFO cascading.cascade.Cascade -[Flow2+Flow1] completed flow: Flow2</span><br></pre></td></tr></table></figure>
+<p>第二次运行该程序时, 会跳过flow1, 因为语句分词阶段产生的临时文件已经存在(由第一次运行程序时产生), 该程序运行日志参考如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[cascade Flow2+Flow1] INFO cascading.cascade.Cascade -[Flow2+Flow1] starting</span><br><span class="line">[cascade Flow2+Flow1] INFO cascading.cascade.Cascade -[Flow2+Flow1] parallel execution is enabled: <span class="literal">true</span></span><br><span class="line">[cascade Flow2+Flow1] INFO cascading.cascade.Cascade -[Flow2+Flow1] starting flows: 2</span><br><span class="line">[cascade Flow2+Flow1] INFO cascading.cascade.Cascade -[Flow2+Flow1] allocating threads: 2</span><br><span class="line">[pool-1-thread-1] INFO cascading.cascade.Cascade -[Flow2+Flow1] starting flow: Flow1</span><br><span class="line">[pool-1-thread-1] INFO cascading.cascade.Cascade -[Flow2+Flow1] skipping flow: Flow1</span><br><span class="line">[pool-1-thread-2] INFO cascading.cascade.Cascade -[Flow2+Flow1] starting flow: Flow2</span><br><span class="line">[pool-1-thread-2] INFO cascading.flow.Flow -[Flow2] at least onesink is marked <span class="keyword">for</span> delete</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -[Flow2] starting</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -</span><br><span class="line">    [Flow2] <span class="built_in">source</span>: FileTap[<span class="string">"TextDelimited[['document', 'sentnum', 'sentence']]"</span>][<span class="string">"/data/files/sent1.txt"</span>]</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -</span><br><span class="line">    [Flow2] sink: FileTap[<span class="string">"TextDelimited[['documentname', 'sentnumber', 'wordnum', 'word']]"</span>][<span class="string">"/data/files/tok1.txt"</span>]</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -[Flow2] parallel execution is enabled: <span class="literal">true</span></span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -[Flow2] starting <span class="built_in">jobs</span>: 1</span><br><span class="line">[flow Flow2] INFO cascading.flow.Flow -[Flow2] allocating threads: 1</span><br><span class="line">[pool-2-thread-1] INFO cascading.flow.FlowStep - [Flow2] starting step: <span class="built_in">local</span></span><br><span class="line">[pool-1-thread-2] INFO cascading.cascade.Cascade -[Flow2+Flow1] completed flow: Flow2</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Cascading/" <i class="fa fa-tag"> Cascading</a>
+          
+            
+            <a href="/tags/MapReduce/" <i class="fa fa-tag"> MapReduce</a>
+          
+            
+            <a href="/tags/Apache-Hadoop/" <i class="fa fa-tag"> Apache Hadoop</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/hbase/phoenix-intro/" rel="next" title="云中漫步, 邂逅Apache Phoenix">
+                <i class="fa fa-chevron-left"></i> 云中漫步, 邂逅Apache Phoenix
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/cascading/tuning/" rel="prev" title="Cascading实战之性能优化篇">
+                Cascading实战之性能优化篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Flow-Build"><span class="nav-number">1.</span> <span class="nav-text">Flow Build</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Skip-Flow"><span class="nav-number">2.</span> <span class="nav-text">Skip Flow</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

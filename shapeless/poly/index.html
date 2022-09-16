@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将接着介绍Shapeless中Poly用法,">
+<meta name="keywords" content="JVM And JVM Languages,Shapeless,Generic Programming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shapeless初体验之Poly与Type Class篇">
+<meta property="og:url" content="https://ultradata.stream/shapeless/poly/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将接着介绍Shapeless中Poly用法,">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shapeless初体验之Poly与Type Class篇">
+<meta name="twitter:description" content="本文将接着介绍Shapeless中Poly用法,">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/shapeless/poly/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Shapeless初体验之Poly与Type Class篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/shapeless/poly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Shapeless初体验之Poly与Type Class篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">4.6k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">4 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将接着介绍Shapeless中<code>Poly</code>用法, <a id="more"></a> 希望你能Get到<code>Poly</code>的一些使用技巧.</p>
+<h2 id="牛刀小试"><a href="#牛刀小试" class="headerlink" title="牛刀小试"></a>牛刀小试</h2><p>假定有这样一个需求, 存在产品A和产品B, A与B的属性存在差异, 现在希望设计一泛型接口对A(或B)进行属性判定并转换成B(或A). 没看明白需求? 没关系, 下面使用代码量化下</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 假定存在产品A和B, 产品属性存在差异 (当然实际业务场景中产品属性更复杂些, 本例进行了简化)</span></span><br><span class="line"><span class="comment">// 假定产品A存在以下三个属性: 产品名称, 价格, 是否有评分 (当然实际业务场景, 价格使用BigDecimal更合适)</span></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductA</span>(<span class="params">name: <span class="type">String</span>, price: <span class="type">Double</span>, hasScore: <span class="type">Boolean</span></span>)</span></span><br><span class="line"><span class="class"><span class="title">//</span> <span class="title">假定产品B存在以下三个属性</span></span>: 产品名称, 价格是否实惠, 排名(或评分等级)</span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductB</span>(<span class="params">name: <span class="type">String</span>, isExpensive: <span class="type">Boolean</span>, rank: <span class="type">Double</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">//</span> <span class="title">现在希望存在类似于以下接口</span>, <span class="title">以便产品A转换成产品B</span></span></span><br><span class="line"><span class="class"><span class="title">ProductA</span>(<span class="params">"<span class="type">Some</span> <span class="type">Product</span>", 106.99, true</span>).<span class="title">mapTo</span>[<span class="type">ProductB</span>](<span class="params"><span class="type">SomeConversionRules</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">//</span> <span class="title">为了简化说明</span>, <span class="title">假定</span> <span class="title">产品A</span> <span class="title">-&gt;</span> <span class="title">产品B</span> <span class="title">转换逻辑</span>, <span class="title">伪代码参考如下</span></span></span><br><span class="line"><span class="class"><span class="title">val</span> <span class="title">productA</span> </span>= <span class="type">ProductA</span>(name, price, hasScore)</span><br><span class="line">productA <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> (name, price, hasScore) =&gt; </span><br><span class="line">        <span class="comment">// 假定超过 $100 认为偏贵</span></span><br><span class="line">        <span class="keyword">val</span> isExpensive = <span class="keyword">if</span> (price &gt; <span class="number">100</span>d) <span class="literal">true</span> <span class="keyword">else</span> <span class="literal">false</span></span><br><span class="line">        <span class="keyword">val</span> rank = <span class="keyword">if</span> (hasScore) <span class="number">1</span>d <span class="keyword">else</span> <span class="number">0</span>d</span><br><span class="line">        <span class="type">ProductB</span>(name, isExpensive, rank)</span><br><span class="line">    <span class="keyword">case</span> _ =&gt;  <span class="comment">// Do Nothing</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于是设计一泛型接口, 所以不能直接使用上面的模式匹配逻辑代码, 上面的模式匹配代码也仅仅只是做个说明. <strong>泛型是个好东西</strong>, 特别是面临快速代码复用迭代时.</p>
+<p>明确了产品A到产品B的转换逻辑, 可以先开始写 <code>SomeConversionRules</code> 代码</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 使用Shapless中的`Poly1`. 单例对象 `SomeConversionRules` 中的各隐式值</span></span><br><span class="line"><span class="comment"> * 你可以先简单理解成 ProductA -&gt; ProductB (或ProductB -&gt; ProductA)</span></span><br><span class="line"><span class="comment"> * 各自对应属性类型间转换关系</span></span><br><span class="line"><span class="comment"> */</span> </span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">SomeConversionRules</span> <span class="keyword">extends</span> <span class="title">Poly1</span> </span>&#123;</span><br><span class="line">    <span class="comment">// double -&gt; boolean</span></span><br><span class="line">    <span class="keyword">implicit</span> <span class="keyword">val</span> doubleCase: <span class="type">Case</span>.<span class="type">Aux</span>[<span class="type">Double</span>, <span class="type">Boolean</span>] = at(_ &gt; <span class="number">100</span>d)</span><br><span class="line">    <span class="comment">// boolean -&gt; double</span></span><br><span class="line">    <span class="keyword">implicit</span> <span class="keyword">val</span> booleanCase: <span class="type">Case</span>.<span class="type">Aux</span>[<span class="type">Boolean</span>, <span class="type">Double</span>] = at(<span class="keyword">if</span>(_) <span class="number">1</span>d <span class="keyword">else</span> <span class="number">0</span>d)</span><br><span class="line">    <span class="comment">// string -&gt; string</span></span><br><span class="line">    <span class="keyword">implicit</span> <span class="keyword">val</span> stringCase: <span class="type">Case</span>.<span class="type">Aux</span>[<span class="type">String</span>, <span class="type">String</span>] = at(identity)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h2><p>本例将使用<strong>隐式转换</strong>与<strong>类型类</strong>设计接口. 首先, 回到产品A到产品B的映射关系上, 先简单定义一个 <code>ProductMapper</code> 特质</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">ProductMapper</span>[<span class="type">A</span>, <span class="type">B</span>, <span class="type">P</span>] </span>&#123;</span><br><span class="line">    <span class="comment">// 定义 `apply()` 工厂方法, ProductA -&gt; ProductB ( A -&gt; B)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>(product: <span class="type">A</span>): <span class="type">B</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在利用隐式方法实例化 <code>ProductMapper</code> (本例使用隐式转换, 好处在于灵活, 对于同一接口源码而言, 上下文确定, 对于实现productA.mapTo[ProductB], 可以减少很多不必要的显示接口调用, 相对灵活)</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Generic Product Mapper</span></span><br><span class="line"><span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">genericProductMapper</span></span>[</span><br><span class="line">    <span class="type">A</span>, </span><br><span class="line">    <span class="type">B</span>, </span><br><span class="line">    <span class="type">P</span> &lt;: <span class="type">Poly</span>, </span><br><span class="line">    <span class="type">ARepr</span> &lt;: <span class="type">HList</span>, </span><br><span class="line">    <span class="type">BRepr</span> &lt;: <span class="type">HList</span></span><br><span class="line">] (</span><br><span class="line">    <span class="keyword">implicit</span> </span><br><span class="line">    aGen: <span class="type">Generic</span>.<span class="type">Aux</span>[<span class="type">A</span>, <span class="type">ARepr</span>], </span><br><span class="line">    bGen: <span class="type">Generic</span>.<span class="type">Aux</span>[<span class="type">B</span>, <span class="type">BRepr</span>],</span><br><span class="line">    mapper: hlist.<span class="type">Mapper</span>.<span class="type">Aux</span>[<span class="type">P</span>, <span class="type">ARepr</span>, <span class="type">BRepr</span>]</span><br><span class="line">): <span class="type">ProductMapper</span>[<span class="type">A</span>, <span class="type">B</span>, <span class="type">P</span>] = &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">new</span> <span class="type">ProductMapper</span>[<span class="type">A</span>, <span class="type">B</span>, <span class="type">P</span>] &#123;</span><br><span class="line">        <span class="comment">//注意 `bGen.from` 与 `aGen.to` 调用的是 `Generic[T]` 特质中方法</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>(a: <span class="type">A</span>): <span class="type">B</span> = bGen.from(mapper.apply(aGen.to(a)))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中, <code>Generic</code> Shapeless源码参考如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Generic</span> </span>&#123;</span><br><span class="line">    <span class="comment">/** `Aux[T, Repr0]` 实际上为一 `Generic[T]` 特质</span></span><br><span class="line"><span class="comment">     * 实际上 `Aux[T, Repr0]` 中类型参数 `Repr0` 也可替换为 `U`</span></span><br><span class="line"><span class="comment">     * 即 `Aux[T, U]`, 只需保证 `U` 为&#123;T&#125;泛型表征, 可组合于&#123;Coproduct&#125;与&#123;HList&#125;类型</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Aux</span>[<span class="type">T</span>, <span class="type">Repr0</span>] </span>= <span class="type">Generic</span>[<span class="type">T</span>] &#123; <span class="class"><span class="keyword">type</span> <span class="title">Repr</span> </span>= <span class="type">Repr0</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>[<span class="type">T</span>](<span class="keyword">implicit</span> gen: <span class="type">Generic</span>[<span class="type">T</span>]): <span class="type">Aux</span>[<span class="type">T</span>, gen.<span class="type">Repr</span>] = gen</span><br><span class="line"></span><br><span class="line">    <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">materialize</span></span>[<span class="type">T</span>, <span class="type">R</span>]: <span class="type">Aux</span>[<span class="type">T</span>, <span class="type">R</span>] = macro <span class="type">GenericMacros</span>.materialize[<span class="type">T</span>, <span class="type">R</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Generic</span>[<span class="type">T</span>] <span class="keyword">extends</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">  <span class="comment">/** The generic representation type for &#123;T&#125;, which will be composed of &#123;Coproduct&#125; and &#123;HList&#125; types  */</span></span><br><span class="line">  <span class="class"><span class="keyword">type</span> <span class="title">Repr</span></span></span><br><span class="line"><span class="class">  <span class="title">//</span> <span class="title">T</span> <span class="title">-&gt;</span> <span class="title">Repr</span> </span></span><br><span class="line"><span class="class">  <span class="title">def</span> <span class="title">to</span>(<span class="params">t : <span class="type">T</span></span>) </span>: <span class="type">Repr</span></span><br><span class="line">  <span class="comment">//  Repr -&gt; T</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">from</span></span>(r : <span class="type">Repr</span>) : <span class="type">T</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>hlist.Mapper</code> 源码参考如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Mapper</span>[<span class="type">HF</span>, <span class="type">In</span> &lt;: <span class="type">HList</span>] <span class="keyword">extends</span> <span class="title">DepFn1</span>[<span class="type">In</span>] <span class="keyword">with</span> <span class="title">Serializable</span> </span>&#123; <span class="class"><span class="keyword">type</span> <span class="title">Out</span> <span class="title">&lt;</span></span>: <span class="type">HList</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Mapper</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>[<span class="type">F</span>, <span class="type">L</span> &lt;: <span class="type">HList</span>](<span class="keyword">implicit</span> mapper: <span class="type">Mapper</span>[<span class="type">F</span>, <span class="type">L</span>]): <span class="type">Aux</span>[<span class="type">F</span>, <span class="type">L</span>, mapper.<span class="type">Out</span>] = mapper</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Aux</span>[<span class="type">HF</span>, <span class="type">In</span> &lt;: <span class="type">HList</span>, <span class="type">Out0</span> &lt;: <span class="type">HList</span>] </span>= <span class="type">Mapper</span>[<span class="type">HF</span>, <span class="type">In</span>] &#123; <span class="class"><span class="keyword">type</span> <span class="title">Out</span> </span>= <span class="type">Out0</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">hnilMapper1</span></span>[<span class="type">HF</span>]: <span class="type">Aux</span>[<span class="type">HF</span>, <span class="type">HNil</span>, <span class="type">HNil</span>] =</span><br><span class="line">        <span class="keyword">new</span> <span class="type">Mapper</span>[<span class="type">HF</span>, <span class="type">HNil</span>] &#123;</span><br><span class="line">            <span class="class"><span class="keyword">type</span> <span class="title">Out</span> </span>= <span class="type">HNil</span></span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>(l : <span class="type">HNil</span>): <span class="type">Out</span> = <span class="type">HNil</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">hlistMapper1</span></span>[<span class="type">HF</span> &lt;: <span class="type">Poly</span>, <span class="type">InH</span>, <span class="type">InT</span> &lt;: <span class="type">HList</span>, <span class="type">OutT</span> &lt;: <span class="type">HList</span>]</span><br><span class="line">    (<span class="keyword">implicit</span> </span><br><span class="line">        hc : <span class="type">Case1</span>[<span class="type">HF</span>, <span class="type">InH</span>], </span><br><span class="line">        mt : <span class="type">Mapper</span>.<span class="type">Aux</span>[<span class="type">HF</span>, <span class="type">InT</span>, <span class="type">OutT</span>]</span><br><span class="line">    ): <span class="type">Aux</span>[<span class="type">HF</span>, <span class="type">InH</span> :: <span class="type">InT</span>, hc.<span class="type">Result</span> :: <span class="type">OutT</span>] =</span><br><span class="line">        <span class="keyword">new</span> <span class="type">Mapper</span>[<span class="type">HF</span>, <span class="type">InH</span> :: <span class="type">InT</span>] &#123;</span><br><span class="line">            <span class="class"><span class="keyword">type</span> <span class="title">Out</span> </span>= hc.<span class="type">Result</span> :: <span class="type">OutT</span></span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>(l : <span class="type">InH</span> :: <span class="type">InT</span>): <span class="type">Out</span> = hc(l.head) :: mt(l.tail)</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在实现 <code>productA.mapTo[ProductB]</code> 中 <code>mapTo</code> 方法主逻辑, 可以考虑通过隐式类拓展<code>ProductMapper</code> 并通过生成器模式实现 <code>mapTo</code> 方法</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">implicit</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductMapperOperation</span>[<span class="type">A</span>](<span class="params">product: <span class="type">A</span></span>) </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Builder</span>[<span class="type">B</span>] </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>[<span class="type">P</span> &lt;: <span class="type">Poly</span>](poly: <span class="type">P</span>)(<span class="keyword">implicit</span> pm: <span class="type">ProductMapper</span>[<span class="type">A</span>, <span class="type">B</span>, <span class="type">P</span>]): <span class="type">B</span> =</span><br><span class="line">                pm.apply(product)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用生成器模式</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mapTo</span></span>[<span class="type">B</span>]: <span class="type">Builder</span>[<span class="type">B</span>] = <span class="keyword">new</span> <span class="type">Builder</span>[<span class="type">B</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="type">ProductA</span>(<span class="string">"Some Product"</span>, <span class="number">106.99</span>, <span class="literal">true</span>).mapTo[<span class="type">ProductB</span>](<span class="type">SomeConversionRules</span>)</span><br><span class="line">res0: <span class="type">ProductB</span> = <span class="type">ProductB</span>(<span class="string">"Some Product"</span>, <span class="literal">true</span>, <span class="number">1.0</span>)</span><br></pre></td></tr></table></figure>
+<p>以上代码只是个小例子, 该接口适用场景: 产品A与产品B存在关联(比如产品属性间存在关联逻辑), 或者开发时版本迁移问题(不同版本中可能存在同一产品属性间Migrate问题)</p>
+<p>希望你能Get到Shapeless中<code>Poly</code>的一些使用技巧, 或者类型类与隐式转换在泛型接口设计上的一些思考.</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/JVM-And-JVM-Languages/" <i class="fa fa-tag"> JVM And JVM Languages</a>
+          
+            
+            <a href="/tags/Shapeless/" <i class="fa fa-tag"> Shapeless</a>
+          
+            
+            <a href="/tags/Generic-Programming/" <i class="fa fa-tag"> Generic Programming</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/flink/window/" rel="next" title="Flink学习手札之Stream Window小结篇">
+                <i class="fa fa-chevron-left"></i> Flink学习手札之Stream Window小结篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/cascading/basic/" rel="prev" title="Cascading实战之基本概念篇">
+                Cascading实战之基本概念篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#牛刀小试"><span class="nav-number">1.</span> <span class="nav-text">牛刀小试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技巧"><span class="nav-number">2.</span> <span class="nav-text">技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">3.</span> <span class="nav-text">效果</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

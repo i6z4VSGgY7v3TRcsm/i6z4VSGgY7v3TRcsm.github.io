@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="LevelDB学习手札之LevelDB性能调优篇.">
+<meta name="keywords" content="LevelDB,NoSQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LevelDB学习手札之优化小节">
+<meta property="og:url" content="https://ultradata.stream/nosql/leveldb/tuning/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="LevelDB学习手札之LevelDB性能调优篇.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/leveldb/copy-sort-cycle.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/leveldb/bloom-filter.jpg">
+<meta property="og:updated_time" content="2015-06-21T15:17:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LevelDB学习手札之优化小节">
+<meta name="twitter:description" content="LevelDB学习手札之LevelDB性能调优篇.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/leveldb/copy-sort-cycle.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/nosql/leveldb/tuning/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>LevelDB学习手札之优化小节 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/nosql/leveldb/tuning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LevelDB学习手札之优化小节
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2014-10-11 22:13:16" itemprop="dateCreated datePublished" datetime="2014-10-11T22:13:16+08:00">2014-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-06-21 23:17:15" itemprop="dateModified" datetime="2015-06-21T23:17:15+08:00">2015-06-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">3.7k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">3 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>LevelDB学习手札之LevelDB性能调优篇. <a id="more"></a></p>
+<h2 id="Level-File"><a href="#Level-File" class="headerlink" title="Level File"></a>Level File</h2><p>可以参考下图, LevelDB主存储为一系列Level级别的SST(Sorted String Table, 这些SST文件通常以.sst后缀结尾但后续可能会改为以.ldb后缀结尾, 为避免与微软之前提出的.sst后缀文件格式冲突), 这些SST文件的下一层Level通常是上一层Level的10倍大小, 最顶层Level中Record无序, 随着后续的数据拷贝、排序及Compaction, 下一层Level的SST数据开始有序. 这种写放大操作, 在LevelDB中可视为提高性能的一种Trade-off, 优点在于提高了写速度而无需基于索引更新避免中断, 而传统的B树索引当树均衡时需重写数据. </p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/leveldb/copy-sort-cycle.jpg" alt></p>
+<p>调用<code>write()</code>方法时, 数据首先写入<code>memtable</code>(Skip List结构), 并发写入日志文件落地到磁盘(容错需要, 若后续应用故障可进行数据恢复), 当日志文件达到4MB大小(可由<code>write_buffer_limit</code>参数设置)后, LevelDB开始写入新的Log并处理<code>memtable</code>, 此时内存中将保留俩数据结构: <code>imm</code>作为不可变类型继续写入以及后台线程在Level 0拷贝的SST文件. 为有效管理这些持久化文件, 会写入一Manifest文件, 该文件记录了Key键范围及每项SST文件level, 每当产生新的SST文件或Compaction线程合并文件并推送至以下一level时, 该Manifest文件会新增一项数据记录. </p>
+<h2 id="读自上而下"><a href="#读自上而下" class="headerlink" title="读自上而下"></a>读自上而下</h2><p>当调用<code>Get</code>检索Key键时, 主要步骤参考如下:</p>
+<ol>
+<li>首先扫描当前memtable的Skip List (如果Key键找到可以退出)</li>
+<li>扫描imm的Skip List, 检测是否为空, 当数据刷写至磁盘时该跳表并不为空 (如果Key键找到可以退出)</li>
+<li>检测Manifest文件, 判定Key键是否在已有Level File文件中Key值范围内 (可能在也可能不在)</li>
+<li>如果候选Level File没有缓存, 则打开候选Level File文件</li>
+<li>如果使用了过滤策略, 通过过滤器判断Key键是否在候选Level File文件中</li>
+<li>Level File索引(Index)可用于判断文件是否包含囊括目标Key键范围的Block (可能包含也可能不包含)</li>
+<li>如果Block包含目标Key(而非Block Cache), 从候选Level File中读取该Block</li>
+<li>顺序化遍历该Block中KV键值对, 读取目标Key对应Value值 (可能存在没找到情形)</li>
+</ol>
+<p>由于KV键值对长度任意, 所以不能通过计算偏移值方式进行定位, 基本上所有数据读写操作须经过Level File, 缓存及过滤器(如Bloom Filter等)有助于数据查找与定位.</p>
+<h2 id="删即写"><a href="#删即写" class="headerlink" title="删即写"></a>删即写</h2><p>SST文件涉及从上而下, 不同级别level的数据拷贝、排序以及Compaction, Key键的删除与之类似, 自上而下. 与Tree Index不同, 实际上并不会移除Key键, 相反删除意味着一种写入, 对同一Key写入一份副本并包含特定的Marker(标记)告知该Key键数据已被删除.</p>
+<h2 id="布隆过滤器"><a href="#布隆过滤器" class="headerlink" title="布隆过滤器"></a>布隆过滤器</h2><p>LevelDB底层本身做了很多优化措施, 若通过使用过滤策略判定读取的给定Key键是否存在于候选Level File中, 由于Level File中存在一系列不同范围Key, 若能通过使用过滤器(如布隆过滤器), 便可快速查找、定位(如每次打开文件时会缓存Filter数据, 提升整体检索效率, 无需读取索引或扫描Blocks). 布隆过滤器使用示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/leveldb/bloom-filter.jpg" alt></p>
+<p>布隆过滤器通过组合使用一些列简单而快速的哈希函数避免哈希碰撞概率, 组合的哈希函数写入对应结果值同一Bitmask. 注意布隆过滤器非哈希表, 该Filter并不会处理冲突(须由其它LevelDB数据结构处理Key值冲突). 布隆过滤器可以保证没有假负(False Negative, 被模型预测为负的正样本), 即若Key键不存在, 则绝对不存在; 若Key键存在, 其它Key可能含有相同序列的Hash. 通常合理修改Key键对应Bit数或改进Filter算法, 可以提升算法整体性能, 缺点在于增加了存储开销(要存储Filter数据). 假定目标Key键百分之百在数据库中, 没必要使用布隆过滤器.</p>
+<p>LevelDB并不关心用户使用何种过滤器, 仅提供一Hook指定<code>FilterPolicy</code>对象, 可以通过实现该接口编写自定义Filter, 也可使用<code>NewBloomFilterPolicy</code>提供的默认Filter. 如果自定义比较器认定某部分Key乱序, 不能使用默认过滤策略. 也可参考其它优化组件, 如Basho技术团队推出的Riak Server使用LevelDB的Erlang封装<a href="https://github.com/basho/leveldb" target="_blank" rel="noopener"><code>eleveldb</code></a>, <code>eleveldb</code>包含改进的Bloom Filter(Basho团队称该Filter占用更少存储空间,仅有0.05%假负率, 而Google版本LevelDB假负率为1%), <code>eleveldb</code>的布隆过滤器可以用于替标准LevelDB中的布隆过滤器.</p>
+<h2 id="选择性缓存"><a href="#选择性缓存" class="headerlink" title="选择性缓存"></a>选择性缓存</h2><p>LevelDB可以通过将<code>ReadOptions</code>中的<code>fill_cache</code> flag参数为false, 绕过缓存. 缓存虽好, 但某些业务场景可能要求禁止刷新当前缓存. 可以参考以下代码设置缓存大小, 代码中缓存为读缓存, 适用于读远大于写场景. </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">leveldb::Options options;</span><br><span class="line"><span class="comment">// 100MB</span></span><br><span class="line">options.cache = leveldb::NewLRUCache(<span class="number">100</span> *<span class="number">1048576</span>); </span><br><span class="line">leveldb::DB* db;</span><br><span class="line">leveldb::DB::Open(options, name, &amp;db)</span><br><span class="line"><span class="comment">// Do Some Work</span></span><br><span class="line"><span class="comment">// Then Clean Up</span></span><br><span class="line"><span class="keyword">delete</span> db;</span><br><span class="line"><span class="keyword">delete</span> options.cache;</span><br></pre></td></tr></table></figure>
+<h2 id="快照"><a href="#快照" class="headerlink" title="快照"></a>快照</h2><p>通常数据库内部使用的Key键包含用户定义Key、Flag值以及Snapshot Number, Flag值表明是数据Key键还是待删除Key; 快照数字在写的时候可以保证并发读, 对Key值遍历时可有效避免其它线程更改(Delete或重写Key键等). 快照可通过<code>ReadOptions</code>对<code>Get</code>或<code>Iterator</code>等读操作产生影响:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">leveldb::ReadOptions options;</span><br><span class="line"><span class="comment">// Save before some work</span></span><br><span class="line">options.snapshot = db-&gt;GetSnapshot();</span><br><span class="line"><span class="comment">// 增删Key键, 相关操作代码实现略</span></span><br><span class="line">leveldb::Iterator* iter = db-&gt;NewIterator(options);</span><br><span class="line"><span class="comment">// 手动清除</span></span><br><span class="line"><span class="keyword">delete</span> iter;</span><br><span class="line">db-&gt;ReleaseSnapshot(options.snapshot);</span><br></pre></td></tr></table></figure>
+<p>尽管<code>GetSnapshot</code>应返回与删除相关的数据库状态对象, 如果传入Snapshot Number组成读时使用Key键, 每次新写或批量写入将增大该数字, 而读时检索的实际Key键及快照后续并不可见. 快照作为一短期行为, 适用于数据库当前会话. 目前并不存一种安全而有效的方法在持久化快照于磁盘同时又能保证被后续应用所使用.</p>
+<h2 id="配置调优"><a href="#配置调优" class="headerlink" title="配置调优"></a>配置调优</h2><p>以下LevelDB配置(这些配置可参考<code>LevelDB::Options</code>)对性能调优存在重大影响:</p>
+<ul>
+<li><strong>write_buffer_size</strong>, 默认4MB, 可以适当调大, 当memtable写入磁盘时可能产生阻塞, 如果imm仍在写而当前Buffer已经满了, 可能会产生延迟</li>
+<li><strong>max_open_file</strong>, 默认为1000, 如果Server上数据库很多, 可以适当提高该参数值, 允许缓存更多的level File打开文件句柄, 避免文件开启、关闭开销</li>
+<li><strong>block_cache</strong>, 该指针常用于缓存<code>NEWLRUCache</code>创建对象, 默认8MB</li>
+<li><strong>block_size</strong>,  每项Block用户数据大小, 默认4KB, 影响level table索引(每项Block对应一Index Entry), 如果业务数据中存在很多Key键大于4KB, 可以适当修改. 该参数也可用于I/O刷写, 若参数值设置过大可能会导致数据库容易受OS Crash影响而造成数据丢失</li>
+<li><strong>block_restart_interval</strong>, 默认值为16, 若数据中存在很多顺序化Key且这些Key很少变更, 可以适当修改. 该参数也可视为写入新Key的Checkpoint Interval</li>
+<li><strong>filter_policy</strong>, 默认为NULL, 可以通过使用<code>NewBloomFilterPolicy</code>创建过滤策略, 使用过滤策略虽增加存储开销(磁盘及内存开销), 但优化了Key键查询.</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/LevelDB/" <i class="fa fa-tag"> LevelDB</a>
+          
+            
+            <a href="/tags/NoSQL/" <i class="fa fa-tag"> NoSQL</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/life/guide/" rel="next" title="站点导航 (免查找与搜索, <strong>你想要了解的都在这里</strong> !)">
+                <i class="fa fa-chevron-left"></i> 站点导航 (免查找与搜索, <strong>你想要了解的都在这里</strong> !)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/ambitious-java/amber-enum/" rel="prev" title="Ambitious Java Evolving系列之Project Amber篇(四)">
+                Ambitious Java Evolving系列之Project Amber篇(四) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Level-File"><span class="nav-number">1.</span> <span class="nav-text">Level File</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读自上而下"><span class="nav-number">2.</span> <span class="nav-text">读自上而下</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删即写"><span class="nav-number">3.</span> <span class="nav-text">删即写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#布隆过滤器"><span class="nav-number">4.</span> <span class="nav-text">布隆过滤器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择性缓存"><span class="nav-number">5.</span> <span class="nav-text">选择性缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快照"><span class="nav-number">6.</span> <span class="nav-text">快照</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置调优"><span class="nav-number">7.</span> <span class="nav-text">配置调优</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

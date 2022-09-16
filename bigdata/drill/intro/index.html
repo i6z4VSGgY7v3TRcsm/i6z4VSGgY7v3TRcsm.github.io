@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将介绍Apache Drill相关概念, 如Drill基本组成, 架构等.">
+<meta name="keywords" content="Apache Drill,Big Data">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Query Engine大作战 -- Apache Drill之基本概念篇">
+<meta property="og:url" content="https://ultradata.stream/bigdata/drill/intro/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将介绍Apache Drill相关概念, 如Drill基本组成, 架构等.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/elements.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/qry-lfecycle.jpg">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Query Engine大作战 -- Apache Drill之基本概念篇">
+<meta name="twitter:description" content="本文将介绍Apache Drill相关概念, 如Drill基本组成, 架构等.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/elements.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/drill/intro/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Query Engine大作战 -- Apache Drill之基本概念篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/drill/intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Query Engine大作战 -- Apache Drill之基本概念篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">7.7k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">7 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将介绍Apache Drill相关概念, 如Drill基本组成, 架构等.<a id="more"></a> Apache Drill, 作为一低时延查询引擎, 非常适合交互式查询, 支持集成BI工具如Tableau等. 大数据生态组件中, Apache Impala, Hive LLAP以及Presto也适合交互式查询, 运行效率远超Hive/Pig, 尽管Impala很快, 但由于Impala采用C++开发, 部署和构建, 相对于其它组件, 并非易事. </p>
+<p>Drill支持多种文件格式, 采用Java开发, 适合广大Java开发人员, 与其它查询引擎不同, Apache Drill不仅可以读取HDFS上数据, 还可以读取其它存储系统文件, 如Amazon S3, Kafka, MapR-FS等. Apache Drill与Impala, Presto组件不同之处在于, Drill在查询数据前, 并不要求开发人员定义元数据. 尽管Drill也可使用Hive元数据, 但Drill可直接查询数据文件, 无需指定元数据, 等待元数据刷新. </p>
+<h2 id="查询非存储"><a href="#查询非存储" class="headerlink" title="查询非存储"></a>查询非存储</h2><p>需要注意的是Drill并非数据库, Drill作为一低延时查询引擎, 本身并不提供存储服务. Drill支持多种外部存储系统, 如HDFS, Amazon S3, MapR-FS等, 并不限制用户存储选型(如非得使用HDFS作为数据源等). Drill视数据文件为Table, 由于文件是顺序化扫描, 因而Drill不支持索引, 不存在<code>CREATE INDEX</code>子句, 与多数大数据查询引擎类似, 通常这些查询引擎使用分区代替索引, 以便快速地对数据进行定位查找. </p>
+<p>由于HDFS中新增文件是Immutable类型(仅追加写入, UPDATE之类的更新较少), Drill并不支持<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>等操作. 每项文件均有自身的Schema, Drill也称Shema-Free或Schema-On-Read式查询引擎, Drill没有创建表、列或索引Schema的DDL(数据定义语言, Data Definition Language).</p>
+<p>结合以上几点, Apache Drill仅为一大数据查询引擎, 适合对多种异构数据, 不同存储系统数据进行查询, 不适合存储也不提供存储.</p>
+<h2 id="Drill拓扑术语"><a href="#Drill拓扑术语" class="headerlink" title="Drill拓扑术语"></a>Drill拓扑术语</h2><p>Apache Drill相关拓扑(或Data Flow)术语对应速查表如下:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Drill</th>
+<th>对应MapReduce</th>
+<th>对应Spark</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Query</td>
+<td>Job</td>
+<td>Job</td>
+</tr>
+<tr>
+<td>Major Fragment</td>
+<td>Map 或 Reduce</td>
+<td>Stage</td>
+</tr>
+<tr>
+<td>Minor Fragment</td>
+<td>Mapper, Reducer</td>
+<td>Stage</td>
+</tr>
+<tr>
+<td>Operator</td>
+<td>N/A</td>
+<td>Task</td>
+</tr>
+<tr>
+<td>Exchange</td>
+<td>Shuffle</td>
+<td>Shuffle</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="Drill架构"><a href="#Drill架构" class="headerlink" title="Drill架构"></a>Drill架构</h2><p>Drill主要包含以下四个组件:</p>
+<ul>
+<li><strong>Drill客户端</strong>, Drill客户端连接Foreman, 提交SQL语句, 并接收Query最终执行结果</li>
+<li><strong>Foreman</strong>, Drill Server, 用于维护用户会话状态, 处理查询. Drill客户端连上Drill后, 会随机连接一个Drillbit作为Foreman</li>
+<li><strong>Worker Drillbit</strong>, 实际执行Query组件</li>
+<li><strong>Zookeeper Server</strong>, 对Drill集群中的Drillbit进行协调</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/elements.jpg" alt></p>
+<p>如上图所示, Drill运行于数据节点, Drill通过HDFS客户端API从HDFS上读取数据, 由于Drillbit与数据位于同一节点, 读为本地读(同一节点同一Rack), Drill使用Zookeeper进行协同, 每项Drillbit向Zookeeper进行注册, 以便被其它Drillbit以及Drill客户端发现. Drill也可通过Zookeeper进行配置(如存储及数据格式配置等)以及准入控制等. 可以通过Drill客户端(如JDBC/ODBC接口, 命令行等)或BI工具(如Tableau), 连接Drill, 客户端通过连接Zookeeper获取Drillbit运行状况, 然后随机连接一个Drillbit(即Foreman), 执行对应Query. </p>
+<p>小结下Drill执行Query的处理流程:</p>
+<ul>
+<li>首先, 通过Drill客户端连接Drill集群(不同数据节点的Drillbit通过Zookeeper协同), 然后通过Zookeeper定位Drillbit, 随机连上一个Drillbit充当Foreman, 通过Foreman解析SQL, 然后分发Work至其他Woker Drillbit (等效于MapReduce中Map阶段)</li>
+<li>Drillbit从文件系统读取数据, 执行Query处理, 处理完后发送结果至Foreman, Foreman进行结果归并 (等效于MapReduce中Reduce阶段)</li>
+<li>Foreman返回结果至Drill客户端</li>
+</ul>
+<h2 id="低时延特性"><a href="#低时延特性" class="headerlink" title="低时延特性"></a>低时延特性</h2><p>Apache Drill作为一低时延的查询引擎, 主要存在以下三种机制减少时延.</p>
+<h3 id="代码生成"><a href="#代码生成" class="headerlink" title="代码生成"></a>代码生成</h3><p>通常, 多数大数据组件如Spark或Hadoop会分发应用代码至各节点运行, 如MapReduce分发应用代码至每项Mapper或Reducer, 而Spark中每项应用拥有独立的一组Executor执行Task. Apache Drill并不会进行代码分发, 主要原因有以下几点:</p>
+<ul>
+<li>Drill使用功SQL作为输入语言, 避免了执行特定应用代码</li>
+<li>每次进行查询时, Drill在每项Drillbit上生成Java代码并运行, 单个Drillbit可处理一定数量的查询</li>
+</ul>
+<p>Drill将SQL语句转换成物理执行计划, 发送至Drillbit, 为获取最佳性能, 每项Operator将自身对应物理计划转换成Java代码, 然后进行批量数据处理计算. 本地代码生成, 不仅避免了复杂的代码分发, 也是基于Drill Schema读取的一种方式. Drill 代码生成主要用于过滤, 聚合, Join及其它计算.</p>
+<div class="note info">
+            <p>只用当Operator观测到第一个Batch数据时, 才能知晓每列的数据类型, 只有知道了列的数据类型, 才可以判断是否执行整型还是浮点型数值计算. 不同的Scan操作可能会观测到不同版本的文件Schema, 因为每项Fragment可能会有不同的Schema及生成代码. Apache Drill并不能提前进行代码生成, 同一代码并非适用于所有Fragment. </p>
+          </div>
+<h3 id="Long-Lived-Drillbit"><a href="#Long-Lived-Drillbit" class="headerlink" title="Long-Lived Drillbit"></a>Long-Lived Drillbit</h3><p>MapReduce与Hive拓展性不错, 但批量计算耗时长, 除了与MapReduce Shuffle写磁盘有关外, 还有一点: YARN资源分配问题, YARN需为每一项Mapper以及Reducer开启一新的Process, 处理完后再销毁, 对于流水线式的数据批处理任务而言, 无疑增加了启动开销及其它系统资源消耗. Spark执行效率高, 一方面是基于内存计算, 另一方面在于每项Spark应用会复用同一组Executor, 减少了JVM启动开销. </p>
+<p>Apache Drill做法与Impala以及Hive LLAP(Live Long AND Process)有些类似, Impala通过使用Impalad进程, 长时间保活, 避免了频繁的销毁与创建, 执行效率高. 通常, Apache Drill每个节点分配一Executor(即Drillbit), 由于Drillbit是长时间运行, 当Drillbit接收到数据便可立即执行. </p>
+<p>当然, 这种方式也带来了一个缺点: 缺乏资源隔离, 比如执行一Query时占用内存过多可能会导致其他Query分配不到内存, 换句话说消耗内存过多的Query可能会拖慢其它Query执行, 特别是当Apache Drill负载过重时. Apache Drill提供了准入控制功能, 可减少这种问题产生. </p>
+<h3 id="网络交换"><a href="#网络交换" class="headerlink" title="网络交换"></a>网络交换</h3><p>Apache Drill基于内存计算, 无需像MapReduce那样将临时数据写磁盘, 可直接通过网络将Drillbit上游数据发送至下游Drillbit即可. Drill Operator中用于处理数据的Buffer, 基于Netty网络层, Drill通过特定的握手机制实现Backpressure, 当下游消费端跟不上上游生产端时, 向生产端发信号要求放缓. </p>
+<p>尽管, Apache Drill使用网络交换避免数据刷写磁盘, 但Drill有时也需写磁盘, 如执行Buffer操作符时, 比如排序, 哈希聚合, 哈希Join等, 需将其对应输入数据缓存, 如果内存放不下了, Drill会Spill部分数据写入磁盘, 虽然Spill可保持Query完整, 但Spill本身相对于内存处理慢很多.</p>
+<div class="note warning">
+            <p>如果Query执行慢于预期, 可能原因有以下几点:</p><ul><li>数据倾斜</li><li>某些Operator, 等待输入数据, 执行条件不充分</li><li>执行Buffer Operator时, 数据Spill至磁盘</li></ul><p>可以借助Apache Drill提供的Query Profile进行问题定位与排查.</p>
+          </div>
+<h2 id="Query执行细节"><a href="#Query执行细节" class="headerlink" title="Query执行细节"></a>Query执行细节</h2><p>本节将探讨Drill Query执行细节, 或者说Drill Query是如何进行的.</p>
+<h3 id="SQL-会话状态"><a href="#SQL-会话状态" class="headerlink" title="SQL 会话状态"></a>SQL 会话状态</h3><p>Drill作为查询引擎, 支持SQL, 通常SQL是有状态的, 每次数据库执行SQL, 均伴随着用户会话, 通过Drill客户端随机连接一Drillbit(即Foreman), 所有后续查询将于同一Drillbit提交, 以便复用会话状态. 换句话说, Foreman会话维护连接状态. 通常, Drillbit维护的状态包含:</p>
+<ul>
+<li>数据库(如通过<code>USE DATABASE</code>语句指定DB) 或 Workspace(如通过<code>USE WORKSPACE</code>指定)</li>
+<li>会话选项, 如通过<code>UPDATE SESSION</code>指定的会话选项</li>
+<li>正在执行的Query状态 (Drill可并行执行多项Query)</li>
+<li>临时表, 如通过<code>CREATE TEMPORARY TABLE AS</code>语句创建的临时表</li>
+</ul>
+<p>用户会话状态, 伴随着连接, 连接关闭, 会话终止. 如果由于网络原因导致失去Drill连接, 重连时需要重建用户会话, 因而Drill客户端并不支持自动重连(假如Drill客户端支持自动重连, Query运行正常, 下次也可能运行失败, 如会话状态缺失导致等).</p>
+<h3 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h3><p>Drill运行SQL语句, 通常包含以下两大步骤:</p>
+<ul>
+<li>准备阶段, 将SQL解析, 翻译, 将抽象语法树转换成逻辑计划, 然后转换成物理执行计划</li>
+<li>执行物理计划, 产生结果</li>
+</ul>
+<p>准备阶段, 也可细分为以下几个阶段:</p>
+<ol>
+<li>解析SQL语句为抽象语法树(AST)或内部解析树</li>
+<li>对内部解析树执行语义分析, 如所选数据库名称, Schema, 表和列以及Drill定义函数等</li>
+<li>将SQL解析树转换成逻辑计划</li>
+<li>基于代价优化模型, 将逻辑计划转换成物理计划</li>
+<li>将物理计划转换成执行计划, 分发Work至Woker Drillbit</li>
+</ol>
+<p>Drill使用<a href="https://calcite.apache.org" target="_blank" rel="noopener">Apache Calcite</a>进行SQL解析与翻译(对应以上步骤1-4), Drill查询生命周期参考如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/qry-lfecycle.jpg" alt></p>
+<h3 id="解析与语义分析"><a href="#解析与语义分析" class="headerlink" title="解析与语义分析"></a>解析与语义分析</h3><p>解析阶段, 主要检查SQL语法, 如果存在SQL语法错误, Drill将显示一长串错误消息表明具体错误原因. 接着进行命名查找, 尽管在准备阶段, Drill已知晓数据库和表, 但Drill并不知道列名, 不知道列的数据类型(直到运行Query时才知道列的数据类型), 因而Drill仅在运行时才能发现类型错误. </p>
+<p>此时, Drill会接受所有列名, 即使表中不存在的列名. 主要原因在于准备阶段, Drill并不知晓这一系类可用的列, 表也只是一系列数据文件, 甚至存在新版文件包含请求列, 而老版文件不存在情形. Drill作为一Schema-On-Read引擎, 能解决基于元数据系统(如Hive等)并不能解决的问题.</p>
+<h3 id="逻辑计划与物理计划"><a href="#逻辑计划与物理计划" class="headerlink" title="逻辑计划与物理计划"></a>逻辑计划与物理计划</h3><p>Drill使用<a href="https://calcite.apache.org" target="_blank" rel="noopener">Apache Calcite</a>进行SQL解析, 翻译并转换成逻辑计划, 如Drill判定用户进行表间Join, 在下一步执行物理计划时, 基于开销模型(或代价模型,Cost-Based), 选取开销最小的Join操作符执行Join. 通过Drill Web Console可查看每项Query Profile, Query Profile包含了Query逻辑计划与物理计划的可视化信息.</p>
+<p>查询计划, 基本上可视为基于Major Fragment分组的一些列操作符, 这些操作符包括如: 扫描文件, 过滤, 执行Join等. 通常, 这些操作符也可组合成管道(Pipeline). 由于Drill是分布式的, 数据有时需要在不同的Drillbit间交换(对应MapReduce或Spark中Shuffle), 比如执行<code>GROUP BY</code>时, 从所有扫描操作符收集数据行, 然后发送至Drillbit进行分组聚合. </p>
+<p>无需交换的一系列操作符, 也称Major Fragment, 在Drill Web Console中, 同一Fragment的操作符使用相同颜色标明. 每个Major Fragment开启一扫描或交换接收器, 以交换发送器或发送至Drill客户端结束. 这些操作符构成了一解析树, 根节点为Screen Operator(与Drill客户端对话), 叶节点为读取数据的Scan Operator. 数据从叶节点流至临时节点, 并最终将结果流转至根节点(Screen Operator). 从内部节点角度来看, 数据源也称上游, 目标数据也称下游, Drill Web Console中上游朝下, 下游朝上.</p>
+<h3 id="分发"><a href="#分发" class="headerlink" title="分发"></a>分发</h3><p>基于物理计划分发Work至Woker Drillbit, 由于每项Major Fragment单线程执行, Drill基于Major Fragment分发, 比如扫描文件时, Drill将Fragment切分为Slice, 如扫描文件夹时每一输入文件对应一Slice或对应每项文件的HDFS Block, 最终结果为一系列Slice(也称Minor Fragment), 作为Drill运行的最小工作单元.</p>
+<p>Drill分发这些Minor Fragment至Worker Drillbit执行, 这些Fragment可并行处理, Drill基于哈希键(用于Join或分组)对数据进行分组. Drill单独切分每项Major Fragment, 如果Query越复杂, 比如有10个Major Fragment, Drill将利用系统70%的内核进行并行处理, 由于每项Query可并行处理, 特殊情况Drill将创建更多的线程(可能超过系统允许创建最大线程数), 有可能导致应用崩溃. 可以通过启用Drill准入控制功能, 限制Query数量.</p>
+<p>Drill使用Zookeeper进行Drillbit协同, 假如新增一Drillbit至Drill集群, 只要新增Drillbit向Zookeeper进行注册, Drill便可使用该Drillbit执行Query. Major Fragment(对应Screen Operator)其实并不特殊, 因为最终会产生Minor Fragment, 这些Minor Fragment最终运行于Drillbit.</p>
+<h3 id="语句执行"><a href="#语句执行" class="headerlink" title="语句执行"></a>语句执行</h3><p>Drill执行完查询计划后, 开始执行, Drill中存在以下两种抉择:</p>
+<ul>
+<li>返回计划给用户 (即执行<code>EXPLAIN PLAN</code>语句返回结果)</li>
+<li>于Drill集群中执行计划 (通用方式)</li>
+</ul>
+<p>Foreman负责编排查询过程, 具体职责参考如下:</p>
+<ul>
+<li>等待执行 (等待资源分配, 输入数据等)</li>
+<li>发送Fragment至Drillbit执行</li>
+<li>监控执行进度, 进行监测以防发生故障</li>
+<li>追踪Fragment, 等待完成</li>
+<li>等所有Major Fragment完成后, 关闭查询并写入Query Profile (可以通过Drill Web Console查看)</li>
+</ul>
+<p>Drill执行每项Query时, 使用状态机对每项Fragment进行追踪, Drill Web Console收集相关信息并展示Query状态, 当Query完成时, 最终状态将写入Query Profile. 可以通过研究整个Query的Profile信息, 以便后续进行Query优化等. </p>
+<h3 id="数据表征"><a href="#数据表征" class="headerlink" title="数据表征"></a>数据表征</h3><p>Drill以Minor Fragment形式分发Work至Drillbit, 每项Minor Fragment包含一系列Operator, 通常叶Fragment包含一项或多项扫描操作符. 现在问题来了, Drill执行Query时, 数据行如何进行处理?</p>
+<p>Drill作为一大数据查询引擎, 如果逐行进行数据处理, 十分低效. 尽管Drill也可逐行处理数据, 但Drill会对行进行分组为Record Batch, 每项Record Batch大小为几千行到65536行, Record Batch作为Shuffle交换的单位以及将结果数据返回给Drill客户端的单位. JDBC或ODBC Driver接收Record Batch, 进行遍历并返回每一行.</p>
+<p>假定某项Query数据包含一百万行, Drill可能读取数据集并细分为20个Record Batch(假定每个Batch 5万条Record), Minor Fragment流转Record Batch于每项Operator, 当Batch到达Fragment顶部时, 将发送给下一Minor Fragment进行处理. Drill作为一列式查询引擎, 基于列存储数据, 这些基于列的数据也称值向量. 行可简单视为值向量的索引, 因而这些Record Batch也可简单视为值向量集. </p>
+<p>Drill Web Console中Query Profile通常会显示每项Operator或Fragment处理的Record Batch数量; 开发Drill拓展程序时, 需与Drill中值向量及Record Batch交互.</p>
+<div class="note success">
+            <p>Apache Drill后期将使用SIMD(Single Instruction Multiple Data, 单指令多数据流)技术, 加快Query执行效率, 现阶段使用SIMD主要存在以下两个问题:</p><ul><li>Drill使用SQL数据类型, 包含Null空值, 而SIMD指令并不支持Null值</li><li>Drill基于SQL, SQL通常逐行处理而非列, 使用SIMD技术处理列存在难点</li></ul>
+          </div>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Apache-Drill/" <i class="fa fa-tag"> Apache Drill</a>
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/drill/dbc/" rel="next" title="Query Engine大作战 -- Apache Drill之用户接口篇">
+                <i class="fa fa-chevron-left"></i> Query Engine大作战 -- Apache Drill之用户接口篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/drill/analysis/" rel="prev" title="Query Engine大作战 -- Apache Drill之复杂数据分析">
+                Query Engine大作战 -- Apache Drill之复杂数据分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#查询非存储"><span class="nav-number">1.</span> <span class="nav-text">查询非存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Drill拓扑术语"><span class="nav-number">2.</span> <span class="nav-text">Drill拓扑术语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Drill架构"><span class="nav-number">3.</span> <span class="nav-text">Drill架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#低时延特性"><span class="nav-number">4.</span> <span class="nav-text">低时延特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码生成"><span class="nav-number">4.1.</span> <span class="nav-text">代码生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Long-Lived-Drillbit"><span class="nav-number">4.2.</span> <span class="nav-text">Long-Lived Drillbit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络交换"><span class="nav-number">4.3.</span> <span class="nav-text">网络交换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Query执行细节"><span class="nav-number">5.</span> <span class="nav-text">Query执行细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL-会话状态"><span class="nav-number">5.1.</span> <span class="nav-text">SQL 会话状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备阶段"><span class="nav-number">5.2.</span> <span class="nav-text">准备阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析与语义分析"><span class="nav-number">5.3.</span> <span class="nav-text">解析与语义分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑计划与物理计划"><span class="nav-number">5.4.</span> <span class="nav-text">逻辑计划与物理计划</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分发"><span class="nav-number">5.5.</span> <span class="nav-text">分发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语句执行"><span class="nav-number">5.6.</span> <span class="nav-text">语句执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据表征"><span class="nav-number">5.7.</span> <span class="nav-text">数据表征</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

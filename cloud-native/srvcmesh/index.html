@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="云原生设计模式之熔断器、API网关、Service Mesh篇, 本文主要侧重客户端与服务端交互中常用的一些设计模式和技巧.">
+<meta name="keywords" content="Kubernetes,Containers">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漫谈云原生设计模式之熔断器、API网关、Service Mesh">
+<meta property="og:url" content="https://ultradata.stream/cloud-native/srvcmesh/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="云原生设计模式之熔断器、API网关、Service Mesh篇, 本文主要侧重客户端与服务端交互中常用的一些设计模式和技巧.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/circuit.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/load-arch.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/backlog.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/fallback.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/api-gateway.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/distro.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/api-gateway.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/distro.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/sidebar.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/enovy.jpg">
+<meta property="og:updated_time" content="2019-02-11T15:12:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="漫谈云原生设计模式之熔断器、API网关、Service Mesh">
+<meta name="twitter:description" content="云原生设计模式之熔断器、API网关、Service Mesh篇, 本文主要侧重客户端与服务端交互中常用的一些设计模式和技巧.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/circuit.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/cloud-native/srvcmesh/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>漫谈云原生设计模式之熔断器、API网关、Service Mesh | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/cloud-native/srvcmesh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">漫谈云原生设计模式之熔断器、API网关、Service Mesh
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-05-11 21:20:16" itemprop="dateCreated datePublished" datetime="2016-05-11T21:20:16+08:00">2016-05-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-11 23:12:21" itemprop="dateModified" datetime="2019-02-11T23:12:21+08:00">2019-02-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Cloud-Native/" itemprop="url" rel="index"><span itemprop="name">Cloud Native</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">17k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">15 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>云原生设计模式之熔断器、API网关、Service Mesh篇, 本文主要侧重客户端与服务端交互中常用的一些设计模式和技巧. <a id="more"></a></p>
+<h2 id="熔断器"><a href="#熔断器" class="headerlink" title="熔断器"></a>熔断器</h2><p>本文不打算对熔断器相关概念做详细介绍, 关于Circuit Breaker熔断器模式及相关描述请自行Google或百度. 本部分要点如下:</p>
+<ul>
+<li>首先, 通过一个简单的Posts Service服务示例了解下熔断器, 接着通过压测了解下熔断器优点</li>
+<li>其次, 通过Fallback方法对比, 小结熔断器性能优化建议</li>
+</ul>
+<h3 id="熔断器实现"><a href="#熔断器实现" class="headerlink" title="熔断器实现"></a>熔断器实现</h3><p>以Post和Connection Service为例, 通过使用熔断器对Post Service进行容错, 先创建一个 <em>PostService</em> 类, Post Controller本身还有其它逻辑在里边, 本例为简化,仅展示 <em>PostsService</em> 类中核心业务逻辑, Controller仍然处理请求解析、生成回复、以及一些基本的身份验证、授权逻辑等. <em>PostsService</em> 无需处理HTTP协议,只需关注服务核心逻辑即可,如数据库查询及生成响应对象等.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过 `HystrixCommand` 注解使用熔断器</span></span><br><span class="line"><span class="meta">@HystrixCommand</span>()</span><br><span class="line"><span class="function"><span class="keyword">public</span> Iterable&lt;Post&gt; <span class="title">getPostsByUserId</span><span class="params">(String userIds,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       String secret)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    logger.info(utils.ipTag() + <span class="string">"Attempting getPostsByUserId"</span>);</span><br><span class="line">    Iterable&lt;Post&gt; posts;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (userIds == <span class="keyword">null</span>) &#123;</span><br><span class="line">        logger.info(utils.ipTag() + <span class="string">"getting all posts"</span>);</span><br><span class="line">        posts = postRepository.findAll();</span><br><span class="line">        <span class="keyword">return</span> posts;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ArrayList&lt;Post&gt; postsForUsers = <span class="keyword">new</span> ArrayList&lt;Post&gt;();</span><br><span class="line">        String userId[] = userIds.split(<span class="string">","</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; userId.length; i++) &#123;</span><br><span class="line">            logger.info(utils.ipTag() +</span><br><span class="line">                        <span class="string">"getting posts for userId "</span> + userId[i]);</span><br><span class="line">            posts = postRepository.findByUserId(Long.parseLong(userId[i]));</span><br><span class="line">            posts.forEach(post -&gt; postsForUsers.add(post));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> postsForUsers;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/circuit.jpg" alt></div></p>
+<p>下面进行压测, 主要逻辑如上图所示, 客户端通过”重试风暴”直至接收回复, 在Post主服务中使用熔断器, 如果抛出大量错误立即熔断. 首先创建一个Kubernetes集群, 编写Bash脚本运行MySQL、Redis以及SCCS. 如下图所示, 主要设计部分如下:</p>
+<ul>
+<li>Connections’ Posts服务, 主要执行”重试风暴”</li>
+<li>Connnections服务, 标准连接实现, 弹性设计</li>
+<li>Posts服务, 服务主逻辑与Controller进行分离, PostService中封装了熔断器</li>
+</ul>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/load-arch.jpg" alt></div></p>
+<p>使用Jmeter进行负载测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ ./deploy-apps.sh  <span class="comment">## 先部署再压测</span></span><br><span class="line">$ kubectl create configmap jmeter-config \</span><br><span class="line">    --from-file=jmeter_run.jmx=loadTesting/ConnectionsPostsLoad.jmx</span><br><span class="line">$ kubectl create -f loadTesting/jmeter-deployment.yaml</span><br></pre></td></tr></table></figure>
+<p>查看测试日志</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">$  kubectl logs -f &lt;name of the jmeter pod&gt;</span><br><span class="line"></span><br><span class="line">Waiting <span class="keyword">for</span> possible Shutdown/StopTestNow/Heapdump message on port 4445</span><br><span class="line">summary +     85 <span class="keyword">in</span> 00:00:10 =    8.1/s Err:     0 (0.00%) Active: 85</span><br><span class="line">summary +    538 <span class="keyword">in</span> 00:00:30 =   18.0/s Err:     0 (0.00%) Active: 332</span><br><span class="line">summary =    623 <span class="keyword">in</span> 00:00:40 =   15.4/s Err:     0 (0.00%)</span><br><span class="line">summary +   1033 <span class="keyword">in</span> 00:00:30 =   34.5/s Err:     0 (0.00%) Active: 579</span><br><span class="line">summary =   1656 <span class="keyword">in</span> 00:01:10 =   23.5/s Err:     0 (0.00%)</span><br><span class="line">summary +   1529 <span class="keyword">in</span> 00:00:30 =   51.0/s Err:     0 (0.00%) Active: 829</span><br><span class="line">summary =   3185 <span class="keyword">in</span> 00:01:40 =   31.7/s Err:     0 (0.00%)</span><br><span class="line">summary +   2029 <span class="keyword">in</span> 00:00:30 =   67.6/s Err:     0 (0.00%) Active: 1077</span><br><span class="line">summary =   5214 <span class="keyword">in</span> 00:02:10 =   40.0/s Err:     0 (0.00%)</span><br><span class="line">summary +   2520 <span class="keyword">in</span> 00:00:30 =   84.1/s Err:     0 (0.00%) Active: 1325</span><br><span class="line">summary =   7734 <span class="keyword">in</span> 00:02:40 =   48.2/s Err:     0 (0.00%)</span><br><span class="line">summary +   2893 <span class="keyword">in</span> 00:00:30 =   96.4/s Err:     0 (0.00%) Active: 1500</span><br><span class="line">summary =  10627 <span class="keyword">in</span> 00:03:10 =   55.8/s Err:     0 (0.00%)</span><br><span class="line">summary +   3055 <span class="keyword">in</span> 00:00:30 =  101.8/s Err:     0 (0.00%) Active: 1500</span><br><span class="line">summary =  13682 <span class="keyword">in</span> 00:03:40 =   62.1/s Err:     0 (0.00%)</span><br><span class="line">summary +   3007 <span class="keyword">in</span> 00:00:30 =  100.2/s Err:     0 (0.00%) Active: 1500</span><br><span class="line">summary =  16689 <span class="keyword">in</span> 00:04:10 =   66.7/s Err:     0 (0.00%)</span><br><span class="line"></span><br><span class="line">&lt;time marker 1 – I have broken the network between Posts and MySQL&gt;</span><br><span class="line">summary +   2510 <span class="keyword">in</span> 00:00:30 =   83.6/s Err:  2084 (83.03%) Active: 1500</span><br><span class="line">summary =  19199 <span class="keyword">in</span> 00:04:40 =   68.5/s Err:  2084 (10.85%)</span><br><span class="line">summary +   3000 <span class="keyword">in</span> 00:00:30 =  100.0/s Err:  3000 (100.00%) Active: 1500</span><br><span class="line">summary =  22199 <span class="keyword">in</span> 00:05:10 =   71.5/s Err:  5084 (22.90%)</span><br><span class="line">summary +   3000 <span class="keyword">in</span> 00:00:30 =  100.0/s Err:  3000 (100.00%) Active: 1500</span><br><span class="line">summary =  25199 <span class="keyword">in</span> 00:05:40 =   74.0/s Err:  8084 (32.08%)</span><br><span class="line">summary +   2953 <span class="keyword">in</span> 00:00:30 =   98.4/s Err:  2953 (100.00%) Active: 1500</span><br><span class="line">summary =  28152 <span class="keyword">in</span> 00:06:10 =   76.0/s Err: 11037 (39.21%)</span><br><span class="line">summary +   2916 <span class="keyword">in</span> 00:00:30 =   96.9/s Err:  2916 (100.00%) Active: 1500</span><br><span class="line">summary =  31068 <span class="keyword">in</span> 00:06:40 =   77.6/s Err: 13953 (44.91%)</span><br><span class="line">summary +   3046 <span class="keyword">in</span> 00:00:30 =  101.7/s Err:  3046 (100.00%) Active: 1500</span><br><span class="line">summary =  34114 <span class="keyword">in</span> 00:07:10 =   79.3/s Err: 16999 (49.83%)</span><br><span class="line">summary +   3019 <span class="keyword">in</span> 00:00:30 =  100.7/s Err:  3019 (100.00%) Active: 1500</span><br><span class="line">summary =  37133 <span class="keyword">in</span> 00:07:40 =   80.7/s Err: 20018 (53.91%)</span><br><span class="line"></span><br><span class="line">&lt;time marker 2 – I have repaired the network between Posts and MySQL&gt;</span><br><span class="line">summary +   2980 <span class="keyword">in</span> 00:00:30 =   99.3/s Err:  2980 (100.00%) Active: 1500</span><br><span class="line">summary =  40113 <span class="keyword">in</span> 00:08:10 =   81.8/s Err: 22998 (57.33%)</span><br><span class="line">summary +   3015 <span class="keyword">in</span> 00:00:30 =  100.5/s Err:  3015 (100.00%) Active: 1500</span><br><span class="line">summary =  43128 <span class="keyword">in</span> 00:08:40 =   82.9/s Err: 26013 (60.32%)</span><br><span class="line">summary +   3020 <span class="keyword">in</span> 00:00:30 =  100.7/s Err:  3020 (100.00%) Active: 1500</span><br><span class="line">summary =  46148 <span class="keyword">in</span> 00:09:10 =   83.8/s Err: 29033 (62.91%)</span><br><span class="line">summary +   3075 <span class="keyword">in</span> 00:00:30 =  102.5/s Err:  3072 (99.90%) Active: 1500</span><br><span class="line">summary =  49223 <span class="keyword">in</span> 00:09:40 =   84.8/s Err: 32105 (65.22%)</span><br><span class="line">summary +   3049 <span class="keyword">in</span> 00:00:30 =  101.6/s Err:  2395 (78.55%) Active: 1500</span><br><span class="line">summary =  52272 <span class="keyword">in</span> 00:10:10 =   85.6/s Err: 34500 (66.00%)</span><br><span class="line">summary +   3191 <span class="keyword">in</span> 00:00:30 =  106.4/s Err:  2263 (70.92%) Active: 1500</span><br><span class="line">summary =  55463 <span class="keyword">in</span> 00:10:40 =   86.6/s Err: 36763 (66.28%)</span><br><span class="line">summary +   2995 <span class="keyword">in</span> 00:00:30 =   99.7/s Err:  1203 (40.17%) Active: 1500</span><br><span class="line">summary =  58458 <span class="keyword">in</span> 00:11:10 =   87.2/s Err: 37966 (64.95%)</span><br><span class="line">summary +   3031 <span class="keyword">in</span> 00:00:30 =  101.1/s Err:  1193 (39.36%) Active: 1500</span><br><span class="line">summary =  61489 <span class="keyword">in</span> 00:11:40 =   87.8/s Err: 39159 (63.68%)</span><br><span class="line">summary +   3009 <span class="keyword">in</span> 00:00:30 =  100.3/s Err:  1182 (39.28%) Active: 1500</span><br><span class="line">summary =  64498 <span class="keyword">in</span> 00:12:10 =   88.3/s Err: 40341 (62.55%)</span><br><span class="line">summary +   3083 <span class="keyword">in</span> 00:00:30 =  102.8/s Err:   859 (27.86%) Active: 1500</span><br><span class="line">summary =  67581 <span class="keyword">in</span> 00:12:40 =   88.9/s Err: 41200 (60.96%)</span><br><span class="line">summary +   3110 <span class="keyword">in</span> 00:00:30 =  103.7/s Err:   597 (19.20%) Active: 1500</span><br><span class="line">summary =  70691 <span class="keyword">in</span> 00:13:10 =   89.4/s Err: 41797 (59.13%)</span><br><span class="line">summary +   2999 <span class="keyword">in</span> 00:00:30 =   99.9/s Err:     0 (0.00%) Active: 1500</span><br><span class="line">summary =  73690 <span class="keyword">in</span> 00:13:40 =   89.8/s Err: 41797 (56.72%)</span><br><span class="line">summary +   3001 <span class="keyword">in</span> 00:00:30 =  100.1/s Err:     0 (0.00%) Active: 1500</span><br><span class="line">summary =  76691 <span class="keyword">in</span> 00:14:10 =   90.2/s Err: 41797 (54.50%)</span><br></pre></td></tr></table></figure>
+<p>如图所示, Connections’Posts所有请求均失败, 通过日志输出,可以看到大约1分钟后出现第一个恢复迹象,完全恢复可能需要3到4分钟. 以上是含有熔断器的例子, 下面去掉熔断器, 主要实现和测试逻辑与上面类似, 作为对照组, 实验组和对照组结果对比如下:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>组别</th>
+<th>初次恢复耗时</th>
+<th>完全恢复耗时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无熔断器</td>
+<td>9 min</td>
+<td>12-13 min</td>
+</tr>
+<tr>
+<td>有熔断器</td>
+<td>1-2 min</td>
+<td>4-5 min</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Impressive? 但包含熔断器的实验组恢复时间为何这么快? 可以参考下图, 熔断器打开后, 并非每次重试连接都会超时,Connections’ Posts服务可快速收到Posts服务响应,状态码500清楚地表明存在问题. 对于对照组没有熔断器而言, 如果Posts服务面临故障, 客户端白白浪费时间等待回复;对于实验组而言, 当熔断器处于开着状态时, 若Posts服务面临故障, 客户端立即知晓将不会产生回复, 迫使等待时间最小化, 以增加整个系统的健康程度及可用性; 当实验组熔断器处于关闭状态时, 若Posts服务面临故障, 如果没有检测到故障,熔断器在关闭比前可以继续运行, 客户端可能会等待一段时间, 如果这种现象偶尔发生, 对整个系统影响较小, 如果经常发生则对整个系统影响较大. </p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/backlog.jpg" alt></div></p>
+<h3 id="Fallback-Or-Not"><a href="#Fallback-Or-Not" class="headerlink" title="Fallback Or Not ?"></a>Fallback Or Not ?</h3><p>如下图所示, 很明显Fallback有助于弹性模式设计, 每种Fallback方法的上下文均不同, 如下图所示,对于客户端Connections’ Post服务而言, 多次重试失败可调用Fallback方法; 对于服务端交互而言, 重复多次失败后当熔断器开启时也可调用Fallback方法.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/fallback.jpg" alt></div></p>
+<p>再来做个小测试, Hystrix对于熔断器提供了Fallback支持, 下面对熔断器中是否使用Fallback方法进行压测对比. 在 <em>PostService</em> 中对熔断器中增加Fallback支持, 代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Hystrix Fallback方法可以链起来(chained)使用, 例如主方法失败了, 可以调用fallbackMethodOne; </span></span><br><span class="line"><span class="comment"> *      如果fallbackMethodOne方法失败了, 可以将控制权给fallbackMethodTwo等, 依此类推.</span></span><br><span class="line"><span class="comment"> * 每次当Hystrix-protected Command返回错误时调用Fallback方法, 即使熔断器已经关闭.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@HystrixCommand</span>(fallbackMethod = <span class="string">"getSponsoredPosts"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> Iterable&lt;Post&gt; <span class="title">getPostsByUserId</span><span class="params">(String userIds,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       String secret)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    logger.info(utils.ipTag() + <span class="string">"Attempting getPostsByUserId"</span>);</span><br><span class="line"></span><br><span class="line">    Iterable&lt;Post&gt; posts;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (userIds == <span class="keyword">null</span>) &#123;</span><br><span class="line">        logger.info(utils.ipTag() + <span class="string">"getting all posts"</span>);</span><br><span class="line">        posts = postRepository.findAll();</span><br><span class="line">        <span class="keyword">return</span> posts;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ArrayList&lt;Post&gt; postsForUsers = <span class="keyword">new</span> ArrayList&lt;Post&gt;();</span><br><span class="line">        String userId[] = userIds.split(<span class="string">","</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; userId.length; i++) &#123;</span><br><span class="line">            logger.info(utils.ipTag() +</span><br><span class="line">                        <span class="string">"getting posts for userId "</span> + userId[i]);</span><br><span class="line">        posts = postRepository.findByUserId(Long.parseLong(userId[i]));</span><br><span class="line">        posts.forEach(post -&gt; postsForUsers.add(post));</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> postsForUsers;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Iterable&lt;Post&gt; <span class="title">getSponsoredPosts</span><span class="params">(String userIds,</span></span></span><br><span class="line"><span class="function"><span class="params">                                        String secret)</span> </span>&#123;</span><br><span class="line">    logger.info(utils.ipTag() +</span><br><span class="line">                <span class="string">"Accessing Hystrix fallback getSponsoredPosts"</span>);</span><br><span class="line">    ArrayList&lt;Post&gt; posts = <span class="keyword">new</span> ArrayList&lt;Post&gt;();</span><br><span class="line">    posts.add(<span class="keyword">new</span> Post(<span class="number">999L</span>, <span class="string">"Some catchy title"</span>,</span><br><span class="line">                       <span class="string">"Some great sponsored content"</span>));</span><br><span class="line">    posts.add(<span class="keyword">new</span> Post(<span class="number">999L</span>, <span class="string">"Another catchy title"</span>,</span><br><span class="line">                       <span class="string">"Some more great sponsored content"</span>));</span><br><span class="line">    <span class="keyword">return</span> posts;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重新压测</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="comment"># 停掉之前运行的压测, 重新部署并进行压测</span></span><br><span class="line">$ kubectl delete deploy jmeter-deployment &amp;&amp; ./deployApps.sh </span><br><span class="line">$ kubectl create -f loadTesting/jmeter-deployment.yaml</span><br></pre></td></tr></table></figure>
+<p>查看日志</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl logs -f &lt;name of the jmeter pod&gt;</span><br><span class="line"></span><br><span class="line">Waiting <span class="keyword">for</span> possible Shutdown/StopTestNow/Heapdump message on port 4445</span><br><span class="line">summary +    217 <span class="keyword">in</span> 00:00:21 =   10.4/s Err: 0 (0.00%) Active: 171</span><br><span class="line">summary +    712 <span class="keyword">in</span> 00:00:30 =   23.7/s Err: 0 (0.00%) Active: 419</span><br><span class="line">summary =    929 <span class="keyword">in</span> 00:00:51 =   18.3/s Err: 0 (0.00%)</span><br><span class="line">summary +   1209 <span class="keyword">in</span> 00:00:30 =   40.3/s Err: 0 (0.00%) Active: 667</span><br><span class="line">summary =   2138 <span class="keyword">in</span> 00:01:21 =   26.4/s Err: 0 (0.00%)</span><br><span class="line">summary +   1706 <span class="keyword">in</span> 00:00:30 =   57.0/s Err: 0 (0.00%) Active: 916</span><br><span class="line">summary =   3844 <span class="keyword">in</span> 00:01:51 =   34.7/s Err: 0 (0.00%)</span><br><span class="line">summary +   2205 <span class="keyword">in</span> 00:00:30 =   73.5/s Err: 0 (0.00%) Active: 1166</span><br><span class="line">summary =   6049 <span class="keyword">in</span> 00:02:21 =   43.0/s Err: 0 (0.00%)</span><br><span class="line">summary +   2705 <span class="keyword">in</span> 00:00:30 =   90.2/s Err: 0 (0.00%) Active: 1415</span><br><span class="line">summary =   8754 <span class="keyword">in</span> 00:02:51 =   51.2/s Err: 0 (0.00%)</span><br><span class="line">summary +   2998 <span class="keyword">in</span> 00:00:30 =   99.9/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  11752 <span class="keyword">in</span> 00:03:21 =   58.5/s Err: 0 (0.00%)</span><br><span class="line"></span><br><span class="line">&lt;time marker 1 – I have broken the network between Posts and MySQL&gt;</span><br><span class="line">summary +   3004 <span class="keyword">in</span> 00:00:30 =  100.0/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  14756 <span class="keyword">in</span> 00:03:51 =   63.9/s Err: 0 (0.00%)</span><br><span class="line">summary +   2997 <span class="keyword">in</span> 00:00:30 =   99.9/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  17753 <span class="keyword">in</span> 00:04:21 =   68.1/s Err: 0 (0.00%)</span><br><span class="line">summary +   3001 <span class="keyword">in</span> 00:00:30 =  100.1/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  20754 <span class="keyword">in</span> 00:04:51 =   71.4/s Err: 0 (0.00%)</span><br><span class="line">summary +   3000 <span class="keyword">in</span> 00:00:30 =  100.0/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  23754 <span class="keyword">in</span> 00:05:21 =   74.0/s Err: 0 (0.00%)</span><br><span class="line">summary +   3000 <span class="keyword">in</span> 00:00:30 =  100.0/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  26754 <span class="keyword">in</span> 00:05:51 =   76.3/s Err: 0 (0.00%)</span><br><span class="line">summary +   3000 <span class="keyword">in</span> 00:00:30 =  100.0/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  29754 <span class="keyword">in</span> 00:06:21 =   78.1/s Err: 0 (0.00%)</span><br><span class="line">summary +   2995 <span class="keyword">in</span> 00:00:30 =   99.9/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  32749 <span class="keyword">in</span> 00:06:51 =   79.7/s Err: 0 (0.00%)</span><br><span class="line"></span><br><span class="line">&lt;time marker 2 – I have repaired the network between Posts and MySQL&gt;</span><br><span class="line">summary +   3005 <span class="keyword">in</span> 00:00:30 =  100.2/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  35754 <span class="keyword">in</span> 00:07:21 =   81.1/s Err: 0 (0.00%)</span><br><span class="line">summary +   2997 <span class="keyword">in</span> 00:00:30 =   99.9/s Err: 0 (0.00%) Active: 1500</span><br><span class="line">summary =  38751 <span class="keyword">in</span> 00:07:51 =   82.3/s Err: 0 (0.00%)</span><br></pre></td></tr></table></figure>
+<p>其中, Time Marker 1表明了Posts服务与MySQL数据库断开时间, Time Marker 2表示重新连接, 如上所示, 即使在网络中断期间,对Connections’Posts的调用也从未失败过, 主要由于熔断器Fallback方法在Posts服务面临任意故障时的辅助作用. 比较有意思的一点是, 重建网络连接后实时返回内容的时间: 不到5秒.主要由于sleepWindowMilliseconds默认设置是5000,意味着熔断器由Half-Open状态转变为Open状态, 耗时5秒,此时,允许通过Post服务逻辑的试用请求成功,熔断器关闭,应用程序重新变为稳定状态.可以在其中一个Posts服务实例日志输出中看到此类转换:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">20:59:03.084  getting posts <span class="keyword">for</span> userId 2</span><br><span class="line">20:59:03.148  Attempting getPostsByUserId</span><br><span class="line">20:59:03.148  getting posts <span class="keyword">for</span> userId 2</span><br><span class="line">20:59:03.167  Attempting getPostsByUserId</span><br><span class="line">20:59:03.167  getting posts <span class="keyword">for</span> userId 2</span><br><span class="line"></span><br><span class="line">&lt;time marker 1 – I have broken the network between Posts and MySQL&gt;</span><br><span class="line">20:59:03.213  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">20:59:03.237  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">20:59:03.243  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">20:59:03.313  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">20:59:03.351  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">20:59:03.357  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">20:59:03.394  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">... (there are many more of these <span class="built_in">log</span> lines)</span><br><span class="line"></span><br><span class="line">&lt;time marker 2 – I have repaired the network between Posts and MySQL&gt;</span><br><span class="line">... (another 5 seconds or so of Hystrix mentioning messages)</span><br><span class="line">(<span class="keyword">then</span>, ...)</span><br><span class="line"></span><br><span class="line">21:02:33.705  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:33.717  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:33.717  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:33.898  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:33.898  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:33.899  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:33.899  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:33.900  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:33.905  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:33.911  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:33.943  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:34.080  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:34.100  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:34.113  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:34.216  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:34.225  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:34.300  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:34.368  Accessing Hystrix fallback getSponsoredPosts</span><br><span class="line">21:02:34.398  Attempting getPostsByUserId</span><br><span class="line">21:02:34.398  getting posts <span class="keyword">for</span> userId 2</span><br><span class="line">21:02:34.400  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:34.433  Attempting getPostsByUserId</span><br><span class="line">21:02:34.433  getting posts <span class="keyword">for</span> userId 2</span><br><span class="line">21:02:34.434  Attempting getPostsByUserId</span><br><span class="line">21:02:34.434  getting posts <span class="keyword">for</span> userId 2</span><br><span class="line">21:02:34.435  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:34.437  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:34.472  Attempting getPostsByUserId</span><br><span class="line">21:02:34.472  getting posts <span class="keyword">for</span> userId 2</span><br><span class="line">21:02:34.475  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:34.556  Attempting getPostsByUserId</span><br><span class="line">21:02:34.556  getting posts <span class="keyword">for</span> userId 2</span><br><span class="line">21:02:34.559  getting posts <span class="keyword">for</span> userId 3</span><br><span class="line">21:02:34.622  Attempting getPostsByUserId</span><br><span class="line">(and operation has returned to normal)</span><br></pre></td></tr></table></figure>
+<p>测试结果如下:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>组别</th>
+<th>初次恢复耗时</th>
+<th>完全恢复耗时</th>
+<th>网络中断时错误率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>熔断器不含Fallback方法</td>
+<td>1-2 min</td>
+<td>4-5 min</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>熔断器含Fallback方法</td>
+<td>N/A—即使网络中断仍无故障</td>
+<td>&lt;5s</td>
+<td>0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>结论: “人生苦短”, 能用Fallback方法时尽量别犹豫, 毕竟在熔断器中多加层容错性保证, 有何不可.</p>
+<h2 id="API网关"><a href="#API网关" class="headerlink" title="API网关"></a>API网关</h2><p>开源以及商业API网关可用性早于微服务和云计算架构, 如早期Apigee(被谷歌收购)和Mashery(被英特尔收购后再出售给TIBCO)等公司均专注于API网关.API网关在软件架构设计上可以减少一些不必要的应用耦合, 提升开发效率, 以便开发人员可以更好地专注于业务逻辑. 另一方面, API网关在设计上, 便于中心化、统一管理, 便于维护. API网关可通过与其他服务交互执行具体职责, 如API网关本身无需存储需要进行身份验证和授权的用户, 但取决于身份识别、访问管理及ID存储等服务. 通常API网关设计上包含的服务有:</p>
+<ul>
+<li>身份验证和授权, 通过API网关控制对服务的访问, 访问控制机制有多种, 如基于秘钥: 通过使用密码或Token信令; 或基于网络, 如服务集成或实现了防火墙.</li>
+<li>数据加密, API网关可以处理解密,管理认证.</li>
+<li>防止服务过载, 如果配置合理, 客户端只能通过API网关访问服务, 当然也可以通过节流进行保护</li>
+<li>日志访问, 由于所有客户端请求均需通过API网关访问服务, 因此可以记录所有访问,便于后续日志排查、审计等.</li>
+</ul>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/api-gateway.jpg" alt></div></p>
+<p>如图, 该业务场景下的API网关包含验证授权、身份识别访问管理以及日志审计,客户端与服务通过API网关进行交互, 所有访问及政策变更可通过API网关记录, 以便进行验证、审计等.</p>
+<h3 id="云原生下API网关面临挑战"><a href="#云原生下API网关面临挑战" class="headerlink" title="云原生下API网关面临挑战"></a>云原生下API网关面临挑战</h3><p>虽然API网关已有多年历史, 但云原生架构的发展对API网关提出了新的要求, 如:</p>
+<ul>
+<li>首先微服务数量级剧增,  如当拥有成千上万个服务实例时, 很难管理.</li>
+<li>在突发事故以及定期升级时对服务实例进行频繁变更,在没有其他辅助软件帮助下, 很难对事件进行追踪并处理.</li>
+<li>高度分布式系统中弹性模式应用,如重试机制,可能带来不同的服务负载,有些负载可能难以预测, 此时需要避免服务受一些极端请求影响或产生意外, 如可以通过熔断器进行容错等.</li>
+<li>如云原生架构中基于计费的服务消费业务, API网关须支持必要的计量工作,有时还可能需要节流.</li>
+<li>并行部署, 通过API网关可以很方便地实现路由逻辑, 对于后续安全升级具有重大影响</li>
+</ul>
+<h3 id="API网关部署拓扑"><a href="#API网关部署拓扑" class="headerlink" title="API网关部署拓扑"></a>API网关部署拓扑</h3><p>一个中心化的网关在云原生有点反模式. 以前API网关通常进行中心化、集群化、组件式部署,但在云原生架构中已经发生了改变. 比如API网关分布式实现问题, 如下图所示, 由于管理需要,可以将网关视为单个逻辑实体. 注意到图中具有更多的服务实例, 倘若使用中心化API网关, 意味着所有服务交互均需通过API网关进行, 意味着可能需要处理流量过载问题; 若通过分布式处理,每个网关实例单独处理其服务负载, 便于追踪和排查.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/distro.jpg" alt></div></p>
+<p>常见的开源API网关, 如Netflix Zuul, 官方描述为”提供动态路由、监控、弹性、安全等服务.” Zuul可与Netflix微服务框架中其他组件结合使用, 如Hystrix(熔断器),Ribbon(负载平衡),Turbine(指标)等. Zuul,主要由Java编写, 常见配置项如URL配置等, 如为Posts服务配置网关, 需指定URL和端口等:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zuul.routes.connectionPosts.url = http://localhost:8090/connectionPosts</span><br><span class="line">server.port = 8080</span><br></pre></td></tr></table></figure>
+<p>如何在API网关拓扑中使用Zuul, 通常部署方式如下:</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/api-gateway.jpg" alt></div></p>
+<p>高度分布式环境中,建议部署方式如下: </p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/distro.jpg" alt></div></p>
+<p>实际上Spring Cloud为Zuul提供了一种嵌入服务的方式,类似于嵌入熔断器一样, 便于实现如上图所示的拓扑部署. 将网关嵌入到服务中具有一些明显的优点:网关和服务本身之间没有网络跳跃, 配置中可以不需要主机名,只需提供路径即可, 没有跨域资源共享问题(Cross Origin Resource Sharing, CORS)等. 但也存在一些缺点,如:</p>
+<ul>
+<li>首先,灵活性问题, 比如配置文件application.properties中更改配置需要重新编译, 当然属性值也可以通过后续环境变量注入, 但仍需重启JVM(或至少刷新下应用上下文);</li>
+<li>其次, 如果应用中需嵌入Java组件, 服务实现语言必须使用Java或其它JVM语言, 当然具体使用何种语言实现, 取决于项目团队及具体业务逻辑等;</li>
+<li>最后, API网关模式的目的之一是将服务开发人员与运维人员的侧重点分离, 如为运维人员或运营人员提供控服务管理等, 嵌入意味着耦合.</li>
+</ul>
+<h2 id="Service-Mesh"><a href="#Service-Mesh" class="headerlink" title="Service Mesh"></a>Service Mesh</h2><p>由于服务交互跨进程,甚至跨越网络边界,因此在分布式、云部署环境中需利用各种模式提供更加鲁棒性的软件实现, 以适应不断地需求变更. 常见措施有: 客户端重试及服务端熔断器实现,当然熔断器实现也可概括为网关模式, 值得注意的是,服务网格(Service Mesh)的兴起, 俨然成为了运行云原生应用程序平台中的重要组成部分.</p>
+<h3 id="Service-Mesh原语之Sidecar"><a href="#Service-Mesh原语之Sidecar" class="headerlink" title="Service Mesh原语之Sidecar"></a>Service Mesh原语之Sidecar</h3><p>如何在分布式环境中实现API网关功能, 并避免嵌入Java组件带来的缺点, 解决方案可以考虑引入Sidecar(边车). 简而言之, 边车可与主要服务一起运行.网关服务可与其它服务一起运行, 但不一定是嵌入服务中,为了避免其被编译到二进制文件中, 网关边车须运行于另一独立进程中, 与运行的主服务进程分离.</p>
+<p>Kubernetes提供了一种抽象Kubernetes Pod, Pod是Kubernetes中最小部署单元, 可以包含一个或多个容器. 可以将主服务托管在一个容器中, 将网关服务托管在另一个容器中, 两者均运行于同一Pod中. 如图, 对于每项服务而言, 分布式网关作为边车运行, 在Kubernetes中一般通过在同一个pod中运行两个容器来实现, 一个运行主服务, 另一个运行网关边车.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/sidebar.jpg" alt></div></p>
+<p>每个容器均有自己的运行时环境, 因此主服务可以在JVM中运行, 而网关边车可以由C++实现. 但现在网关和主服务之间通信是进程间通信,甚至是跨容器通信, 这意味着网络跃点. 值得注意的一点是, 在Kubernetes Pod中运行的所有服务都托管于同一IP地址, 这意味着它们可以通过localhost寻址,因此网络跃点很小. 目前比较流行的Sidecar边车框架有<a href="https://www.envoyproxy.io" target="_blank" rel="noopener">Envoy</a>, Envoy最初由Lyft公司开发,采用C语言编写, 分布式代理非常高效, 可以在各种部署拓扑中使用. 这里将Envoy描述为代理,而非网关, 因为Envoy不仅可以充当网关, 也可以充当客户端代理. 通过Sidecar编程交互, Envoy在交互实现了提供了很多便利, 如重试、熔断器、限流、负载平衡、服务发现、服务观测等.</p>
+<h3 id="Control-Plane"><a href="#Control-Plane" class="headerlink" title="Control Plane"></a>Control Plane</h3><p>如下图所示, Envoy代理通交互的通道相连, 看起来像一个网格,Service Mesh由此得名, 服务网格(Service Mesh)包含一系列互连的Sidebar,并由控制平面(Control Plane)管理这些代理.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/enovy.jpg" alt></div></p>
+<p>目前Service Mesh使用广泛的框架有<a href="https://istio.io/" target="_blank" rel="noopener">Istio</a>,该项目由谷歌,IBM和Lyft孵化并开源, 对Kubernetes组件进行了拓展,使用pod原语作为Envoy Sidecars的部署机制. Istio自标”连接、安全、控制及观测服务”,通过支持自动边车注入并提供支持Envoy代理配置、验证处理及策略实施组件.</p>
+<p><div align="center"><a href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/istio.jpg" target="_blank" rel="noopener"></a></div></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Kubernetes/" <i class="fa fa-tag"> Kubernetes</a>
+          
+            
+            <a href="/tags/Containers/" <i class="fa fa-tag"> Containers</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/rust/inference/" rel="next" title="Rust大法试水NLP之语义推断引擎构建篇">
+                <i class="fa fa-chevron-left"></i> Rust大法试水NLP之语义推断引擎构建篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/jvm/rxjava-backpressure/" rel="prev" title="RxJava中Backpressure处理小结">
+                RxJava中Backpressure处理小结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#熔断器"><span class="nav-number">1.</span> <span class="nav-text">熔断器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#熔断器实现"><span class="nav-number">1.1.</span> <span class="nav-text">熔断器实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fallback-Or-Not"><span class="nav-number">1.2.</span> <span class="nav-text">Fallback Or Not ?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API网关"><span class="nav-number">2.</span> <span class="nav-text">API网关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#云原生下API网关面临挑战"><span class="nav-number">2.1.</span> <span class="nav-text">云原生下API网关面临挑战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API网关部署拓扑"><span class="nav-number">2.2.</span> <span class="nav-text">API网关部署拓扑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service-Mesh"><span class="nav-number">3.</span> <span class="nav-text">Service Mesh</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Service-Mesh原语之Sidecar"><span class="nav-number">3.1.</span> <span class="nav-text">Service Mesh原语之Sidecar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Control-Plane"><span class="nav-number">3.2.</span> <span class="nav-text">Control Plane</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

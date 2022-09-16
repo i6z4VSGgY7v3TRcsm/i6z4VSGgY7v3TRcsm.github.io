@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文要点如下:  首先, 简单介绍下人脸识别相关概念 然后以Golang为例, 对人脸识别相关算法进行编码实战.">
+<meta name="keywords" content="Face Detection,Golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang大法玩转人脸识别">
+<meta property="og:url" content="https://ultradata.stream/go/face-detection/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文要点如下:  首先, 简单介绍下人脸识别相关概念 然后以Golang为例, 对人脸识别相关算法进行编码实战.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/fdd-face-algo.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/non-dp-msr.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/img-pyrmid.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/bench.png">
+<meta property="og:updated_time" content="2018-05-01T13:18:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Golang大法玩转人脸识别">
+<meta name="twitter:description" content="本文要点如下:  首先, 简单介绍下人脸识别相关概念 然后以Golang为例, 对人脸识别相关算法进行编码实战.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/fdd-face-algo.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/go/face-detection/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Golang大法玩转人脸识别 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/go/face-detection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Golang大法玩转人脸识别
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-04-01 22:11:29" itemprop="dateCreated datePublished" datetime="2017-04-01T22:11:29+08:00">2017-04-01</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-05-01 21:18:21" itemprop="dateModified" datetime="2018-05-01T21:18:21+08:00">2018-05-01</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Deep-Learning-Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning & Machine Learning</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">4.7k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">4 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文要点如下:</p>
+<ul>
+<li>首先, 简单介绍下人脸识别相关概念</li>
+<li>然后以Golang为例, 对人脸识别相关算法进行编码实战.</li>
+</ul>
+<a id="more"></a>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/fdd-face-algo.jpg" alt="人脸检测算法水平对比"></div></p>
+<p>常见的人脸识别或人脸检测算法, 经典的有以下几种, 本文将以Golang为例, 教你如何玩转人脸识别</p>
+<ul>
+<li>以深度学习神经网络为主的CV算法, 如CNN(卷积神经网络)</li>
+<li>Viola-Jones算法(VJ算法)</li>
+<li>PICO 算法</li>
+</ul>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/non-dp-msr.jpg" alt="非深度学习人脸检测算法对比"></div></p>
+<p>在玩转人脸识别算法前, 首先简单了解下人脸检测的一些基本概念.</p>
+<h2 id="人脸检测"><a href="#人脸检测" class="headerlink" title="人脸检测"></a>人脸检测</h2><p>为了检测面部或识别人脸, 首先要了解人脸是什么, 典型的人脸有两只眼睛,一只鼻子和一张嘴. 但拥有这些特性并不足以定义人脸, 狗也有两只眼睛,一只鼻子和一张嘴. 仔细思考下什么是人脸, 我们本能地知道一张脸是什么, 但真正量化一张脸的构成确实有难度. 我们经常在影视上看到侦探利用数据库中数据进行人脸识别, 通常你会看到用点和线绘制的面孔. 这些点和线主要归功于20世纪60年代Woodrow Bledsoe、Helen Chan和Charles Bisson的成果, 他们是第一批研究自动化人脸检测的人. </p>
+<p>人脸的标准特征—面部发际线、眉毛、眼睛、鼻梁、嘴巴等都是动态可定义的, 即这些特征是相对可测量的, 但这使得自动化人脸检测更具挑战性. 他们的解决方案很新颖: 使用设备(这些设备相类似于现在的平板电脑绘图)注释眼睛、鼻子、嘴巴和其他脸部特征位置, 然后将这些注释之间距离作为脸部识别的特征, 除了更加自动化外, 与现在的做法没有什么特别大的区别, Bledsoe、Chan和Bisson在量化像素以及如何构造人脸特征方面付出了很多努力.</p>
+<h2 id="人脸检测的难点"><a href="#人脸检测的难点" class="headerlink" title="人脸检测的难点"></a>人脸检测的难点</h2><p>人脸检测复杂而具有挑战性, 其主要的难点有两方面:</p>
+<ul>
+<li><p>人脸内在变化导致：</p>
+<ul>
+<li>人脸具有相当复杂的细节变化,不同外貌如脸形、肤色等,不同表情如眼、嘴的开与闭等</li>
+<li>人脸的遮挡,如眼镜、头发和头部饰物以及其他外部物体遮挡等；</li>
+</ul>
+</li>
+<li><p>外在条件变化所引起：</p>
+<ul>
+<li>由于成像角度的不同造成人脸多样性,如平面内旋转、深度旋转以及上下旋转,其中深度旋转影响较大</li>
+<li>光照的影响,如图像中的亮度、对比度的变化和阴影等.</li>
+<li>图像的成像条件,如摄像设备的焦距、成像距离,图像获得的途径等.</li>
+</ul>
+</li>
+</ul>
+<h2 id="VJ人脸检测算法"><a href="#VJ人脸检测算法" class="headerlink" title="VJ人脸检测算法"></a>VJ人脸检测算法</h2><p>21世纪初, Viola和Jones提出了一种非常快速的物体检测方法, Viola-Jones算法比较通用, 可以检测任何物体, 但主要用于人脸检测. Viola-Jones算法核心在于使用了许多小分类器,以分阶段方式对图像区域进行分类, 这些分类器也称级联分类器. 级联分类器由许多小分类器组成, 每个分类器由多个过滤器组成, 为检测面部, 首先从图像的一小部分(或者可称为窗口)开始, 逐个运行分类器. 如果分类器中所有过滤器的结果总和超过分类器预定义阈值, 则认为它是面部的一部分. 然后, 级联分类器移动到下一个分类器进行迭代, 迭代完所有分类器后, 窗口滑动到下一个像素, 然后重新开始该过程. 如果级联分类器中部分分类器不能对某些区域进行人脸识别, 则抛弃对应区域并滑动窗口.</p>
+<p>过滤器通过检测人脸的亮区和暗区进行脸部识别, 如眼睛周围区域通常是凹陷的, 是暗区, 如果对该区域使用过滤器, 只会突显眼睛. 用于眼睛的分类器具有多个过滤器, 鼻子的分类器具有针对于鼻子的多个过滤器. 在级联分类器中, 可以自定义优先度, 如可以将眼睛定义为人脸最重要部分(眼睛是灵魂的重要窗户), 级联分类器首先对眼睛区域进行分类, 如果检测到眼睛, 便接着再寻找鼻子、嘴巴等, 否则滑动窗口.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/img-pyrmid.png" alt="Image Pyramid"></div></p>
+<p>Viola-Jones算法另外一个优势在于可以处理图像金字塔(Image Pyramid). So, What’s the image Pyramid?  假如你有一张图片, 1024x768像素, 图片上有两个不同尺度的人脸—有人离镜头近距, 有人远离镜头,你可能会意识到远离镜头的人脸较小, 问题在于如何检测这俩不同尺度的人脸? 可以设计多个过滤器, 如果多次调整图像大小, 则可以重复使用相同的过滤器, 而非增加过滤器, 用于检测小脸的过滤器不会检测到大脸. 基于分辨率,分类器将检测较小的人脸, 然后调整图像大小以使分辨率变低, 如640 x 480, 使大脸很小, 小脸变单点. 总的来说, 分类器会检测到图像中所有人脸, 因为可以直接调整图像大小, 所以即便是较小图像中的坐标也可以轻易转换成原始图像中的坐标, 便于”小脸”检测直接转换为原始比例的人脸检测.</p>
+<p>与卷积神经网络(CNN)有些类似, 在CNN算法中, 可将多个过滤器应用于子区域, 从而产生滤镜图像, 然后将过滤图像传给reduction layer(通过max pooling或其他方法). CNN算法优点在于学习过滤器, 实际上每个CNN第一层学习的过滤器与Viola-Jones方法中使用的过滤器非常相似. Viola-Jones算法与CNN, 对比如下:</p>
+<ul>
+<li>主要的相似之处在于Viola-Jones基本上使用滑动窗口且对图像部分运用过滤器, 这与CNN中的卷积相当. </li>
+<li>CNN优势在于能够学习过滤器, 而Viola-Jones方法中需手动创建过滤器. </li>
+<li>Viola-Jones算法具有级联分类器的好处: 如果其中一个分类器失败, 可以提前终止搜索对应区域, 以便节省计算资源.</li>
+</ul>
+<p>受Viola-Jones算法影响, 有人开始使用多任务级联卷积网络进行联合脸部检测, 如使用三个神经网络以层叠方式识别人脸, 具体可以参考商汤科技张展鹏等人于2016发表的<a href="https://arxiv.org/ftp/arxiv/papers/1604/1604.02878.pdf" target="_blank" rel="noopener">Paper</a>. 将图像金字塔与CNN中池化层等同起来, 想法很前卫, 但并不准确, Viola-Jones算法中多尺度检测不失为一种巧妙的技巧, 但CNN中pooling layer池化层可以学习更高阶特征, 如眼睛、鼻子和嘴巴, 而Viola Jones算法并不能.</p>
+<p>那是否意味着CNN算法更佳, CNN通过识别眼睛、鼻子和嘴巴作为特征来检测人脸的方式, 而非基于像素的过滤器模式. 使用Viola-Jones算法的理由在于, 算法本身容易理解且可使用的库和包很多(大多数包在算法优化方面做得很不错), 并且比基于深度学习的模型更快(虽然牺牲了灵活性). 缺点在于:</p>
+<ul>
+<li>大多数Viola-Jones模型仅支持正面脸部检测</li>
+<li>此外, Viola-Jones算法可能无法检测到旋转脸部</li>
+</ul>
+<p>具体使用哪种算法更佳, 取决于具体业务应用逻辑, 有时可能无需用到神经网络算法(如CNN).</p>
+<h2 id="PICO-算法"><a href="#PICO-算法" class="headerlink" title="PICO 算法"></a>PICO 算法</h2><p>还有一种算法是基于像素强度(或像素亮度)对比的物体检测(PICO, Pixel Intensity Comparison-based Object detection)算法,最初由Markus,Frljak等人于2014年提出. 该算法运用与Viola-Jones方法相同的广义原则, 仅有一个级联分类器. 它们的区别在于, 首先PICO算法不使用滑动窗口; 其次, PICO算法使用的级联分类器与Viola-Jones的分类器并不相同. Viola-Jones算法通过重复应用过滤器, 然后对分类器结果求和, 而PICO算法使用决策树. 决策树中每个节点都是特征, 且特征分支由阈值决定, 决策树适用于照片中的每个像素. 对于每个像素而言, 将强度与其它位置的另一像素强度进行对比, 这些像素位置服从正态分布, 无需使用滑动窗口.</p>
+<p>PICO方法分类器能够直接检测图像的脸部, 使得算法非常快. 当然, PICO算法依然可以看到Viola-Jones算法的痕迹:</p>
+<ul>
+<li>首先, 分阶段应用分类器. PICO使用更简单的分类器, 有助于消除脸部低概率区域.</li>
+<li>其次, 缩小搜索区域并使用更复杂分类器. PICO算法重复该过程直到最后一个Stage, 并保留每个分类器结果以便后用.</li>
+</ul>
+<p>你可能会意识到人脸区域被更多的分类器搜索, 也正由于此, PICO算法提出者在分类器中引入了聚类步骤. 规则很简单: 如果分类器搜索区域重叠且重叠百分比大于30％, 则认为它是同一聚类中的一部分. 因此, 即便是很小的变更, 鲁棒性依然不错.</p>
+<h2 id="编码实战"><a href="#编码实战" class="headerlink" title="编码实战"></a>编码实战</h2><p>问题来了, 是PICO算法人脸检测效果好呢, 还是以OpenCV为主的算法人脸检测效果好? 可以做个小测试, 下面对PICO算法(采用PIGO包)和GoCV(OpenCV的Golang封装)算法进行Bechmark测试, 代码如下:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"image"</span></span><br><span class="line">	<span class="string">"testing"</span></span><br><span class="line"></span><br><span class="line">	pigo <span class="string">"github.com/esimov/pigo/core"</span></span><br><span class="line">	<span class="string">"gocv.io/x/gocv"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">BenchmarkGoCV</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">	img := gocv.IMRead(<span class="string">"test.png"</span>, gocv.IMReadUnchanged)</span><br><span class="line">	<span class="keyword">if</span> img.Cols() == <span class="number">0</span> || img.Rows() == <span class="number">0</span> &#123;</span><br><span class="line">		b.Fatalf(<span class="string">"Unable to read image into file"</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	classifier := gocv.NewCascadeClassifier()</span><br><span class="line">	<span class="keyword">if</span> !classifier.Load(cascadeFile) &#123;</span><br><span class="line">		b.Fatalf(<span class="string">"Error reading cascade file: %v\n"</span>, cascadeFile)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> rects []image.Rectangle</span><br><span class="line">	b.ResetTimer()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">		rects = classifier.DetectMultiScale(img)</span><br><span class="line">	&#125;</span><br><span class="line">	_ = rects</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">BenchmarkPIGO</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">	img := gocv.IMRead(<span class="string">"test.png"</span>, gocv.IMReadUnchanged)</span><br><span class="line">	<span class="keyword">if</span> img.Cols() == <span class="number">0</span> || img.Rows() == <span class="number">0</span> &#123;</span><br><span class="line">		b.Fatalf(<span class="string">"Unable to read image into file"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	width := img.Cols()</span><br><span class="line">	height := img.Rows()</span><br><span class="line">	goImg, grayGoImg, pigoClass, cParams, imgParams := pigoSetup(width, height)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> dets []pigo.Detection</span><br><span class="line">	b.ResetTimer()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">		grayGoImg = grayScale(grayGoImg, goImg)</span><br><span class="line">		imgParams.Pixels = grayGoImg</span><br><span class="line">		dets = pigoClass.RunCascade(imgParams, cParams)</span><br><span class="line">		dets = pigoClass.ClusterDetections(dets, <span class="number">0.3</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	_ = dets</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下, 从中可以看出, GoCV比PIGO算法慢, 一方面是cgo调用OpenCV影响, 另一方面也表明PICO算法要比最初的VJ算法快.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/go/bench.png" alt></p>
+<p>完整代码, 请参考<a href="https://template.thedelta.ml/code/face-detection-for-gopher/about-this-code/" target="_blank" rel="noopener">这里</a></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Face-Detection/" <i class="fa fa-tag"> Face Detection</a>
+          
+            
+            <a href="/tags/Golang/" <i class="fa fa-tag"> Golang</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/jvm/metaspace/" rel="next" title="有必要对Java 8中Metaspace进行适当监控吗?">
+                <i class="fa fa-chevron-left"></i> 有必要对Java 8中Metaspace进行适当监控吗?
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/microsrvc/netflix-whole-sale-packages/" rel="prev" title="Frameworks of Microservices In Java">
+                Frameworks of Microservices In Java <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#人脸检测"><span class="nav-number">1.</span> <span class="nav-text">人脸检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#人脸检测的难点"><span class="nav-number">2.</span> <span class="nav-text">人脸检测的难点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VJ人脸检测算法"><span class="nav-number">3.</span> <span class="nav-text">VJ人脸检测算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PICO-算法"><span class="nav-number">4.</span> <span class="nav-text">PICO 算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编码实战"><span class="nav-number">5.</span> <span class="nav-text">编码实战</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

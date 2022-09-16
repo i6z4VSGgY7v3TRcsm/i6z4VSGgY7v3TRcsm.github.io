@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="Youtube上观看的Flink学习笔记, 有段时间了, 由于是边看视频边记得笔记, 逻辑有些乱, 还请见谅! 有时间再重新整理下!">
+<meta name="keywords" content="Big Data,Apache Flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink学习手札之State篇">
+<meta property="og:url" content="https://ultradata.stream/bigdata/flink/state/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="Youtube上观看的Flink学习笔记, 有段时间了, 由于是边看视频边记得笔记, 逻辑有些乱, 还请见谅! 有时间再重新整理下!">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/queryable-state-arch.png">
+<meta property="og:updated_time" content="2019-05-11T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink学习手札之State篇">
+<meta name="twitter:description" content="Youtube上观看的Flink学习笔记, 有段时间了, 由于是边看视频边记得笔记, 逻辑有些乱, 还请见谅! 有时间再重新整理下!">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/queryable-state-arch.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/flink/state/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Flink学习手札之State篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/flink/state/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Flink学习手札之State篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-11 22:19:16" itemprop="dateModified" datetime="2019-05-11T22:19:16+08:00">2019-05-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">5.2k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">5 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div class="note success">
+            <p>Youtube上观看的Flink学习笔记, 有段时间了, 由于是边看视频边记得笔记, 逻辑有些乱, 还请见谅! 有时间再重新整理下!</p>
+          </div>
+<a id="more"></a>
+<h2 id="Flink状态语义"><a href="#Flink状态语义" class="headerlink" title="Flink状态语义"></a>Flink状态语义</h2><p>Flink自带的DataStream Operators、Sources、Sinks具有状态, 用于缓冲Record或维护部分结果状态. 如Window Operator可为<code>ProcessWindowFunction</code>, 收集输入数据Record, 也可为 <code>ReduceFucntion</code>,<code>ProcessFunction</code>会记住调度计时器输出结果, 以及一些Sink函数维持事务状态提供恰好一次语义性.</p>
+<h3 id="Operator-State"><a href="#Operator-State" class="headerlink" title="Operator State"></a>Operator State</h3><p>Flink支持三种类型的Operator State:  list state, list union state, broadcast state</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>list state</td>
+<td>list union state</td>
+<td>broadcast state</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="状态原语"><a href="#状态原语" class="headerlink" title="状态原语"></a>状态原语</h3><p>Flink支持多种状态原语(State primitives):</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>状态原语</th>
+<th>常见方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ValueState[T]</td>
+<td>value();     update(value: T)</td>
+</tr>
+<tr>
+<td>ListState[T]</td>
+<td>add(value: T);      addAll(values: java.util.List[T]);         get(): Iterable[T];   update(value: java.util.List[T])</td>
+</tr>
+<tr>
+<td>MapState[K,V]</td>
+<td>get(key: K);     put(key: K, value: V);  contains(key: K);    remove(key: K)  etc. (iterators method etc..)</td>
+</tr>
+<tr>
+<td>ReducingState[T]</td>
+<td>add(value: T);   get(): Iterable[T] //(single entry);  （提供了ListState[T]相同方法,除了 addAll()及update())</td>
+</tr>
+<tr>
+<td>AggregatingState[I, O]</td>
+<td>(与ReducingState类似, 但使用AggregateFunction进行聚合)  get(): Iterable[T]  //(single element)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="状态后端"><a href="#状态后端" class="headerlink" title="状态后端"></a>状态后端</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>状态后端</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MemoryStateBackend</td>
+<td>不宜用于生产环境,低延迟,容易造成gc暂停,堆内存溢出,受限于TaskManager内存,TM故障易丢失状态</td>
+</tr>
+<tr>
+<td>FsStateBackend</td>
+<td>存储本地状态至TM JVM堆内存,写入状态至远程文件系统,受限于TaskManager内存,有GC pauses</td>
+</tr>
+<tr>
+<td>RocksDBStateBackend</td>
+<td>存储所有状态至本地RocksDB实例,适用于状态量数据庞大应用,支持增量Checkpoint,数据写磁盘序列化/反序列化开销大</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>State Operator性能取决于多重因素,State数据类型、StateBackend、State Primitives. StateBackend对状态对象进行序列化反序列化. 对于<code>RocksDBBackend</code>使用<code>MapState[K,V]</code>比<code>ValueState[HashMap[K,V]]</code>更加高效, 如果数据元素经常频繁加入列表很少访问,使用 <code>ListState[T]</code>比<code>ValueState[List[T]]</code>更加高效.</p>
+<p>建议: 仅每次调用函数时更新状态. Checkpoint和函数调用同步, 多重状态更新并未带来额外好处, 反而会增加单次函数调用更新多重状态带来的序列化开销. <code>RocksDBStateBackend</code>中<code>ListState</code>实现,在读取数据构造Iterable前反序列化所有list entries,但是增加单个值至<code>ListState</code>很廉价,仅需对追加的值进行序列化即可. <code>RocksDBStateBackend</code>中<code>MapState</code>在进行读写时,仅有要读写的KV值才被序列化/反序列化. 遍历<code>MapState</code>时,仅有实际被访问的KV值被RocksDB预先反序列化.</p>
+<p>应用示例代码, 参考如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> env = <span class="type">StreamExecutionEnvironment</span>.getExecutionEnvironment</span><br><span class="line">env.enableCheckpointing(<span class="number">10000</span>L)    <span class="comment">// 10 Seconds checkpoint interval</span></span><br><span class="line"><span class="comment">// Set Maxium Parallelism of Keyed State Operators</span></span><br><span class="line">env.setMaxParallelism(<span class="number">512</span>)         <span class="comment">// App maximum parallelism</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> alerts: <span class="type">DataStream</span>[(<span class="type">String</span>, <span class="type">Double</span>, <span class="type">Double</span>)] = keyedSensorData</span><br><span class="line">    .flatMap(<span class="keyword">new</span> <span class="type">TemperatureAlertFunction</span>(<span class="number">1.8</span>))</span><br><span class="line">    .setMaxParallelism(<span class="number">1024</span>)   <span class="comment">// Set maximum parallelism for this operator and override</span></span><br><span class="line"><span class="comment">// Setting a unique identifier for an operator</span></span><br><span class="line">alerts.uid(<span class="string">"TempAlert"</span>)</span><br></pre></td></tr></table></figure>
+<div class="note info">
+            <p>Operator唯一性标识符和最大并行度, 均Baked into a savepoint, 不能更改. 如果标识符或Operators最大并行度变更, 不能成功从Savepoint重启. (任务必须重新部署上线)</p><p>计算Flink算子(Operator)最大并行度, 逻辑参考如下:</p><p>一Operator默认最大并行度取决于第一版应用Operator的并行度, 通常最大并行度为:<br>     128 , (如果并行度小于128, 否则使用下面条件取最小值);<br>     min { nextPowerOfTwo(parallelism + (parallelism / 2)),  2^15}</p>
+          </div>
+<h2 id="Queryable-State"><a href="#Queryable-State" class="headerlink" title="Queryable State"></a>Queryable State</h2><p>Queryable State并不适用于应用重启或应用拓展(rescaling), 仅当应用运行时才可访问. QS仅支持 keyed state, 适用于重要查询, 如实时Dashboards或其它监控程序.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/flink/queryable-state-arch.png" alt></p>
+<p>示例代码, 参考如下:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Configuring keyed state to be queryable</span></span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">open</span></span>(parameters: <span class="type">Configuration</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> lastTempDescriptor = <span class="keyword">new</span> <span class="type">ValueStateDescriptor</span>[<span class="type">Double</span>](<span class="string">"lastTemp"</span>, classOf[<span class="type">Double</span>])</span><br><span class="line">    lastTempDescriptor.setQueryable(<span class="string">"lastTemperature"</span>)</span><br><span class="line">    lastTempState = getRuntimeContext.getState[<span class="type">Double</span>](lastTempDescriptor)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> tenSecMaxTemp: <span class="type">DataStream</span>[(<span class="type">String</span>, <span class="type">Double</span>)] = sensorData.map(r =&gt; (r.id, r.temperature))</span><br><span class="line">    .keyBy(_._1)</span><br><span class="line">    .timeWindow(<span class="type">Time</span>.seconds(<span class="number">10</span>))</span><br><span class="line">    .max(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Write a DataStream into a queryable state sink</span></span><br><span class="line">tenSecMaxTemp</span><br><span class="line">    .keyBy(_._1)</span><br><span class="line">    .asQueryableState(<span class="string">"maxTemperature"</span>)</span><br></pre></td></tr></table></figure>
+<p>任何JVM应用程序均可通过Flink运行的<code>QueryableStateClient</code>, QS开发时需添加依赖 flink-queryable-state-client-java, 如何使用, 以下代码为一个小例子:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">TemperatureDashboard</span> </span>&#123;</span><br><span class="line">    <span class="keyword">val</span> proxyHost = <span class="string">"127.0.0.1"</span>  <span class="comment">//TaskManger host address</span></span><br><span class="line">    <span class="keyword">val</span> proxyPort = <span class="number">9069</span>         <span class="comment">// QSClient Proxy listening port, 9069 default</span></span><br><span class="line">    <span class="keyword">val</span> jobId = <span class="string">"d2447b1a5e0d952c372064c886d2220a"</span>  <span class="comment">//Acquire it by Rest API,logs or Web UI</span></span><br><span class="line">    <span class="keyword">val</span> numSensors = <span class="number">5</span></span><br><span class="line">    <span class="keyword">val</span> refreshInterval = <span class="number">10000</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">        <span class="keyword">val</span> client = <span class="keyword">new</span> <span class="type">QueryableStateClient</span>(proxyHost, proxyPort)</span><br><span class="line">        <span class="keyword">val</span> futures = <span class="keyword">new</span> <span class="type">Array</span>[<span class="type">CompletableFuture</span>[<span class="type">ValueState</span>[(<span class="type">String</span>, <span class="type">Double</span>)]]](numSensors)</span><br><span class="line">        <span class="keyword">val</span> results = <span class="keyword">new</span> <span class="type">Array</span>[<span class="type">Double</span>](numSensors)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> header = (<span class="keyword">for</span> (i &lt;- <span class="number">0</span> until numSensors) <span class="keyword">yield</span> <span class="string">"sensor_"</span> + (i + <span class="number">1</span>))</span><br><span class="line">            .mkString(<span class="string">"\t| "</span>)</span><br><span class="line">        println(header)         <span class="comment">// print header line of dashboard table</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (i &lt;- <span class="number">0</span> until numSensors) &#123;</span><br><span class="line">                futures(i) = queryState(<span class="string">"sensor_"</span> + (i + <span class="number">1</span>), client)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> (i &lt;- <span class="number">0</span> until numSensors) &#123;</span><br><span class="line">                results(i) = futures(i).get().value()._2</span><br><span class="line">            &#125;</span><br><span class="line">    </span><br><span class="line">            <span class="keyword">val</span> line = results.map(t =&gt; <span class="string">f"<span class="subst">$t</span>%1.3f"</span>).mkString(<span class="string">"\t| "</span>)</span><br><span class="line">            println(line)</span><br><span class="line">    </span><br><span class="line">            <span class="type">Thread</span>.sleep(refreshInterval)</span><br><span class="line">        &#125;</span><br><span class="line">        client.shutdownAndWait()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">queryState</span></span>(key: <span class="type">String</span>, </span><br><span class="line">                   client: <span class="type">QueryableStateClient</span>): <span class="type">CompletableFuture</span>[<span class="type">ValueState</span>[(<span class="type">String</span>, <span class="type">Double</span>)]] = &#123;</span><br><span class="line"></span><br><span class="line">        client.getKvState[<span class="type">String</span>, <span class="type">ValueState</span>[(<span class="type">String</span>, <span class="type">Double</span>)], (<span class="type">String</span>, <span class="type">Double</span>)](</span><br><span class="line">            <span class="type">JobID</span>.fromHexString(jobId),</span><br><span class="line">            <span class="string">"maxTemperature"</span>,</span><br><span class="line">            key,</span><br><span class="line">            <span class="type">Types</span>.<span class="type">STRING</span>,</span><br><span class="line">            <span class="keyword">new</span> <span class="type">ValueStateDescriptor</span>[(<span class="type">String</span>, <span class="type">Double</span>)](</span><br><span class="line">            <span class="string">""</span>, <span class="comment">// state name not relevant here</span></span><br><span class="line">            <span class="type">Types</span>.<span class="type">TUPLE</span>[(<span class="type">String</span>, <span class="type">Double</span>)])</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Apache-Flink/" <i class="fa fa-tag"> Apache Flink</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/cascading/subassembly/" rel="next" title="Cascading实战之SubAssembly篇">
+                <i class="fa fa-chevron-left"></i> Cascading实战之SubAssembly篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/drill/mlpipe/" rel="prev" title="Query Engine大作战 -- Apache Drill之ML Pipeline构建篇">
+                Query Engine大作战 -- Apache Drill之ML Pipeline构建篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Flink状态语义"><span class="nav-number">1.</span> <span class="nav-text">Flink状态语义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Operator-State"><span class="nav-number">1.1.</span> <span class="nav-text">Operator State</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态原语"><span class="nav-number">1.2.</span> <span class="nav-text">状态原语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态后端"><span class="nav-number">1.3.</span> <span class="nav-text">状态后端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Queryable-State"><span class="nav-number">2.</span> <span class="nav-text">Queryable State</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

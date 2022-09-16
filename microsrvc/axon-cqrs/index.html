@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="DDD(Domain Driven Design, 领域驱动设计)实战系列之CQRS篇.">
+<meta name="keywords" content="Microservices,CQRS,JVM,Distributed System">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDD(领域驱动设计)实战之CQRS篇">
+<meta property="og:url" content="https://ultradata.stream/microsrvc/axon-cqrs/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="DDD(Domain Driven Design, 领域驱动设计)实战系列之CQRS篇.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/axon-ecom.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/microsrv/axon-t1.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/microsrv/axon-t2.jpg">
+<meta property="og:updated_time" content="2016-02-11T14:12:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DDD(领域驱动设计)实战之CQRS篇">
+<meta name="twitter:description" content="DDD(Domain Driven Design, 领域驱动设计)实战系列之CQRS篇.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/axon-ecom.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/microsrvc/axon-cqrs/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>DDD(领域驱动设计)实战之CQRS篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/microsrvc/axon-cqrs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DDD(领域驱动设计)实战之CQRS篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-01-01 21:10:06" itemprop="dateCreated datePublished" datetime="2016-01-01T21:10:06+08:00">2016-01-01</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2016-02-11 22:12:16" itemprop="dateModified" datetime="2016-02-11T22:12:16+08:00">2016-02-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/Microservices/" itemprop="url" rel="index"><span itemprop="name">Microservices</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">10k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">9 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>DDD(Domain Driven Design, 领域驱动设计)实战系列之CQRS篇. <a id="more"></a> 本文将从电商应用层面, 剖析CQRS该如何设计, 并顺便介绍一种轻量级的CQRS框架—Axon.  </p>
+<h2 id="Axon-简介"><a href="#Axon-简介" class="headerlink" title="Axon 简介"></a>Axon 简介</h2><p>Axon有助于开发更加模块化的SOA服务, Axon框架本身也提供Aggregates(聚合子)、Repostories及Event Bus(事件总线)等实现. Axon支持Java注解(annotation), 开发友好, 在构建Aggregates或者事件监听器时更加容易上手. 运行Axon本身并不会创建其它线程(或连接), 可以安全地运行在Web应用服务器上(如Tomcat,Jetty等), Axon通过Executor封装异步行为, 解耦各项Task.</p>
+<h2 id="代码实战"><a href="#代码实战" class="headerlink" title="代码实战"></a>代码实战</h2><p>以电商场景为例, 如下, 业务领域(Domain)主要有俩大实体: <strong>订单</strong>和<strong>产品</strong>. 用户购买产品、创建新订单, 新订单创建完后、检查库存, 根据付款状态决定是否发货等. 可以参考下图, 实际生产环境中还需要考虑其它业务逻辑, 如订单真实性校验、订单支付状态、用户未付款或取消订单、产品库存复原等. (当新订单创建完成后, 个人认为订单支付状态判定服务可与”减库存”服务解耦, 即使用户未付款造成订单取消或用户手动取消订单, 后续可进行库存复原).</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/axon-ecom.jpg" alt></div></p>
+<p>如图所示, 整个业务流程参考如下:</p>
+<ol>
+<li>当用户在浏览器中点击”立即订购”时, 发送REST请求至订单控制器(Order Controller)</li>
+<li>订单控制器(Order Controller)解析请求, 创建新订单指令方至指令网关(Command Gateway), 经指令网关(Command Gateway)转发至指令总线(Command Bus)</li>
+<li>指令总线(Command Bus)接收指令并转发给订单指令处理器(Order Command Handler)</li>
+<li>订单指令处理器(Order Command Handler)获取对应产品库存信息</li>
+<li>基于产品库存信息, 假定订单正常、库存正常情况下减库存, 更新产品Repository, 更新写库(Write DB)并持久化</li>
+<li>Repository更新触发库存更新事件至事件总线(Event Bus), 由事件总线(Event Bus)发送给所有感兴趣的事件监听器</li>
+<li>由于产品事件处理器(Product Event Handler)订阅了库存更新事件, 获取库存更新事件通知及事件消息</li>
+<li>基于库存更新事件细节, 产品事件处理器(Product Event Handler)更新产品读模型</li>
+<li>基于订单指令处理器(Order Command Handler)发送消息, 创建新订单  </li>
+<li>新订单创建完毕, 向订单Repository发送插入请求, 写入订单实体并持久化于写库(Write DB)</li>
+<li>新订单创建完毕事件发送至事件总线(Event Bus), 通过事件总线(Event Bus)发送至所有感兴趣的事件监听器</li>
+<li>由于订单事件处理器(Order Event Handler)订阅了订单已创建事件, 获取事件通知及事件消息</li>
+<li>基于订单已创建事件, 订单事件处理器(Order Event Handler)更新订单读模型</li>
+<li>用户刷新浏览器, 加载已更新的View</li>
+</ol>
+<blockquote>
+<p>虽然整个下单业务简单, 无非就是用户下单、新建订单、更新库存, 但也请知悉, 如何<strong>细粒度量化实现逻辑</strong>, 并非易事. 比如在实际生产环境中还需要考虑其它业务复杂性, 如订单真实性校验、订单支付状态检测、用户未付款或取消订单、产品库存复原该如何处理等.</p>
+</blockquote>
+<h3 id="组件梳理"><a href="#组件梳理" class="headerlink" title="组件梳理"></a>组件梳理</h3><p>本例所需考虑组件有:</p>
+<ul>
+<li>Aggregates/Aggregate Root (聚合子或聚合根)</li>
+<li>Event Bus, 事件总线</li>
+<li>Command Bus, 命令总线</li>
+<li>Repositories, 如订单 Repository、产品Repository等</li>
+<li>Gateway, 网关, 如指令网关</li>
+<li>Controller, 如订单Controller等</li>
+<li>Handlers, 如指令Handler等</li>
+<li>Event Listener, 事件监听器</li>
+</ul>
+<p><strong>SpringBoot应用</strong><br>运行主类, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EcomApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(EcomApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Aggregate-Root建模"><a href="#Aggregate-Root建模" class="headerlink" title="Aggregate Root建模"></a>Aggregate Root建模</h3><p>其中, 订单Aggregate Root建模代码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.axonframework.domain.AbstractAggregateRoot;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table</span>(name=<span class="string">"ECOM_ORDER"</span>)</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@EqualsAndHashCode</span>(exclude = &#123; <span class="string">"id"</span> &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Order</span> <span class="keyword">extends</span> <span class="title">AbstractAggregateRoot</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name=<span class="string">"PRICE"</span>)</span><br><span class="line">    <span class="keyword">private</span> Double price;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name=<span class="string">"NUMBER"</span>)</span><br><span class="line">    <span class="keyword">private</span> Integer number;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name=<span class="string">"ORDER_STATUS"</span>)</span><br><span class="line">    <span class="meta">@Enumerated</span>(EnumType.STRING)</span><br><span class="line">    <span class="keyword">private</span> OrderStatusEnum orderStatus;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ManyToOne</span>(fetch=FetchType.LAZY)</span><br><span class="line">    <span class="meta">@JoinColumn</span>(name=<span class="string">"PRODUCT_ID"</span>)</span><br><span class="line">    <span class="keyword">private</span> Product product;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getIdentifier</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Order</span><span class="params">(Integer id, Double price, Integer number,</span></span></span><br><span class="line"><span class="function"><span class="params">                 OrderStatusEnum orderStatus, Product product)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.price = price;</span><br><span class="line">        <span class="keyword">this</span>.number = number;</span><br><span class="line">        <span class="keyword">this</span>.orderStatus = orderStatus;</span><br><span class="line">        <span class="keyword">this</span>.product = product;</span><br><span class="line"></span><br><span class="line">        registerEvent(<span class="keyword">new</span> OrderCreatedEvent(</span><br><span class="line">            id, price, number, </span><br><span class="line">            product.getDescription(), orderStatus.toString()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>类似地, 产品Aggregate Root建模, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table</span>(name=<span class="string">"ECOM_PRODUCT"</span>)</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@EqualsAndHashCode</span>(exclude = &#123; <span class="string">"id"</span> &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Product</span> <span class="keyword">extends</span> <span class="title">AbstractAggregateRoot</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name=<span class="string">"PRICE"</span>)</span><br><span class="line">    <span class="keyword">private</span> Double price;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name=<span class="string">"STOCK"</span>)</span><br><span class="line">    <span class="keyword">private</span> Integer stock;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name=<span class="string">"DESCRIPTION"</span>)</span><br><span class="line">    <span class="keyword">private</span> String description;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getIdentifier</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">depreciateStock</span><span class="params">(<span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.stock &gt;= count) &#123;</span><br><span class="line">            <span class="keyword">this</span>.stock = <span class="keyword">this</span>.stock - count;</span><br><span class="line">            registerEvent(<span class="keyword">new</span> StockUpdatedEvent(id, stock));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Out of stock"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="指令和事件建模"><a href="#指令和事件建模" class="headerlink" title="指令和事件建模"></a>指令和事件建模</h3><p>指令(Command)和事件(Event)建模方面, 相对简单, 参考代码如下, 如本例中新建订单指令类似于DTO(数据传输对象, Data Transfer Object).</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NewOrderCommand</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Double price;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Integer number;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Integer productId;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderCreatedEvent</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Double price;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Integer number;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String productDescription;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String orderStatus;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StockUpdatedEvent</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Integer stock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="指令网关、事件总线与指令总线"><a href="#指令网关、事件总线与指令总线" class="headerlink" title="指令网关、事件总线与指令总线"></a>指令网关、事件总线与指令总线</h3><p>代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EcomAppConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PersistenceContext</span></span><br><span class="line">    <span class="keyword">private</span> EntityManager entityManager;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SimpleCommandBus <span class="title">commandBus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SimpleCommandBus();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SimpleEventBus <span class="title">eventBus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SimpleEventBus();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    AnnotationCommandHandlerBeanPostProcessor </span><br><span class="line">        annotationCommandHandlerBeanPostProcessor() &#123;</span><br><span class="line">        AnnotationCommandHandlerBeanPostProcessor handler =</span><br><span class="line">            <span class="keyword">new</span> AnnotationCommandHandlerBeanPostProcessor();</span><br><span class="line">        handler.setCommandBus(commandBus());</span><br><span class="line">        <span class="keyword">return</span> handler;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    AnnotationEventListenerBeanPostProcessor</span><br><span class="line">        annotationEventListenerBeanPostProcessor() &#123;</span><br><span class="line">        AnnotationEventListenerBeanPostProcessor listener =</span><br><span class="line">            <span class="keyword">new</span> AnnotationEventListenerBeanPostProcessor();</span><br><span class="line">        listener.setEventBus(eventBus());</span><br><span class="line">        <span class="keyword">return</span> listener;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DefaultCommandGateway <span class="title">commandGateway</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DefaultCommandGateway(commandBus());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Qualifier</span>(<span class="string">"productRepository"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> GenericJpaRepository&lt;Product&gt; <span class="title">productJpaRepository</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        SimpleEntityManagerProvider entityManagerProvider =</span><br><span class="line">            <span class="keyword">new</span> SimpleEntityManagerProvider(entityManager);</span><br><span class="line">        GenericJpaRepository&lt;Product&gt; genericJpaRepository =</span><br><span class="line">            <span class="keyword">new</span> GenericJpaRepository(entityManagerProvider, Product.class);</span><br><span class="line">        genericJpaRepository.setEventBus(eventBus());</span><br><span class="line">        <span class="keyword">return</span> genericJpaRepository;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Qualifier</span>(<span class="string">"orderRepository"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> GenericJpaRepository&lt;Order&gt; <span class="title">orderJpaRepository</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        SimpleEntityManagerProvider entityManagerProvider =</span><br><span class="line">            <span class="keyword">new</span> SimpleEntityManagerProvider(entityManager);</span><br><span class="line">        GenericJpaRepository&lt;Order&gt; genericJpaRepository =</span><br><span class="line">            <span class="keyword">new</span> GenericJpaRepository(entityManagerProvider, Order.class);</span><br><span class="line">        genericJpaRepository.setEventBus(eventBus());</span><br><span class="line">        <span class="keyword">return</span> genericJpaRepository;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Controller与Handler"><a href="#Controller与Handler" class="headerlink" title="Controller与Handler"></a>Controller与Handler</h3><p>订单Controller, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> DataSource dataSource;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> CommandGateway commandGateway;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/orders"</span>, method = RequestMethod.POST)</span><br><span class="line">    <span class="meta">@Transactional</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseEntity&lt;Void&gt; <span class="title">addNewOrder</span><span class="params">(@RequestBody OrderDTO orderDTO)</span> </span>&#123;</span><br><span class="line">        commandGateway.sendAndWait(</span><br><span class="line">            <span class="keyword">new</span> NewOrderCommand(</span><br><span class="line">                orderDTO.getPrice(), orderDTO.getNumber(), orderDTO.getProductId()));</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;&gt;( HttpStatus.OK);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>订单指令Handler, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderCommandHandler</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="meta">@Qualifier</span>(<span class="string">"orderRepository"</span>)</span><br><span class="line">    <span class="keyword">private</span> Repository&lt;Order&gt; orderRepository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="meta">@Qualifier</span>(<span class="string">"productRepository"</span>)</span><br><span class="line">    <span class="keyword">private</span> Repository&lt;Product&gt; productRepository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@CommandHandler</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handle</span><span class="params">(NewOrderCommand newOrderCommand)</span></span>&#123;</span><br><span class="line">        Product product =</span><br><span class="line">            productRepository.load(newOrderCommand.getProductId());</span><br><span class="line">        product.depreciateStock(newOrderCommand.getNumber());</span><br><span class="line"></span><br><span class="line">        Order order = <span class="keyword">new</span> Order(</span><br><span class="line">            <span class="keyword">new</span> Random().nextInt(),</span><br><span class="line">            newOrderCommand.getPrice(),</span><br><span class="line">            newOrderCommand.getNumber(), </span><br><span class="line">            OrderStatusEnum.NEW, </span><br><span class="line">            product);</span><br><span class="line">        orderRepository.add(order);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>订单事件Handler, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderEventHandler</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    DataSource dataSource;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventHandler</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleOrderCreatedEvent</span><span class="params">(OrderCreatedEvent event)</span> </span>&#123;</span><br><span class="line">        JdbcTemplate jdbcTemplate = <span class="keyword">new</span> JdbcTemplate(dataSource);</span><br><span class="line">        jdbcTemplate.update(</span><br><span class="line">            <span class="string">"INSERT INTO ecom_order_view VALUES(?,?,?,?,?)"</span>,</span><br><span class="line">            <span class="keyword">new</span> Object[]&#123; </span><br><span class="line">                event.getId(),</span><br><span class="line">                event.getPrice(), </span><br><span class="line">                event.getNumber(), </span><br><span class="line">                event.getProductDescription(),</span><br><span class="line">                event.getOrderStatus()</span><br><span class="line">            &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>产品事件Handler, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductEventHandler</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    DataSource dataSource;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventHandler</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleProductStockUpdatedEvent</span><span class="params">(StockUpdatedEvent event)</span> </span>&#123;</span><br><span class="line">        JdbcTemplate jdbcTemplate = <span class="keyword">new</span> JdbcTemplate(dataSource);</span><br><span class="line">        jdbcTemplate.update(</span><br><span class="line">            <span class="string">"UPDATE ecom_product_view SET stock=? WHERE ID=?"</span>,</span><br><span class="line">            <span class="keyword">new</span> Object[]&#123;event.getStock(), event.getId()&#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="事件监听器"><a href="#事件监听器" class="headerlink" title="事件监听器"></a>事件监听器</h3><p>事件的发布与订阅、事件监听等功能可通过<strong>消息中间件</strong>实现, 如RabbitMQ. 对于Spring Boot而言, 几行配置代码的问题, 此处就不贴代码了.</p>
+<h2 id="效果检测"><a href="#效果检测" class="headerlink" title="效果检测"></a>效果检测</h2><p>连接数据库, 创建几条测试数据 (注意当运行以上微服务代码时, 会自动创建创建<code>ecom_product</code>表以及<code>ecom_order</code>表, 具体原因请参考以上Java代码).</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; drop table ecom_order;</span><br><span class="line">mysql&gt; drop table ecom_product;</span><br><span class="line">mysql&gt; drop table ecom_order_view;</span><br><span class="line">mysql&gt; drop table ecom_product_view;</span><br><span class="line"></span><br><span class="line">mysql&gt; -- 显式创建以下两表于ReadDB</span><br><span class="line">mysql&gt; create table ecom_product_view(id INT, price DOUBLE,</span><br><span class="line">            stock INT ,description VARCHAR(255));</span><br><span class="line"></span><br><span class="line">mysql&gt; create table ecom_order_view(id INT , price DOUBLE, number INT, </span><br><span class="line">            description VARCHAR(225),status VARCHAR(50));</span><br><span class="line"></span><br><span class="line">mysql&gt; insert into ecom_product(id,description,price,stock,version)</span><br><span class="line">            <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'Shirts'</span>,<span class="number">100</span>,<span class="number">5</span>,<span class="number">0</span>);</span><br><span class="line">mysql&gt; insert into ecom_product(id,description,price,stock,version)</span><br><span class="line">            <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">'Pants'</span>,<span class="number">100</span>,<span class="number">5</span>,<span class="number">0</span>);</span><br><span class="line">mysql&gt; insert into ecom_product(id,description,price,stock,version)</span><br><span class="line">            <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">'T-Shirt'</span>,<span class="number">100</span>,<span class="number">5</span>,<span class="number">0</span>);</span><br><span class="line">mysql&gt; insert into ecom_product(id,description,price,stock,version)</span><br><span class="line">            <span class="keyword">values</span>(<span class="number">4</span>,<span class="string">'Shoes'</span>,<span class="number">100</span>,<span class="number">5</span>,<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">mysql&gt; insert into ecom_product_view(id,description,price,stock)</span><br><span class="line">            <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'Shirts'</span>,<span class="number">100</span>,<span class="number">5</span>);</span><br><span class="line">mysql&gt; insert into ecom_product_view(id,description,price,stock)</span><br><span class="line">            <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">'Pants'</span>,<span class="number">100</span>,<span class="number">5</span>);</span><br><span class="line">mysql&gt; insert into ecom_product_view(id,description,price,stock)</span><br><span class="line">            <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">'T-Shirt'</span>,<span class="number">100</span>,<span class="number">5</span>);</span><br><span class="line">mysql&gt; insert into ecom_product_view(id,description,price,stock)</span><br><span class="line">            <span class="keyword">values</span>(<span class="number">4</span>,<span class="string">'Shoes'</span>,<span class="number">100</span>,<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+<p>代码编译打包:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mvn clean &amp;&amp; mvn springboot:run</span><br></pre></td></tr></table></figure>
+<p>打开浏览器, 查看页面效果:</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/microsrv/axon-t1.jpg" alt></div></p>
+<p>点击订购按钮”Order One Now”, 可以看到基本业务功能正常, 示意图参考如下</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/microsrv/axon-t2.jpg" alt></div></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Microservices/" <i class="fa fa-tag"> Microservices</a>
+          
+            
+            <a href="/tags/CQRS/" <i class="fa fa-tag"> CQRS</a>
+          
+            
+            <a href="/tags/JVM/" <i class="fa fa-tag"> JVM</a>
+          
+            
+            <a href="/tags/Distributed-System/" <i class="fa fa-tag"> Distributed System</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/mahout/data-sketch/" rel="next" title="The Bahmani Sketch Algorithm">
+                <i class="fa fa-chevron-left"></i> The Bahmani Sketch Algorithm
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/go/data-modeling/" rel="prev" title="漫谈Golang软件架构 (三) -- 数据建模">
+                漫谈Golang软件架构 (三) -- 数据建模 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Axon-简介"><span class="nav-number">1.</span> <span class="nav-text">Axon 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实战"><span class="nav-number">2.</span> <span class="nav-text">代码实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#组件梳理"><span class="nav-number">2.1.</span> <span class="nav-text">组件梳理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Aggregate-Root建模"><span class="nav-number">2.2.</span> <span class="nav-text">Aggregate Root建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指令和事件建模"><span class="nav-number">2.3.</span> <span class="nav-text">指令和事件建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指令网关、事件总线与指令总线"><span class="nav-number">2.4.</span> <span class="nav-text">指令网关、事件总线与指令总线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller与Handler"><span class="nav-number">2.5.</span> <span class="nav-text">Controller与Handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件监听器"><span class="nav-number">2.6.</span> <span class="nav-text">事件监听器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果检测"><span class="nav-number">3.</span> <span class="nav-text">效果检测</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

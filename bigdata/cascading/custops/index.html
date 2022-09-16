@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将介绍如何编写Cascading自定义操作.">
+<meta name="keywords" content="Big Data,Cascading,MapReduce,Apache Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cascading实战之自定义操作(Custom Operations)篇">
+<meta property="og:url" content="https://ultradata.stream/bigdata/cascading/custops/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将介绍如何编写Cascading自定义操作.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cascading实战之自定义操作(Custom Operations)篇">
+<meta name="twitter:description" content="本文将介绍如何编写Cascading自定义操作.">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/cascading/custops/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Cascading实战之自定义操作(Custom Operations)篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/cascading/custops/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Cascading实战之自定义操作(Custom Operations)篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">15k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">14 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将介绍如何编写Cascading自定义操作. <a id="more"></a></p>
+<h2 id="常见用例分析"><a href="#常见用例分析" class="headerlink" title="常见用例分析"></a>常见用例分析</h2><p>尽管Cascading自带很多实用的Operations, 但有时须编写自定义Operation, 常见用例如下:</p>
+<ul>
+<li>加载某些外部数据时(通常也可使用<code>prepare()</code>方法), 可能需要编写自定义操作, 如不同数据类型(如在StopList上使用<code>HashJoin</code>或<code>CoGroup</code>管道). 注意, 可以通过使用<code>cascading.hadoop.tap.DistCacheTap</code>将文件存入Hadoop分布式缓存中充当Source而非Sink.  </li>
+<li>如某种复杂的过滤或函数要求, 通常可以使用<code>Expression</code>类, 但有时为了性能和可维护性, 需要开发者自行实现.</li>
+<li>某些情况下, Cascading并不提供特定数据结构或持久化类, 如在图处理方面可能需编写Custom Operations.</li>
+<li>有时, 你需要一过滤器或函数对多个Field进行简单的比较或计算, 可以使用<code>ExpressionFilter</code>或<code>ExpressionFunction</code>, 这些类使用灵活、允许实现自定义操作. 但请注意Janino编译器使用情况, Janino作为一迷你Java编译器, 有时会产生很大的”Footprint”, 通常Janino将输入作为字符串传入, 将传入的Java程序编译成字节码, 绑定输入输出变量然后执行.</li>
+</ul>
+<h2 id="常见自定义Operation实现"><a href="#常见自定义Operation实现" class="headerlink" title="常见自定义Operation实现"></a>常见自定义Operation实现</h2><h3 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h3><p>编写一自定义过滤器, 通常该Filter需继承<code>cascading.operation.BaseOperation</code>, 并重写以下方法:</p>
+<ul>
+<li><code>cleanup()</code></li>
+<li><code>flush()</code></li>
+<li><code>getFieldDelcaration()</code></li>
+<li><code>getNumArgs()</code></li>
+<li><code>isSafe()</code></li>
+<li><code>prepare()</code></li>
+</ul>
+<p>现在来看个简单示例, 编写一自定义Filter, 接收元组为行号和文本, 过滤包含特定文本元组, 参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cascading.flow.FlowProcess;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.BaseOperation;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.Filter;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.FilterCall;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.Fields;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.TupleEntry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SampleFilter</span> <span class="keyword">extends</span> <span class="title">BaseOperation</span> <span class="keyword">implements</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line">    String filterWord = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">static</span> Fields fieldInputs = <span class="keyword">new</span> Fields(<span class="string">"line_num"</span>, <span class="string">"line"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SampleFilter</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 期望传入两个Field参数</span></span><br><span class="line">        <span class="keyword">super</span>(<span class="number">2</span>);</span><br><span class="line">        filterWord = word</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 由于SampleFilter实现了Filter接口, 只需实现`isRemove()`方法即可</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isRemove</span><span class="params">(FlowProcess flowProcess, FilterCall call)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 获取参数的 TupleEntry</span></span><br><span class="line">        TupleEntry arguments = call.getArguments();</span><br><span class="line">        <span class="keyword">return</span> arguments.getString(<span class="number">1</span>).contains(filterWord);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试代码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestFilter</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        Scheme mainScheme = <span class="keyword">new</span> TextDelimited(</span><br><span class="line">            <span class="keyword">new</span> Fields(<span class="string">"line_num"</span>, <span class="string">"line"</span> ), <span class="keyword">true</span>, <span class="string">","</span> </span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        Tap source = <span class="keyword">new</span> FileTap(mainScheme, args[<span class="number">0</span>] );</span><br><span class="line">        Tap sink = <span class="keyword">new</span> FileTap(mainScheme, args[<span class="number">1</span>], SinkMode.REPLACE);</span><br><span class="line">        Pipe inPipe = <span class="keyword">new</span> Pipe(<span class="string">"InPipe"</span>);</span><br><span class="line">        inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> SampleFilter(<span class="string">"test"</span>));</span><br><span class="line"></span><br><span class="line">        Flow flow = <span class="keyword">new</span> LocalFlowConnector()</span><br><span class="line">            .connect(source, sink, inPipe );</span><br><span class="line">        flow.complete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Function"><a href="#Function" class="headerlink" title="Function"></a>Function</h3><p>与Filter有些类似, Cascading函数需继承类<code>cascading.operation.BaseOperation</code>, 重写以下方法:</p>
+<ul>
+<li><code>cleanup()</code></li>
+<li><code>flush()</code></li>
+<li><code>getFileDeclaration()</code></li>
+<li><code>getNumberArgs()</code></li>
+<li><code>isSafe()</code></li>
+<li><code>prepare()</code></li>
+<li><code>operate()</code></li>
+</ul>
+<p>通常Cascading中<code>Function</code>拥有以下三个方法:</p>
+<ul>
+<li><code>prepare()</code>, 为输出元组分配上下文(Context)</li>
+<li><code>operate()</code>, 具体执行逻辑</li>
+<li><code>cleanup()</code>, 释放内存</li>
+</ul>
+<p>以下这段实例代码, 读取文本文档并将文档切割成语句, 该函数运用于一Tuple Stream, 假定其中每一项Tuple代表一文档, 输出文本文件包含文档名、语句编号以及每行语句.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SentFunc</span> <span class="keyword">extends</span> <span class="title">BaseOperation</span>&lt;<span class="title">Tuple</span>&gt; <span class="keyword">implements</span> <span class="title">Function</span>&lt;<span class="title">Tuple</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> Fields fieldDeclaration = <span class="keyword">new</span> Fields(<span class="string">"document"</span>,<span class="string">"text"</span>);</span><br><span class="line">    <span class="keyword">static</span> Fields fieldOutput = </span><br><span class="line">        <span class="keyword">new</span> Fields(<span class="string">"document"</span>,<span class="string">"sentnum"</span>, <span class="string">"sentence"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SentFunc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="number">2</span>, fieldOutput);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">(FlowProcess flowProcess, </span></span></span><br><span class="line"><span class="function"><span class="params">                        OperationCall&lt;Tuple&gt; call)</span> </span>&#123;</span><br><span class="line">        call.setContext(Tuple.size(<span class="number">3</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">operate</span><span class="params">(FlowProcess flowProcess, </span></span></span><br><span class="line"><span class="function"><span class="params">                        FunctionCall&lt;Tuple&gt; call)</span> </span>&#123;</span><br><span class="line">        TupleEntry arguments = call.getArguments();</span><br><span class="line">        String[] sentences = NLPUtils.getSentences(arguments.getString(<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> sentCounter=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (String sent: sentences)&#123;</span><br><span class="line">            <span class="comment">// 获取之前创建的元组</span></span><br><span class="line">            Tuple result = call.getContext();</span><br><span class="line">            <span class="comment">// 元组成员为: 文档名、 语句编号、语句</span></span><br><span class="line">            result.set(<span class="number">0</span>,arguments.getString(<span class="number">0</span>));</span><br><span class="line">            result.set(<span class="number">1</span>,sentCounter);</span><br><span class="line">            result.set(<span class="number">2</span>,sent);</span><br><span class="line">            <span class="comment">// 返回结果元组</span></span><br><span class="line">            call.getOutputCollector().add(result);</span><br><span class="line">            sentCounter++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cleanup</span><span class="params">(FlowProcess flowProcess, </span></span></span><br><span class="line"><span class="function"><span class="params">                        OperationCall&lt;Tuple&gt; call )</span> </span>&#123;</span><br><span class="line">        call.setContext(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>NLPUtils.getSentences()</code>方法, 参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> String[] getSentences(String text) &#123;</span><br><span class="line">    String[] sentences = text.split(<span class="string">"[.?!]"</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt; sentences.length; i++) &#123;</span><br><span class="line">        sentences[i] = sentences[i].trim();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sentences;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Aggregator"><a href="#Aggregator" class="headerlink" title="Aggregator"></a>Aggregator</h3><p>实现Cascading中<code>Aggregator</code>接口, 需实现以下三个方法:</p>
+<ul>
+<li><code>start()</code></li>
+<li><code>aggregate()</code></li>
+<li><code>complete()</code></li>
+</ul>
+<p>实现自定义聚合器, 通常有以下俩种方式: </p>
+<ul>
+<li>实现<code>Aggregator</code>接口, 并实现以上三个方法</li>
+<li>与实现自定义Cascading函数有些类似, 需重写<code>prepare()</code>、<code>cleanup()</code>等方法</li>
+</ul>
+<p>下面看个简单例子, 假定产品销售数据如下(第一行为列名, 数据列分别为店名、产品名称、售出数量、退回数量), 现在需计算每种产品实际售出量.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">StoreName,ProductName,Sold,Returned</span><br><span class="line">StoreA,Product1,10,2</span><br><span class="line">StoreB,Product1,20,5</span><br><span class="line">StoreA,Product2,100,20</span><br><span class="line">StoreB,Product2,50,1</span><br><span class="line">StoreA,Product3,20,10</span><br><span class="line">StoreB,Product3,10,3</span><br></pre></td></tr></table></figure>
+<p>参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cascading.flow.FlowProcess;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.Aggregator;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.AggregatorCall;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.BaseOperation;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.Operation;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.Fields;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.Tuple;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.TupleEntry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SampleAggregator</span> <span class="keyword">extends</span> </span></span><br><span class="line"><span class="class">        <span class="title">BaseOperation</span>&lt;<span class="title">SampleAggregator</span>.<span class="title">Context</span>&gt;</span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">Aggregator</span>&lt;<span class="title">SampleAggregator</span>.<span class="title">Context</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> value = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SampleAggregator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 期望传入两个参数</span></span><br><span class="line">        <span class="keyword">super</span>(<span class="number">2</span>, <span class="keyword">new</span> Fields(<span class="string">"actual_sold"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SampleAggregator</span><span class="params">(Fields calcFields)</span></span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="number">2</span>, calcFields);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(FlowProcess flowProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">                      AggregatorCall&lt;Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        aggregatorCall.setContext(<span class="keyword">new</span> Context());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">aggregate</span><span class="params">(FlowProcess flowProcess, </span></span></span><br><span class="line"><span class="function"><span class="params">                          AggregatorCall&lt;Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        TupleEntry arguments = aggregatorCall.getArguments();</span><br><span class="line">        Context context = aggregatorCall.getContext();</span><br><span class="line">        context.value += (arguments.getInteger(<span class="number">0</span>) - arguments.getInteger(<span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">complete</span><span class="params">(FlowProcess flowProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">                         AggregatorCall&lt;Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        Tuple result = <span class="keyword">new</span> Tuple();</span><br><span class="line">        Context context = aggregatorCall.getContext();</span><br><span class="line">        result.add(context.value);</span><br><span class="line">        aggregatorCall.getOutputCollector().add(result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestAggregator</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Scheme sourceScheme = <span class="keyword">new</span> TextDelimited(</span><br><span class="line">            <span class="keyword">new</span> Fields(<span class="string">"store_name"</span>,<span class="string">"product_name"</span>, </span><br><span class="line">                        <span class="string">"number_sold"</span>,<span class="string">"number_returned"</span>), </span><br><span class="line">            <span class="keyword">true</span>, </span><br><span class="line">            <span class="string">","</span> </span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        Tap source = <span class="keyword">new</span> FileTap(sourceScheme, args[<span class="number">0</span>]);</span><br><span class="line">        Scheme sinkScheme = <span class="keyword">new</span> TextDelimited(</span><br><span class="line">            <span class="keyword">new</span> Fields(<span class="string">"product_name"</span>, <span class="string">"actual_sold"</span>)</span><br><span class="line">        );</span><br><span class="line">        Tap sink = <span class="keyword">new</span> FileTap(sinkScheme, </span><br><span class="line">                               args[<span class="number">1</span>],</span><br><span class="line">                               SinkMode.REPLACE);</span><br><span class="line"></span><br><span class="line">        Pipe assembly = <span class="keyword">new</span> Pipe( <span class="string">"total"</span> );</span><br><span class="line">        assembly = <span class="keyword">new</span> GroupBy(assembly, </span><br><span class="line">                               <span class="keyword">new</span> Fields(<span class="string">"product_name"</span>));</span><br><span class="line">        assembly = <span class="keyword">new</span> Every(assembly, </span><br><span class="line">                             <span class="keyword">new</span> Fields(<span class="string">"number_sold"</span>,<span class="string">"number_returned"</span>), </span><br><span class="line">                             <span class="keyword">new</span> SampleAggregator(<span class="keyword">new</span> Fields(<span class="string">"actual_sold"</span>)),</span><br><span class="line">                             Fields.ALL);</span><br><span class="line"></span><br><span class="line">        FlowConnector flowConnector = <span class="keyword">new</span> LocalFlowConnector();</span><br><span class="line">        Flow flow = flowConnector.connect(source,sink,assembly);</span><br><span class="line">        flow.complete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二种聚合器实现方式, 参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SampleAggregator2</span> <span class="keyword">extends</span></span></span><br><span class="line"><span class="class">    <span class="title">BaseOperation</span>&lt;<span class="title">SampleAggregator2</span>.<span class="title">Context</span>&gt; <span class="keyword">implements</span></span></span><br><span class="line"><span class="class">    <span class="title">Aggregator</span>&lt;<span class="title">SampleAggregator2</span>.<span class="title">Context</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> value = <span class="number">0</span>;</span><br><span class="line">        Tuple tuple = Tuple.size(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SampleAggregator2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="number">2</span>, <span class="keyword">new</span> Fields(<span class="string">"actual_sold"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SampleAggregator2</span><span class="params">(Fields calcFields)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="number">2</span>, calcFields);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">(FlowProcess flowProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">                        OperationCall&lt;SampleAggregator2.Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        aggregatorCall.setContext(<span class="keyword">new</span> SampleAggregator2.Context());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cleanup</span><span class="params">(FlowProcess flowProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">                        OperationCall&lt;SampleAggregator2.Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        aggregatorCall.setContext(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(FlowProcess flowProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">                      AggregatorCall&lt;SampleAggregator2.Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        Context context = aggregatorCall.getContext();</span><br><span class="line">        context.value = <span class="number">0</span>;</span><br><span class="line">        context.tuple.clear();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">aggregate</span><span class="params">(FlowProcess flowProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">                          AggregatorCall&lt;SampleAggregator2.Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        TupleEntry arguments = aggregatorCall.getArguments();</span><br><span class="line">        Context context = aggregatorCall.getContext();</span><br><span class="line">        context.value += (arguments.getInteger(<span class="number">0</span>)-arguments.getInteger(<span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">complete</span><span class="params">(FlowProcess flowProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">                         AggregatorCall&lt;SampleAggregator2.Context&gt; aggregatorCall)</span> </span>&#123;</span><br><span class="line">        Context context = aggregatorCall.getContext();</span><br><span class="line">        Tuple result = context.tuple;</span><br><span class="line">        result.add(context.value);</span><br><span class="line">        aggregatorCall.getOutputCollector().add(result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h3><p>Buffer可以视为基于内存的聚合器(Aggregator), 与聚合器类似, 执行于一系列元组, 也可接收迭代器迭代. 以下这段代码, 将上述<code>SentFunc</code>中生成语句进行分词, 这些语句可以根据空格、冒号、分号进行分词.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> com.ai.utils.NLPUtils;</span><br><span class="line"><span class="keyword">import</span> cascading.flow.FlowProcess;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.BaseOperation;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.Buffer;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.BufferCall;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.Fields;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.Tuple;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.TupleEntry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TokenBuffer</span> <span class="keyword">extends</span> <span class="title">BaseOperation</span> <span class="keyword">implements</span> <span class="title">Buffer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> Fields fieldDeclaration = </span><br><span class="line">        <span class="keyword">new</span> Fields(<span class="string">"document"</span>, <span class="string">"sentnum"</span>, <span class="string">"sentence"</span>);</span><br><span class="line">    <span class="keyword">static</span> Fields fieldOutput = </span><br><span class="line">        <span class="keyword">new</span> Fields(<span class="string">"documentname"</span>, <span class="string">"sentnumber"</span>, <span class="string">"wordnum"</span>, <span class="string">"word"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TokenBuffer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="number">3</span>, fieldOutput);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">operate</span><span class="params">(FlowProcess flowProcess, BufferCall bufferCall)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sentnum = <span class="number">0</span>;</span><br><span class="line">        TupleEntry group = bufferCall.getGroup();</span><br><span class="line">        Iterator&lt;TupleEntry&gt; arguments = bufferCall.getArgumentsIterator();</span><br><span class="line">        </span><br><span class="line">        Tuple result = Tuple.size(<span class="number">4</span>);</span><br><span class="line">        <span class="keyword">int</span> tokenCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(arguments.hasNext()) &#123;</span><br><span class="line">            Tuple tuple = arguments.next().getTuple();</span><br><span class="line">            String tokens = NLPUtils.getToken(tuple.getString(<span class="number">2</span>));</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tokens.length; i++)&#123;</span><br><span class="line">                String token = tokens[i];</span><br><span class="line">                <span class="keyword">if</span> (token == <span class="keyword">null</span> || token.isEmpty())</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">                tokenCount++;</span><br><span class="line">                result.set(<span class="number">0</span>, group.getString(<span class="string">"document"</span>));</span><br><span class="line">                result.set(<span class="number">1</span>, sentnum);</span><br><span class="line">                result.set(<span class="number">2</span>, tokenCount);</span><br><span class="line">                result.set(<span class="number">3</span>, token);</span><br><span class="line">                bufferCall.getOutputCollector().add(result);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (i == tokens.length - <span class="number">1</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (!NLPUtils.isAbbreviation(token)) &#123;</span><br><span class="line">                        sentnum++;</span><br><span class="line">                        tokenCount = <span class="number">0</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>NLPUtils.getTokens()</code>方法, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> String[] getTokens(String sentence) &#123;</span><br><span class="line">    <span class="keyword">return</span> sentence.split(<span class="string">"[("</span>[(<span class="string">"[ ,;:]+"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>NLPUtils.isAbbreviation()</code>方法, 参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> HashSet&lt;String&gt; abbrevs = <span class="keyword">new</span> HashSet&lt;String&gt;();</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    loadTestData();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isAbbreviation</span><span class="params">(String token)</span> </span>&#123;</span><br><span class="line">    token = token.toUpperCase();</span><br><span class="line">    <span class="keyword">if</span> (abbrevs.contains(token))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>; </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loadTestData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 加载样本数据至abbrevs该HashSet中</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试代码, 参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cascading.flow.Flow;</span><br><span class="line"><span class="keyword">import</span> cascading.flow.local.LocalFlowConnector;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.Debug;</span><br><span class="line"><span class="keyword">import</span> cascading.pipe.Each;</span><br><span class="line"><span class="keyword">import</span> cascading.pipe.Every;</span><br><span class="line"><span class="keyword">import</span> cascading.pipe.GroupBy;</span><br><span class="line"><span class="keyword">import</span> cascading.pipe.Pipe;</span><br><span class="line"><span class="keyword">import</span> cascading.scheme.Scheme;</span><br><span class="line"><span class="keyword">import</span> cascading.scheme.local.TextDelimited;</span><br><span class="line"><span class="keyword">import</span> cascading.tap.SinkMode;</span><br><span class="line"><span class="keyword">import</span> cascading.tap.Tap;</span><br><span class="line"><span class="keyword">import</span> cascading.tap.local.FileTap;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.Fields;</span><br><span class="line"><span class="keyword">import</span> com.ai.learning.SentFunc;</span><br><span class="line"><span class="keyword">import</span> com.ai.learning.TokenBuffer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBuffer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Fields fieldDeclarationInput = </span><br><span class="line">            <span class="keyword">new</span> Fields(<span class="string">"document"</span>,<span class="string">"text"</span>);</span><br><span class="line">        Fields fieldDeclarationOutput = </span><br><span class="line">            <span class="keyword">new</span> Fields(<span class="string">"documentname"</span>,<span class="string">"sentnumber"</span>,<span class="string">"wordnum"</span>, <span class="string">"word"</span>);</span><br><span class="line"></span><br><span class="line">        Scheme inputScheme = </span><br><span class="line">            <span class="keyword">new</span> TextDelimited(fieldDeclarationInput, <span class="keyword">true</span>,<span class="string">"\t"</span>);</span><br><span class="line">        Scheme outputScheme = </span><br><span class="line">            <span class="keyword">new</span> TextDelimited(fieldDeclarationOutput,<span class="string">"\t"</span>);</span><br><span class="line"></span><br><span class="line">        Tap docTap = <span class="keyword">new</span> FileTap(inputScheme, </span><br><span class="line">                                 args[<span class="number">0</span>]), </span><br><span class="line">                                 SinkMode.REPLACE);</span><br><span class="line">        Tap sinkTap = <span class="keyword">new</span> FileTap(outputScheme, </span><br><span class="line">                                  args[<span class="number">1</span>], </span><br><span class="line">                                  SinkMode.REPLACE);</span><br><span class="line"></span><br><span class="line">        Pipe inPipe = <span class="keyword">new</span> Pipe(<span class="string">"InPipe"</span>);</span><br><span class="line">        inPipe= <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> SentFunc());</span><br><span class="line">        inPipe = <span class="keyword">new</span> GroupBy(inPipe, </span><br><span class="line">                             <span class="keyword">new</span> Fields(<span class="string">"document"</span>), </span><br><span class="line">                             <span class="keyword">new</span> Fields(<span class="string">"sentnum"</span>));</span><br><span class="line">        inPipe = <span class="keyword">new</span> Every(inPipe, </span><br><span class="line">                           <span class="keyword">new</span> TokenBuffer(),</span><br><span class="line">                           fieldDeclarationOutput);</span><br><span class="line"></span><br><span class="line">        Flow flow = <span class="keyword">new</span> LocalFlowConnector</span><br><span class="line">            .connect(<span class="string">"process"</span>, docTap, sinkTap, inPipe);</span><br><span class="line">        flow.complete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Assertion"><a href="#Assertion" class="headerlink" title="Assertion"></a>Assertion</h3><p>以下代码, 实现了一简单断言, 判断输入文件中Field是否为空:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cascading.flow.FlowProcess;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.ValueAssertion;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.ValueAssertionCall;</span><br><span class="line"><span class="keyword">import</span> cascading.operation.assertion.BaseAssertion;</span><br><span class="line"><span class="keyword">import</span> cascading.tuple.TupleEntry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SampleAssertion</span> </span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">BaseAssertion</span> <span class="keyword">implements</span> <span class="title">ValueAssertion</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SampleAssertion</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="string">"argument '%s' failed Sample Assertion, in tuple: %s"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doAssert</span><span class="params">(FlowProcess flowProcess,</span></span></span><br><span class="line"><span class="function"><span class="params">                         ValueAssertionCall assertionCall)</span> </span>&#123;</span><br><span class="line">        TupleEntry input = assertionCall.getArguments();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> pos = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(Object value : input.getTuple()) &#123;</span><br><span class="line">            <span class="keyword">if</span>(checkForEmptyString(value))</span><br><span class="line">                fail(input.getFields().get(pos),</span><br><span class="line">                     input.getTuple().print());</span><br><span class="line">                pos++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">checkForEmptyString</span><span class="params">(Object value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (value == <span class="keyword">null</span> || value.toString().isEmpty())</span><br><span class="line">             <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestAssertion</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Scheme mainScheme = <span class="keyword">new</span> TextDelimited(</span><br><span class="line">            <span class="keyword">new</span> Fields(<span class="string">"name"</span>, <span class="string">"address"</span>, <span class="string">"phone"</span>), <span class="keyword">true</span>, <span class="string">","</span> );</span><br><span class="line">        Tap source = <span class="keyword">new</span> FileTap(mainScheme, args[<span class="number">0</span>]);</span><br><span class="line">        Tap sink = </span><br><span class="line">            <span class="keyword">new</span> FileTap(mainScheme, args[<span class="number">1</span>], SinkMode.REPLACE);</span><br><span class="line"></span><br><span class="line">        Pipe inPipe = <span class="keyword">new</span> Pipe(<span class="string">"InPipe"</span>);</span><br><span class="line">        inPipe = <span class="keyword">new</span> Each(inPipe, <span class="keyword">new</span> Debug());</span><br><span class="line">        inPipe = <span class="keyword">new</span> Each(inPipe, </span><br><span class="line">                          AssertionLevel.STRICT, </span><br><span class="line">                          <span class="keyword">new</span> SampleAssertion());</span><br><span class="line"></span><br><span class="line">        Flow flow = <span class="keyword">new</span> LocalFlowConnector()</span><br><span class="line">            .connect(source, sink, inPipe);</span><br><span class="line">        flow.complete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
+<li>通常, 一个管道中定义了一操作符实现某种功能特性. Operations通常可分为两类: 在单元组上执行(<code>Each</code>)以及分组元组上执行(<code>Every</code>).</li>
+<li>缓冲器(Buffers)和聚合器(Aggregators)操作对象为一系列元组(分组元组).</li>
+<li>元组可变, 但Operations不应修改这些元组, 须拷贝一份并传入Pipeline下一操作符中. 处理元组时, 不要修改, 否则可能会抛出异常. 当然为提高性能, 也可缓存元组.</li>
+<li>注意复用已分配内存, 如在<code>prepare()</code>方法中分配、存储于上下文(Context)中、并在<code>cleanup()</code>方法中释放.</li>
+<li>有时, 某些函数可能会运行俩次, 可通过重写<code>isSafe()</code>方法、返回false解决.</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Cascading/" <i class="fa fa-tag"> Cascading</a>
+          
+            
+            <a href="/tags/MapReduce/" <i class="fa fa-tag"> MapReduce</a>
+          
+            
+            <a href="/tags/Apache-Hadoop/" <i class="fa fa-tag"> Apache Hadoop</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/cascading/basic/" rel="next" title="Cascading实战之基本概念篇">
+                <i class="fa fa-chevron-left"></i> Cascading实战之基本概念篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/hbase/phoenix-idx/" rel="prev" title="云中漫步, Apache Phoenix索引剖析">
+                云中漫步, Apache Phoenix索引剖析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见用例分析"><span class="nav-number">1.</span> <span class="nav-text">常见用例分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见自定义Operation实现"><span class="nav-number">2.</span> <span class="nav-text">常见自定义Operation实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Filter"><span class="nav-number">2.1.</span> <span class="nav-text">Filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Function"><span class="nav-number">2.2.</span> <span class="nav-text">Function</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Aggregator"><span class="nav-number">2.3.</span> <span class="nav-text">Aggregator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer"><span class="nav-number">2.4.</span> <span class="nav-text">Buffer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Assertion"><span class="nav-number">2.5.</span> <span class="nav-text">Assertion</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">3.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

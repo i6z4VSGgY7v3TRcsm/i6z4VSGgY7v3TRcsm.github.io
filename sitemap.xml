@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://ultradata.stream/about/index.html</loc>
+    
+    <lastmod>2021-08-12T11:59:58.930Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream//404.html</loc>
+    
+    <lastmod>2020-02-05T14:06:59.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/tags/index.html</loc>
+    
+    <lastmod>2019-07-31T07:21:41.969Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/categories/index.html</loc>
+    
+    <lastmod>2019-07-31T07:21:31.313Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/flink/window/</loc>
+    
+    <lastmod>2019-05-11T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/flink/dstream/</loc>
+    
+    <lastmod>2019-05-11T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/flink/state/</loc>
+    
+    <lastmod>2019-05-11T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/dl/nst/</loc>
+    
+    <lastmod>2019-05-11T13:02:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/rust/fasttext/</loc>
+    
+    <lastmod>2019-04-15T14:21:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/rust/crf-ner/</loc>
+    
+    <lastmod>2019-04-15T14:21:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/life/blog/</loc>
+    
+    <lastmod>2019-04-02T13:36:18.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/ambitious-java/amber-pattern-matching/</loc>
+    
+    <lastmod>2019-04-01T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/ambitious-java/amber-legacy-lambda/</loc>
+    
+    <lastmod>2019-04-01T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/ambitious-java/amber-raw-string-literals/</loc>
+    
+    <lastmod>2019-04-01T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/ambitious-java/amber-enum/</loc>
+    
+    <lastmod>2019-04-01T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/ambitious-java/amber-data-class/</loc>
+    
+    <lastmod>2019-04-01T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/ambitious-java/zgc/</loc>
+    
+    <lastmod>2019-03-21T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/ambitious-java/guide/</loc>
+    
+    <lastmod>2019-03-21T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/ambitious-java/epsilon-gc/</loc>
+    
+    <lastmod>2019-03-21T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/cloud-native/srvcmesh/</loc>
+    
+    <lastmod>2019-02-11T15:12:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/rust/pyo3/</loc>
+    
+    <lastmod>2019-02-11T14:21:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/rust/inference/</loc>
+    
+    <lastmod>2018-12-08T14:21:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/torch/jit/</loc>
+    
+    <lastmod>2018-09-20T15:22:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/microsrvc/grpc/</loc>
+    
+    <lastmod>2018-07-11T14:26:17.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/go/data-modeling/</loc>
+    
+    <lastmod>2018-06-11T15:15:20.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/go/distros/</loc>
+    
+    <lastmod>2018-06-11T14:16:18.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/go/api-build/</loc>
+    
+    <lastmod>2018-06-11T13:17:11.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/dl/frecg/</loc>
+    
+    <lastmod>2018-05-15T13:02:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/dl/psi/</loc>
+    
+    <lastmod>2018-05-02T15:22:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/meta-dl/sgd-code/</loc>
+    
+    <lastmod>2018-05-02T15:12:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/meta-dl/sgd-math/</loc>
+    
+    <lastmod>2018-05-02T14:22:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/go/face-detection/</loc>
+    
+    <lastmod>2018-05-01T13:18:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/go/dependency-injection/</loc>
+    
+    <lastmod>2018-05-01T13:18:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/go/profile/</loc>
+    
+    <lastmod>2018-05-01T13:18:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/container/k8s/apisrv/</loc>
+    
+    <lastmod>2018-01-01T14:12:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/life/ide-cn/</loc>
+    
+    <lastmod>2018-01-01T14:09:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/container/k8s/api-intro/</loc>
+    
+    <lastmod>2018-01-01T13:21:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/rust/microsrv/</loc>
+    
+    <lastmod>2017-11-01T15:18:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/kt/coroutines/</loc>
+    
+    <lastmod>2017-10-09T13:22:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/kt/dlgt-props/</loc>
+    
+    <lastmod>2017-07-26T14:25:32.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/kt/optmz-props/</loc>
+    
+    <lastmod>2017-07-26T13:22:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/kt/props-inspct/</loc>
+    
+    <lastmod>2017-07-26T13:22:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/kt/range/</loc>
+    
+    <lastmod>2017-07-26T12:30:12.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/kt/dlgt-class/</loc>
+    
+    <lastmod>2017-07-26T12:28:29.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/microsrvc/netflix-whole-sale-packages/</loc>
+    
+    <lastmod>2017-07-11T15:22:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/jvm/rxjava-backpressure/</loc>
+    
+    <lastmod>2017-06-11T13:31:11.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/dl/vdtct/</loc>
+    
+    <lastmod>2017-01-01T15:31:11.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/dl/fdtct/</loc>
+    
+    <lastmod>2017-01-01T15:02:18.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/jvm/metaspace/</loc>
+    
+    <lastmod>2016-06-11T15:11:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/mahout/data-sketch/</loc>
+    
+    <lastmod>2016-05-11T14:13:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/life/csp-actor/</loc>
+    
+    <lastmod>2016-05-01T14:09:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/dl/rptl/</loc>
+    
+    <lastmod>2016-02-21T14:18:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/microsrvc/axon-cqrs/</loc>
+    
+    <lastmod>2016-02-11T14:12:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/cascading/tuning/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-tuning/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/drill/mlpipe/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/drill/analysis/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/drill/intro/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/drill/dbc/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/shapeless/dependent-types/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/drill/udf/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/cascading/flow-control/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/cascading/cascade/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-udf/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-idx/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-intro/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/hbase/pqs/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/cascading/subassembly/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-txn/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/shapeless/poly/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/cascading/basic/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/cascading/custops/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/cascading/ops-intro/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-integ/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/bigdata/drill/netanalysis/</loc>
+    
+    <lastmod>2015-10-21T14:19:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/life/guide/</loc>
+    
+    <lastmod>2015-10-11T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/nosql/leveldb/crud/</loc>
+    
+    <lastmod>2015-06-21T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/nosql/leveldb/tuning/</loc>
+    
+    <lastmod>2015-06-21T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ultradata.stream/nosql/leveldb/search/</loc>
+    
+    <lastmod>2015-06-21T15:17:15.000Z</lastmod>
+    
+  </url>
+  
+</urlset>

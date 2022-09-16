@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将介绍Cascading开发过程中动态流控技巧及与其它外部组件交互应用.">
+<meta name="keywords" content="Big Data,Cascading,MapReduce,Apache Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cascading实战之动态流控与组件交互篇">
+<meta property="og:url" content="https://ultradata.stream/bigdata/cascading/flow-control/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将介绍Cascading开发过程中动态流控技巧及与其它外部组件交互应用.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/counter-flow.jpg">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cascading实战之动态流控与组件交互篇">
+<meta name="twitter:description" content="本文将介绍Cascading开发过程中动态流控技巧及与其它外部组件交互应用.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/counter-flow.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/cascading/flow-control/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Cascading实战之动态流控与组件交互篇 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/cascading/flow-control/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Cascading实战之动态流控与组件交互篇
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">8k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">7 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将介绍Cascading开发过程中动态流控技巧及与其它外部组件交互应用. <a id="more"></a></p>
+<h2 id="动态流控"><a href="#动态流控" class="headerlink" title="动态流控"></a>动态流控</h2><p>Cascading中Flow可动态定义、控制, Cascading允许开发人员对数据处理流Flow进行动态编码控制, 如多次迭代运行Data Flow或控制Task执行顺序等. 存在以下几类算法需动态规划(控制):</p>
+<ul>
+<li>图处理算法, 如Graph的路径、周期、分区等问题</li>
+<li>NLP处理、强化相关算法</li>
+<li>机器学习算法如随机梯度下降、”爬坡”算法等</li>
+<li>常见递归算法, 如 Monte Carlo算法、Markov Chain迭代算法等</li>
+</ul>
+<p>在实际开发中, 处理以上类型Task时, 需保存状态信息、内部计数器等, 便于下次迭代交互、提高计算效率. 本节将从: 计数器、动态定义Flow(FlowDef)及与已有MapReduce任务交互 三个方面对Cascading中动态”流控”(Flow Control)进行阐述.</p>
+<h3 id="计数器"><a href="#计数器" class="headerlink" title="计数器"></a>计数器</h3><p>Flow中允许创建内部计数器(也称仪表), 当一个Operation传入<code>FlowProcess</code>对象时, 可在该<code>FlowProcess</code>对象上触发计数操作, 无需定义计数器, 仅需定义Group名和计数器名即可, 计数器初始化值为0, 计数器累加操作示意代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">String counterGroup = <span class="string">"GroupName"</span>;</span><br><span class="line">String counterName = <span class="string">"CounterOne"</span>;</span><br><span class="line"><span class="comment">// 计数器作用于FlowProcess, 并执行累加操作</span></span><br><span class="line"><span class="comment">// FlowProcess实例化代码略</span></span><br><span class="line">flowProcess.increment(counterGroup, counterName, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<p>也可通过枚举定义计时器, 参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> COUNTERS &#123;</span><br><span class="line">    COUNTER1,</span><br><span class="line">    COUNTER2</span><br><span class="line">&#125;</span><br><span class="line">flowProcess.increment(COUNTER1, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<p>可以通过Flow读取计数器值, 参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> counter = flow.getFlowStats()</span><br><span class="line">    .getCounterValue(counterGroup, counterName);</span><br></pre></td></tr></table></figure>
+<p>Cascading开发中, 可以通过计数器方式动态地控制Cascading中Flow迭代次数, 执行流程图参考如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/cascading/counter-flow.jpg" alt></p>
+<p>代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 构建FlowDef及Flow, 具体实现略</span></span><br><span class="line">FlowConnetor flowConnector = <span class="keyword">new</span> LocalFlowConnector();</span><br><span class="line">String counterGroup = <span class="string">"GroupName"</span>;</span><br><span class="line">String counterName = <span class="string">"CounterOne"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义最大迭代次数以及计数器</span></span><br><span class="line"><span class="keyword">int</span> maxIterations = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">int</span> updateCount = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">boolean</span> done = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(!done) &#123;</span><br><span class="line">    flowConnector.connect(flowDef).complete();</span><br><span class="line">    <span class="comment">// 计数器初始化为0</span></span><br><span class="line">    updateCount = flow.getFlowStats()</span><br><span class="line">        .getCounterValue(counterGroup, counterName);</span><br><span class="line"></span><br><span class="line">    maxIterations--;</span><br><span class="line">    done = (maxIterations == <span class="number">0</span> || updateCount == <span class="number">0</span>); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="FlowDef"><a href="#FlowDef" class="headerlink" title="FlowDef"></a>FlowDef</h3><p>可以通过使用Fluent风格编程方式定义Flow, Fluent风格编程, 主要由Eric Evans和Martin Fowler于05年提出, “Fluent”风格编程也常被引用为Method Cascading, “Fluent”风格编程允许将一系列方法调用链(chain)起来, 形成单条Statement, 参考形式如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// methodA的输出(即返回值)为methodB的输入, methodB的输出为methodC的输入</span></span><br><span class="line"><span class="comment">// 与函数式编程的函数组合子有些类似, 但形式上更偏面向对象编程</span></span><br><span class="line">object.methodA().methodB().methodC();</span><br></pre></td></tr></table></figure>
+<p>通过将对象object上调用的方法methodA、methodB、methodC链起来, 以提高代码可读性与可维护性. 其中methodA、methodB、methodC方法有些类似于函数式编程中的Monad概念, Monad可构成管道(Pipe)处理流中一部分并链起来(chain), 不可或缺.</p>
+<p>Cascading中也存在Fluent风格编程, 如<code>FlowDef</code>, 动态而”流畅”(Fluently)地构建数据处理Flow, <code>FlowDef</code>常见方法签名如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FlowDef <span class="title">addSource</span><span class="params">(Pipe pipe, Tap sourceTap)</span></span>;</span><br><span class="line"><span class="function">FlowDef <span class="title">addSink</span><span class="params">(Pipe pipe, Tap sinkTap)</span></span>;</span><br><span class="line"><span class="function">FlowDef <span class="title">addTailSink</span><span class="params">(Pipe pipe, Tap tailSinkTap)</span></span>;</span><br><span class="line"><span class="function">FlowDef <span class="title">addTrap</span><span class="params">(Pipe pipe, Tap trapTap)</span></span>;</span><br><span class="line"><span class="function">FlowDef <span class="title">addToClassPath</span><span class="params">(String jarPath)</span></span>;</span><br><span class="line"><span class="function">FlowDef <span class="title">addCheckpoint</span><span class="params">(String name, Tap checkpointTap)</span></span>;</span><br><span class="line"><span class="function">FlowDef <span class="title">addAssemblyPlanner</span><span class="params">(AssemblyPlanner assemblyPlanner)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是<code>addAssemblyPlanner</code>方法实际负责构建运行<code>FlowConnector</code>的Cascading代码, <code>AssemblyPlanner</code>实例提供了Cascading运行于Hadoop MapReduce、Tez、Apache Flink底层框架的方式.  <code>FlowDef</code>示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FlowDef flowDef = FlowDef.flowDef()</span><br><span class="line">    .addSource(pipe, srcTap)</span><br><span class="line">    .addTailSink(pipe, sinkTap);</span><br><span class="line"></span><br><span class="line">FlowConnetor flowConnector = <span class="keyword">new</span> LocalFlowConnector();</span><br><span class="line">Flow flow = flowConnector.connect(flowDef);</span><br><span class="line">flow.complete();</span><br></pre></td></tr></table></figure>
+<p>构建<code>Flow</code>时也可传入含Taps及Pipes的容器, 参考代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Pipe&gt; pipes = <span class="keyword">new</span> ArrayList&lt;Pipe&gt;(<span class="number">2</span>);</span><br><span class="line">pipes.add(pipeOne);</span><br><span class="line">pipes.add(pipeTwo);</span><br><span class="line"></span><br><span class="line">Map&lt;String, Tap&gt; taps = <span class="keyword">new</span> HashMap&lt;String, Tap&gt;();</span><br><span class="line">taps.put(<span class="string">"sourceTap"</span>, sourceTap);</span><br><span class="line">taps.put(<span class="string">"sinkTap"</span>, sinkTap);</span><br><span class="line"></span><br><span class="line">FlowConnetor flowConnector = <span class="keyword">new</span> LocalFlowConnector();</span><br><span class="line">Flow flow = flowConnector.connect(source, taps, pipes);</span><br><span class="line">flow.complete();</span><br></pre></td></tr></table></figure>
+<p><code>FlowDef</code>中<code>addSource</code>、<code>addSink</code>、<code>addTailSink</code>等方法可以调用多次, 代码参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">FlowDef flowDef = FlowDef.flowDef()</span><br><span class="line">    .addSource(pipeOne, sourceTap)</span><br><span class="line">    .addSource(pipeTwo, anotherSourceTap)</span><br><span class="line">    .addTailSink(tailPipe, sinkTap);</span><br><span class="line"></span><br><span class="line">FlowConnetor flowConnector = <span class="keyword">new</span> LocalFlowConnector();</span><br><span class="line">Flow flow = flowConnector.connect(flowDef);</span><br><span class="line">flow.complete();</span><br></pre></td></tr></table></figure>
+<h3 id="与MR交互"><a href="#与MR交互" class="headerlink" title="与MR交互"></a>与MR交互</h3><p>通常, 生产环境中可能运行多项MapReduce任务, 有时需要利用这些已有的MR来构建新的Data Flow, Cascading与现有MapReduce交互代码, 示例如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Hadoop JobConf配置, Job名、Mapper/Reducer、Key/Value类型设置</span></span><br><span class="line">JobConf mrcnf = <span class="keyword">new</span> JobConf();</span><br><span class="line">mrcnf.setJobName(<span class="string">"mr-job-one"</span>);</span><br><span class="line">mrcnf.setOutputKeyClass(LongWritable.class);</span><br><span class="line">mrcnf.setOutputValueClass(Text.class);</span><br><span class="line">mrcnf.setMapperClass(IdentityMapper.class);</span><br><span class="line">mrcnf.setReducerClass(IdentityReducer.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// FlowOne -&gt; MapReduceFlow -&gt; FlowTwo</span></span><br><span class="line">FileInputFormat.setInputPath(mrcnf, flowOneSinkTap.getPath());</span><br><span class="line">FileOutputFormat.setOutputPath(mrcnf, flowTwoSourceTap.getPath());</span><br><span class="line">Flow mrFlow = <span class="keyword">new</span> MapReduceFlow(<span class="string">"mrflow"</span>, mrcnf);</span><br><span class="line"></span><br><span class="line">Cascade cascade = CascadeConnector(flowOne, mrFlow, flowTwo);</span><br><span class="line">cascade.complete();</span><br></pre></td></tr></table></figure>
+<h2 id="与外部组件交互"><a href="#与外部组件交互" class="headerlink" title="与外部组件交互"></a>与外部组件交互</h2><p>本节将介绍Cascading如何与外部组件进行交互、集成. Cascading基于用户定义代码生成执行图(Execution Graph), 该Graph并不依赖于运行框架, 对应Job存在多种可选的组装计划器(Planners)及连接器(Connectors), 允许Cascading任务从一框架迁移至另一框架中运行, 做到了同一套代码, 可复用运行于多种框架. Cascading除了可运行于Hadoop之上(即MapReduce), 还可运行于Tez和Flink之上.</p>
+<ul>
+<li><p><strong>Cascading On Flink</strong>, 灵活的网络栈, 支持低时延数据管道传输及转换、大规模可拓展; 内存安全; 基于内存计算的Operator、计算效率大大提升; 主动内存管理及自定义序列化栈, 支持Binary数据高效操作、防止JVM内存溢出及GC 暂停(GC Pauses).  以下这段代码为简单的WordCount (Cascading On Flink):</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Fields token = <span class="keyword">new</span> Fields(<span class="string">"token"</span>);</span><br><span class="line">    Fields text = <span class="keyword">new</span> Fields(<span class="string">"text"</span>);</span><br><span class="line">    RegexSplitGenerator splitter = <span class="keyword">new</span> RegexSplitGenerator(token, <span class="string">"\\s+"</span>);</span><br><span class="line">    </span><br><span class="line">    Pipe tokenPipe = <span class="keyword">new</span> Each(<span class="string">"token"</span>, text, splitter, Fields.RESULTS);</span><br><span class="line">    Pipe wordCountPipe = <span class="keyword">new</span> Pipe(<span class="string">"wordcount"</span>, tokenPipe);</span><br><span class="line">    wordCountPipe = <span class="keyword">new</span> AggregateBy(wordCountPipe, token, <span class="keyword">new</span> CountBy(<span class="keyword">new</span> Fields(<span class="string">"count"</span>)));</span><br><span class="line"></span><br><span class="line">    Tap input = <span class="keyword">new</span> Hfs(<span class="keyword">new</span> TextDelimited(text, <span class="string">"\n"</span>), args[<span class="number">0</span>]);</span><br><span class="line">    Tap output = <span class="keyword">new</span> Hfs(<span class="keyword">new</span> TextDelimited(<span class="keyword">false</span>, <span class="string">"\n"</span>), args[<span class="number">1</span>], SinkMode.REPLACE);</span><br><span class="line"></span><br><span class="line">    FlowDef flowDef = FlowDef.flowDef.setName(<span class="string">"wordcount"</span>)</span><br><span class="line">        .addSource(tokenPipe, input)</span><br><span class="line">        .addTailSink(wordCountPipe, output);</span><br><span class="line"></span><br><span class="line">    FlowConnector flowConnector = <span class="keyword">new</span> FlinkConnector();</span><br><span class="line">    Flow wordCountFlow = flowConnector.connect(flowDef);</span><br><span class="line">    wordCountFlow.complete();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Cascading On Tez</strong>, Tez计算引擎相比MapReduce, 做了很多优化, 如减少大量数据传输(如MapReduce中间数据不断刷写磁盘)开销等, 将整个Flow作为单个Job执行, 无需将临时文件刷写至HDFS. Cascading通过创建特定的Tez计划器、连接器、Flows、Taps等, 生成执行图(Execution Graph)用于分析特定模式, 创建特定的Processors提交至Tez引擎进行计算.</p>
+</li>
+<li><p><strong>Cascading On Hadoop</strong>, 注意Hadoop版本迁移问题, 如Hadoop 2.X系列使用YARN作为资源管理、调度工具, 而非之前版本的<code>JobTracker</code>与<code>TaskTracker</code>. 进行Cascading开发时, 须注意Hadoop版本迁移问题.</p>
+</li>
+</ul>
+<h3 id="FlowListener"><a href="#FlowListener" class="headerlink" title="FlowListener"></a>FlowListener</h3><p>每项Flow与Cascade均可通过事件监听器执行回调(Callback), 适用于当Cascade或Flow开启、中断、完成、抛出异常时及时通知外部应用, Cascade或Flow生成事件可由客户端代码进行处理. 如当运行于Amazon EC2 Hadoop集群的Flow完成时, 可通过发送Amazon SQS消息通知另一应用获取Job结果或Shutdown集群等. 示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">FlowListener listener = <span class="keyword">new</span> FlowListener() &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStarting</span><span class="params">(Flow flow)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 略去具体实现</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStopping</span><span class="params">(Flow flow)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 略去具体实现</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompleted</span><span class="params">(Flow flow)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 略去具体实现 </span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onThrowable</span><span class="params">(Flow flow, Throwable throwable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">flow.addListener(listener);</span><br><span class="line">assertFalse(<span class="string">"No listener found"</span>, flow.hasListener());</span><br><span class="line">flow.removeListener(listener);</span><br><span class="line">assertTrue(<span class="string">"Listener found"</span>, flow.hasListener());</span><br></pre></td></tr></table></figure>
+<p>以下代码中, <code>setSyslogger</code>方法将发送Cascading Job消息(Flow开启、中断、完成等)至Unix风格Syslog Server(该UDP Server使用syslog4j):</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.productivity.java.syslog4j.Syslog;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSyslogger</span><span class="params">(Flow flow)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    FlowListener listener = <span class="keyword">new</span> FlowListener() &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStarting</span><span class="params">(Flow flow)</span> </span>&#123;</span><br><span class="line">            Syslog.getInstance(<span class="string">"udp"</span>).info(flow.getName() + </span><br><span class="line">                <span class="string">"started at "</span>+ <span class="keyword">new</span> Date().toString());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStopping</span><span class="params">(Flow flow)</span> </span>&#123;</span><br><span class="line">            Syslog.getInstance(<span class="string">"udp"</span>).info(flow.getName() + </span><br><span class="line">                <span class="string">"stopped at "</span>+ <span class="keyword">new</span> Date().toString());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompleted</span><span class="params">(Flow flow)</span> </span>&#123;</span><br><span class="line">            Syslog.getInstance(<span class="string">"udp"</span>).info(flow.getName() + </span><br><span class="line">                <span class="string">"completed at "</span> + <span class="keyword">new</span> Date().toString() +</span><br><span class="line">                <span class="string">"with status "</span> + flow.getFlowStats().getStatus().toString()</span><br><span class="line">            );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onThrowable</span><span class="params">(Flow flow, Throwable throwable)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    flow.addListener(listener);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="外部Jar包依赖"><a href="#外部Jar包依赖" class="headerlink" title="外部Jar包依赖"></a>外部Jar包依赖</h2><p>Cascading开发中, 有时需使用外部Jar包依赖, 可添加这些依赖包至Java类路径中以便正常使用. 对于Cascading本地模式而言, 参考指令如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="comment"># 请将external-dependency.jar替换为具体外部依赖Jar包</span></span><br><span class="line">$ java -cp your-job.jar:external-dependency.jar:cascading-lib/* com.your-company.your-jobs.MainJob</span><br></pre></td></tr></table></figure>
+<p>对于Cascading Hadoop模式而言, 有些复杂, 可考虑打成Uber Jar(或Fat Jar), Uber Jar中包含任务运行所需的所有依赖, 运行参考指令如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hadoop jar your-jobs-uber-jar.jar com.your-company.your-jobs.MainJob \</span><br><span class="line">    /path/to/input /path/to/output</span><br></pre></td></tr></table></figure>
+<p>由于Uber Jar可能比较大, 可以参考以下指令将外部依赖Jar包传入:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hadoop jar your-job.jar com.your-company.your-jobs.MainJob \</span><br><span class="line">    -libjar external-dependency.jar /path/to/input /path/to/output</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Cascading/" <i class="fa fa-tag"> Cascading</a>
+          
+            
+            <a href="/tags/MapReduce/" <i class="fa fa-tag"> MapReduce</a>
+          
+            
+            <a href="/tags/Apache-Hadoop/" <i class="fa fa-tag"> Apache Hadoop</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/life/ide-cn/" rel="next" title="将集成开发环境(IDE)搬到浏览器中">
+                <i class="fa fa-chevron-left"></i> 将集成开发环境(IDE)搬到浏览器中
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/drill/udf/" rel="prev" title="Query Engine大作战 -- Apache Drill之UDF篇">
+                Query Engine大作战 -- Apache Drill之UDF篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#动态流控"><span class="nav-number">1.</span> <span class="nav-text">动态流控</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#计数器"><span class="nav-number">1.1.</span> <span class="nav-text">计数器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FlowDef"><span class="nav-number">1.2.</span> <span class="nav-text">FlowDef</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与MR交互"><span class="nav-number">1.3.</span> <span class="nav-text">与MR交互</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与外部组件交互"><span class="nav-number">2.</span> <span class="nav-text">与外部组件交互</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FlowListener"><span class="nav-number">2.1.</span> <span class="nav-text">FlowListener</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外部Jar包依赖"><span class="nav-number">3.</span> <span class="nav-text">外部Jar包依赖</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="Apache Phoenix由Salesforce.com开源, 于2014年5月成为Apache顶级项目, Phoenix最初作为Salesforce内部项目主要为HBase等大数据组件提供支持易用性、High Level级别的SQL支持.">
+<meta name="keywords" content="Big Data,Apache Phoenix,Apache HBase">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云中漫步, 邂逅Apache Phoenix">
+<meta property="og:url" content="https://ultradata.stream/bigdata/hbase/phoenix-intro/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="Apache Phoenix由Salesforce.com开源, 于2014年5月成为Apache顶级项目, Phoenix最初作为Salesforce内部项目主要为HBase等大数据组件提供支持易用性、High Level级别的SQL支持.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-rs.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-arch.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-hbase-comm.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-cmp.jpg">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云中漫步, 邂逅Apache Phoenix">
+<meta name="twitter:description" content="Apache Phoenix由Salesforce.com开源, 于2014年5月成为Apache顶级项目, Phoenix最初作为Salesforce内部项目主要为HBase等大数据组件提供支持易用性、High Level级别的SQL支持.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-rs.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/hbase/phoenix-intro/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>云中漫步, 邂逅Apache Phoenix | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/hbase/phoenix-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">云中漫步, 邂逅Apache Phoenix
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">6.6k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">6 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Apache Phoenix由Salesforce.com开源, 于2014年5月成为Apache顶级项目, Phoenix最初作为Salesforce内部项目主要为HBase等大数据组件提供支持易用性、High Level级别的SQL支持. <a id="more"></a> Apache Phoenix充分利用HBase作为存储数据库, 支持低延迟OLTP处理分析, 便于与Hadoop其它生态组件集成, 如Hive、Pig、Spark、Flume等. Apache Phoenix支持标准SQL及JDBC API, 支持完整ACID(原子性、一致性、隔离性及持续性)语义, 也兼容如Schema读取、延迟绑定等NoSQL数据库特性.</p>
+<h2 id="SQL-ON-HBASE"><a href="#SQL-ON-HBASE" class="headerlink" title="SQL ON HBASE"></a>SQL ON HBASE</h2><p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-rs.jpg" alt></p>
+<p>Apache Phoenix架构示意图如下, Phoenix提供C/S服务, 服务端使用自定义HBase协处理器处理索引、Join、事务、Schema及元数据管理, 服务端拥有自定义Observer和Endpoint协处理器支持这些特性; 客户端拥有解释器、关系型代数及查询计划组件用于解析给定SQL语句并基于代价(Cost-based)优化模型选择最佳优化计划, 然后执行并内部转化为SCAN、PUT、DELETE等HBase操作. 其中服务端返回的数据结果被映射为Java中的<code>ResultSets</code>.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-arch.jpg" alt></p>
+<p>Apache Phoenix与HBase通信示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-hbase-comm.jpg" alt></p>
+<p>Apache Phoenix与其它SQL on Hadoop组件比较如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-cmp.jpg" alt></p>
+<h2 id="Phoenix主要特点"><a href="#Phoenix主要特点" class="headerlink" title="Phoenix主要特点"></a>Phoenix主要特点</h2><ul>
+<li>支持事务</li>
+</ul>
+<p>Apache Phoenix支持事务, 支持所有事务级别的ACID语义. 通过Apache Tephra支持HBase行级别事务语义, Tephra通过多版本并发控制实现提供并发事务间快照隔离.</p>
+<ul>
+<li>支持二级索引</li>
+</ul>
+<p>二级索引不同于主索引, 其值可能存在冗余, 通常对访问频繁、主索引排序困难的大表建二级索引. HBase不支持二级索引, 行键有序、其访问模式也是基于行键, Phoenix支持二级索引, 可以大大提高数据检索效率, 减少对HBase表全局扫描.</p>
+<ul>
+<li>支持自定义函数(UDF)</li>
+</ul>
+<p>Phoenix支持自定义函数(UDF), 自定义函数可以是临时函数也可以是持久化函数, 自定义临时函数适应于特定用户连接、对于其它用户连接不可访问; 自定义持久化函数对应元数据信息存储于系统表中(如SYSTEM.FUNCTION等); Phoenix也支持租户特定函数, 此类函数存在于特定租户会话或连接中, 其它租户不可访问.</p>
+<ul>
+<li>支持视图</li>
+</ul>
+<p>Phoenix支持标注SQL中视图语法, 视图支持这一特征对于HBase表很关键, 可以通过视图方式创建多张虚拟表复用底层同一张物理表数据. </p>
+<ul>
+<li>多租户</li>
+</ul>
+<p>Apache Phoenix支持多租户场景, 可以通过特定租户配置属性创建表, 该特定租户在连接时注入租户ID, 建立连接后便可访问租户数据. 虽然租户可以看到普通表中所有数据, 但只能看到多租户表中自身表数据.</p>
+<ul>
+<li>Query Server</li>
+</ul>
+<p>Phoenix Query Server支持其它Java客户端, 通过自带的独立Server暴露一Thin Client, Thin Client通过使用JSON与Phoenix查询服务器(Phoenix Query Server, 简称PQS)交互, PQS作为一HTTP服务支持JSON和Protocol Buffer, PQS默认使用Protocol Buffer(比JSON使用更加高效), Thin Client底层由Apache Calcite’s Avatica组件实现.</p>
+<ul>
+<li>Skip Scan</li>
+</ul>
+<p>Skip Scan通过使用组合多列索引查找唯一值, Skip Scan适用于Range查询或基于给定一系列Key值全局扫描, Skip Scan充分利用HBase过滤器中的SEEK_NEXT_USING_HINT枚举, 基于过滤器给定提示(Hint)指定下一个需要Seek的键, 并存储每列中需要查找的一系列Key值详细信息, 每次传入一Key, 会判断是否在组合中, 若不在, 继续迭代下一Key值.</p>
+<h2 id="支持数据类型"><a href="#支持数据类型" class="headerlink" title="支持数据类型"></a>支持数据类型</h2><p>Phoenix提供一系列数据类型, 支持原始类型和复杂类型, 每种数据类型内部映射成Java或SQL对应类型, 对于数值类型和时间类型的Unsigned(无符号)版本仅支持正值. 有时候需要考虑无符号时间类型数据, 如数据值被<code>org.apache.hadoop.hbase.utils.Bytes</code>序列化时. Phoenix数据类型映射关系如下:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Data Type</th>
+<th>Java Mapping</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TINYINT</td>
+<td>java.lang.Byte</td>
+<td></td>
+</tr>
+<tr>
+<td>SMALLINT</td>
+<td>java.lang.Short</td>
+<td></td>
+</tr>
+<tr>
+<td>INTEGER</td>
+<td>java.lang.Integer</td>
+<td></td>
+</tr>
+<tr>
+<td>BIGINT</td>
+<td>java.lang.BigInteger</td>
+<td></td>
+</tr>
+<tr>
+<td>FLOAT</td>
+<td>java.lang.Float</td>
+<td></td>
+</tr>
+<tr>
+<td>DOUBLE</td>
+<td>java.lang.Double</td>
+<td></td>
+</tr>
+<tr>
+<td>BOOLEAN</td>
+<td>java.lang.Boolean</td>
+<td>True/False, 内部映射成0/1</td>
+</tr>
+<tr>
+<td>DECIMAL</td>
+<td>java.math.BigDecimal</td>
+<td>可以指定精度并拓展</td>
+</tr>
+<tr>
+<td>VARCHAR</td>
+<td>java.lang.String</td>
+<td>可变长度, 内部映射成UTF-8</td>
+</tr>
+<tr>
+<td>CHAR</td>
+<td>java.lang.String</td>
+<td>固定长度, 内部映射成UTF-8</td>
+</tr>
+<tr>
+<td>BINARY</td>
+<td>byte[]</td>
+<td>固定长度字节数组</td>
+</tr>
+<tr>
+<td>VARBINARY</td>
+<td>byte[]</td>
+<td>可变长度字节数组</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>java.sql.Time</td>
+<td>默认格式 yyyy-MM-dd hh:mm:ss, 内部表示为基于GMT的Epoch(单位为ms)</td>
+</tr>
+<tr>
+<td>ARRAY</td>
+<td>java.sql.Array</td>
+<td>除了VARBINARY其它原始类型均可声明为单纬数组</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="原始数据类型"><a href="#原始数据类型" class="headerlink" title="原始数据类型"></a>原始数据类型</h3><p>HBase中所有数据均被存储为Bytes, 与HBase相反, Phoenix提供了一自定义<code>DataType</code>映射为java.sql.Types中定义的不同类型. 每种数据类型均有编码器和解码器在Raw Bytes和Java原始类型间转化, Phoenix支持的原始数据类型有: boolean、char、varchar、decimal、int、short、long、float、double、date等时间类型. 对于每种数值类型均有对应的Unsigned(无符号)版本处理原始类型值.</p>
+<h3 id="复杂数据类型"><a href="#复杂数据类型" class="headerlink" title="复杂数据类型"></a>复杂数据类型</h3><p>与其它NoSQL数据库支持复杂数据类型如结构体Struct、Array、Map等不同, Phoenix目前仅支持Array类型. </p>
+<h2 id="CRUD"><a href="#CRUD" class="headerlink" title="CRUD"></a>CRUD</h2><p>Apache Phoenix中每张数据表至少包含一个列族, Phoenix作为HBase的SQL层引擎, 和多数列式数据库一样, 在数据建模方面需注意”Query First”, 基于查询访问模式梳理Schema. 在建表时注意反模式的运用, 因为如果和关系型数据库一样正常建表、表间Join开销大. </p>
+<p>当Apache Phoenix执行<code>UPSERT</code>语句(UPDATE/INSERT, 与Cassandra中<code>UPSERT</code>语句类似), Phoenix解析对应SQL语句并转化为HBase Put操作, 当Region Server接收到请求后, 首先写入预写日志(WAL)及Memstore(写入预读写日志为保证数据持续性), 只有数据写入WAL和Memstore后才视为写入完成. 当Phoenix执行<code>SELECT</code>语句时, 首先通过解析器解析, 然后准备一系列查询计划并综合多种考虑因素(如表索引、代价模型等)从中选出最优计划, 由一系列HBase Scan操作物化, 通过线程池<code>ExecutorService</code>并行执行, 最终在客户端聚合结果.</p>
+<h3 id="命令行CRUD"><a href="#命令行CRUD" class="headerlink" title="命令行CRUD"></a>命令行CRUD</h3><p>可以通过安装包中的sqlline.py脚本启动Apache Phoenix命令行终端, 如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python sqlline.py PHOENIX-N1:2181:/hbase</span><br></pre></td></tr></table></figure>
+<p>Phoenix CRUD操作, 示例如下, 注意<code>user</code>表中, <code>id</code>为主键, 列<code>first_name</code>和<code>last_name</code>被映射为列族<code>d</code>中列, 如果没有指定列族, 数据列内部默认映射为列族<code>0</code>中列, 建表时可以通过定义DDL属性 DEFAULT_COLUMN_FAMILY=your_column_family_name 覆写默认列族.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- CREATE</span></span><br><span class="line">jdbc:phoenix:PHOENIX-N1:2181:/hbase&gt; CREATE TABLE user(</span><br><span class="line">    id INTEGER NOT NULL PRIMARY KEY,</span><br><span class="line">    d.first_name VARCHAR,</span><br><span class="line">    d.last_name VARCHAR</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- UPSERT, 以下SQL将转化成HBase Put操作</span></span><br><span class="line">jdbc:phoenix:PHOENIX-N1:2181:/hbase&gt; UPSERT INTO user VALUES(1, 'Emma', 'Roberts');</span><br><span class="line">jdbc:phoenix:PHOENIX-N1:2181:/hbase&gt; UPSERT INTO user VALUES(2, 'Bella', 'Thorne');</span><br><span class="line"></span><br><span class="line"><span class="comment">-- DELETE</span></span><br><span class="line">jdbc:phoenix:PHOENIX-N1:2181:/hbase&gt; DELETE FROM user WHERE id=2;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ALTER</span></span><br><span class="line">jdbc:phoenix:PHOENIX-N1:2181:/hbase&gt; ALTER TABLE user ADD salary DECIMAL;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SELECT</span></span><br><span class="line">jdbc:phoenix:PHOENIX-N1:2181:/hbase&gt; SELECT *  FROM user;</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码CRUD"><a href="#Java代码CRUD" class="headerlink" title="Java代码CRUD"></a>Java代码CRUD</h3><p>Apache Phoenix, Java代码CRUD参考如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.sql.Connection;</span><br><span class="line"><span class="keyword">import</span> java.sql.DriverManager;</span><br><span class="line"><span class="keyword">import</span> java.sql.PreparedStatement;</span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSet;</span><br><span class="line"><span class="keyword">import</span> java.sql.SQLException;</span><br><span class="line"><span class="keyword">import</span> java.sql.Statement;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PhoenixJdbc</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Connection connection = <span class="keyword">null</span>;</span><br><span class="line">        Statement statement = <span class="keyword">null</span>;</span><br><span class="line">        ResultSet rs = <span class="keyword">null</span>;</span><br><span class="line">        PreparedStatement ps = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Class.forName(<span class="string">"org.apache.phoenix.jdbc.PhoenixDriver"</span>);</span><br><span class="line">            connection = DriverManager.getConnection(<span class="string">"jdbc:phoenix:PHOENIX-N1:2181:/hbase"</span>);</span><br><span class="line">            System.out.println(<span class="string">"Connection established...."</span>);</span><br><span class="line">            statement = connection.createStatement();</span><br><span class="line"></span><br><span class="line">            statement.executeUpdate(</span><br><span class="line">                <span class="string">"create table user (id INTEGER NOT NULL PRIMARY KEY, d.first_name VARCHAR,d.last_name VARCHAR)"</span>);</span><br><span class="line">            statement.executeUpdate(<span class="string">"upsert into user values (1,'Emma','Roberts')"</span>);</span><br><span class="line">            statement.executeUpdate(<span class="string">"upsert into user values (2,'Bella','Thorne')"</span>);</span><br><span class="line">            connection.commit();</span><br><span class="line"></span><br><span class="line">            ps = connection.prepareStatement(<span class="string">"select * from user"</span>);</span><br><span class="line">            rs = ps.executeQuery();</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">"Table Values"</span>);</span><br><span class="line">            <span class="keyword">while</span> (rs.next()) &#123;</span><br><span class="line">                Integer id = rs.getInt(<span class="number">1</span>);</span><br><span class="line">                String name = rs.getString(<span class="number">2</span>);</span><br><span class="line">                System.out.println(<span class="string">"\tRow: "</span> + id + <span class="string">" = "</span> + name);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException | ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (ps != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    ps.close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (rs != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    rs.close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (statement != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    statement.close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                     e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (connection != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    connection.close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Apache-Phoenix/" <i class="fa fa-tag"> Apache Phoenix</a>
+          
+            
+            <a href="/tags/Apache-HBase/" <i class="fa fa-tag"> Apache HBase</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/drill/analysis/" rel="next" title="Query Engine大作战 -- Apache Drill之复杂数据分析">
+                <i class="fa fa-chevron-left"></i> Query Engine大作战 -- Apache Drill之复杂数据分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/cascading/cascade/" rel="prev" title="Cascading实战之Cascade篇">
+                Cascading实战之Cascade篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL-ON-HBASE"><span class="nav-number">1.</span> <span class="nav-text">SQL ON HBASE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Phoenix主要特点"><span class="nav-number">2.</span> <span class="nav-text">Phoenix主要特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持数据类型"><span class="nav-number">3.</span> <span class="nav-text">支持数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原始数据类型"><span class="nav-number">3.1.</span> <span class="nav-text">原始数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复杂数据类型"><span class="nav-number">3.2.</span> <span class="nav-text">复杂数据类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CRUD"><span class="nav-number">4.</span> <span class="nav-text">CRUD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行CRUD"><span class="nav-number">4.1.</span> <span class="nav-text">命令行CRUD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java代码CRUD"><span class="nav-number">4.2.</span> <span class="nav-text">Java代码CRUD</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

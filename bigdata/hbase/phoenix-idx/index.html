@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将介绍Apache Phoenix二级索引相关概念及使用.">
+<meta name="keywords" content="Big Data,Apache Phoenix,Apache HBase">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云中漫步, Apache Phoenix索引剖析">
+<meta property="og:url" content="https://ultradata.stream/bigdata/hbase/phoenix-idx/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将介绍Apache Phoenix二级索引相关概念及使用.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/global-index-arch.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/imm-tabl-grp.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/secd-idx-expl.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/local-index-components.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/local-index-rs.jpg">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云中漫步, Apache Phoenix索引剖析">
+<meta name="twitter:description" content="本文将介绍Apache Phoenix二级索引相关概念及使用.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/global-index-arch.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/hbase/phoenix-idx/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>云中漫步, Apache Phoenix索引剖析 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/hbase/phoenix-idx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">云中漫步, Apache Phoenix索引剖析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">4.6k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">4 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将介绍Apache Phoenix二级索引相关概念及使用. <a id="more"></a></p>
+<h2 id="二级索引"><a href="#二级索引" class="headerlink" title="二级索引"></a>二级索引</h2><p>为高效访问数据, HBase表数据默认基于RowKey字典序排列并在RowKey基础上维护一特殊的索引, 以便加快数据访问. 由于HBase不支持二级索引, 有时候需要考虑替代方案, 幸运地是Phoenix支持二级索引, 可以在Phoenix表间构建多重索引, 二级索引在提升数据检索效率和提升灵活度同时, 也增加了与服务端数据同步上的复杂性. Apache Phoenix通过使用自定义协处理器于多项索引间同步数据. 对于给定查询而言, Phoenix查询计划器和优化器会选择最优查询计划, 如查询中包含索引列, Phoenix内部使用索引表重写查询来获取数据. </p>
+<p>如果Phoenix表中存在只写或仅追加行, 可以通过设置表属性<code>IMMUTABLE_ROWS</code>为true(置于<code>CREATE TABLE子句前</code>或<code>ALTER TABLE</code>子句后), 减少数据在写入同时维护索引带来的Overhead; 若选择不设置该属性, 当数据变更时将在服务端维护自增索引. Phoenix支持全局索引和局部索引.</p>
+<h2 id="全局索引"><a href="#全局索引" class="headerlink" title="全局索引"></a>全局索引</h2><p>全局索引适用于读取密集型任务, 当进行Put/Delete等写入操作值数据表和索引时存在部分性能影响, HBase协处理器可以提供Hooks将预读写日志及RegionServer的不同活动及时通知它们(数据表和索引), 这些Hooks有助于写入必要数据至索引表中. 全局索引适用于如Scan类查询, 因为Phoenix会重写Query并选择最优查询计划如从索引表而非数据表获取数据. 全局索引内部构成示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/global-index-arch.jpg" oncontextmenu="return false;"></p>
+<p>索引创建语法如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span>  index_name</span><br><span class="line"><span class="keyword">ON</span> <span class="keyword">table</span> (expression)</span><br><span class="line"><span class="keyword">INCLUDE</span> (column_refs)</span><br><span class="line">[ASYNC]</span><br><span class="line">[table_options] [<span class="keyword">SPLIT</span> <span class="keyword">ON</span> (<span class="keyword">constant</span>)]</span><br></pre></td></tr></table></figure>
+<p>如在表customer上构建索引, 参考如下:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jdbc:phoenix:PHOENIX-N1:2181&gt; CREATE INDEX customer_state_indx ON customer (state);</span><br></pre></td></tr></table></figure>
+<p>开启HBase Shell, 查看索引表:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hbase shell</span><br><span class="line"></span><br><span class="line">hbase(main):001:0&gt; scan <span class="string">'customer_state_indx'</span></span><br></pre></td></tr></table></figure>
+<p>发现索引表RowKey格式为: {index_column} {primary_table_rowkey}.  一旦索引创建, Phoenix会将索引表与主表同步, 由于该过程同步(非异步), 可能需要等待一段时间才能查询数据. 查看索引状态, 参考指令如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jdbc:phoenix:PHOENIX-N1:2181&gt; !tables customer_state_indx</span><br></pre></td></tr></table></figure>
+<p>索引状态, 有以下几种, 只要当索引处于<code>ACTIVE</code>状态时, Phoenix才可使用索引表, 否则使用主表进行查询.</p>
+<ul>
+<li>BUIDLING</li>
+<li>USABLE</li>
+<li>UNUSABLE</li>
+<li>ACTIVE</li>
+<li>INACTIVE</li>
+<li>DISABLE</li>
+<li>REBUILD</li>
+</ul>
+<p>创建全局索引时, 注意区分Immutable表和Mutable表. 每张HBase表, 隐式而言, 属于Mutable表; 但有些表如存储时间序列数据表, 通常为仅追加、写入表, 不会频繁Update, 这种情况下, 可设置表属性(参数)<code>IMMUTABLE_ROWS=true</code>, 参考语句如下:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jdbc:phoenix:PHOENIX-N1:2181&gt; ALTER TABLE ORDERS SET IMMUTABLE_ROWS = true;</span><br></pre></td></tr></table></figure>
+<p>由于上面将ORDERS表设置为Immutable表, 因而在查询每位顾客消费金额时将对全表扫描, 如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/imm-tabl-grp.jpg" oncontextmenu="return false;"></p>
+<p>现在, 在ORDERS表上创建二级索引, 如下:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jdbc:phoenix:PHOENIX-N1:2181&gt; CREATE INDEX CUSTOMER_ORDER_INDX ON ORDERS (CUST_ID, ORDER_ID) include (amount);</span><br></pre></td></tr></table></figure>
+<p>然后执行相同聚合SQL语句, 查询每位顾客消费金额, 可以看到在<code>CUSTOMER_ORDER_INDX</code>上执行全表扫描, 但执行效率更高, 因为跳过了客户端排序.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/secd-idx-expl.jpg" oncontextmenu="return false;"></p>
+<p>对于Immutable表而言, 索引维护在客户端, 即Phoenix内部基于主表和输入数据更新索引表, 写入顺序为主表然后索引表. 当然将表设置为Immutable表并不能防止表更新, 如果数据表有更新(如Update等操作), 可能会产生数据不一致状况.</p>
+<p>对于Mutable表而言, Phoenix通过自定义<code>RegionObservers</code>及WAL Observers, 当主表产生Mutation(如执行Put/Delete操作)时, 会对索引表更新并写入, 在协处理器内部多线程并行写. 如果索引表写入失败, 索引更新失败, Phoenix支持以下几种故障处理策略:</p>
+<ul>
+<li>可以禁用失败索引, 不在Query中使用, 故障发生后会自动重建索引, 重建成功后, 索引处于ACTIVE状态.</li>
+<li>Kill对应RegionServer, 通过该种方式重放预写日志(WAL)进行恢复.</li>
+</ul>
+<p>如果写入索引表时发生故障, 可以通过回放预写日志(WAL)重试、恢复; 若写入数据表失败, 客户端需重试Mutation避免数据不一致.</p>
+<h2 id="局部索引"><a href="#局部索引" class="headerlink" title="局部索引"></a>局部索引</h2><p>局部索引基于Region, 对于本地索引而言, 主表和索引表(实际上无独立索引表)数据均位于同一Region中, 适用于写入密集型任务, 避免网络交换压力.局部索引主要组件构成, 示意图如下, 由于没有独立的索引表, 索引表元数据信息存储于系统表<code>SYSTEM.CATALOG</code>中.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/local-index-components.jpg" oncontextmenu="return false;"></p>
+<p>由于局部索引存储于同一主表中不同列族, 无需独立表, 索引表数据存储于<code>L#0</code>列族中, Phoenix中局部索引表RowKey为: region_startkey + index_id + index_column_value + master_table_rowkey.  局部索引与RegionServer交互示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/local-index-rs.jpg" oncontextmenu="return false;"></p>
+<p>局部索引创建指令参考如下:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 在 ITEM 表上增加局部索引</span></span><br><span class="line">jdbc:phoenix:PHOENIX-N1:2181:/hbase&gt; CREATE LOCAL INDEX ITEM_SUPPLIER_LINDX ON ITEM(supplier_id);</span><br></pre></td></tr></table></figure>
+<p>执行上面这句SQL, 发现表中新增一列族<code>L#0</code>, 其中L代表局部索引而0为默认列族名, 如果在创建局部索引中包含其他列族中列, 如”cf1:c”, 可能多出几个列族如<code>L#cf1</code>(存储”c”列中KV值). </p>
+<h2 id="函数式索引"><a href="#函数式索引" class="headerlink" title="函数式索引"></a>函数式索引</h2><p>函数式索引(Functional Index)提供了可以通过表达式(Expression)在表上一列或多列创建索引的能力, 在表上计算表达式同时, 会在索引表上同步生成对应<code>UPSERT</code>指令. 通过在数据写入时存储已计算好的Expression, 可避免部分数据读取开销, 包含该Expression的查询会重定向至索引表并获取对应数据信息. 创建函数式索引参考指令如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 在SUPPLIER表上创建函数式索引, </span></span><br><span class="line"><span class="comment">-- 当SELECT查询包含UPPER(SUPPLIER_NAME)这一Expression时, 会重定向至索引表而非SUPPLIER表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> SUPPLIER_UPPER_NAME_INDEX <span class="keyword">ON</span> SUPPILER (<span class="keyword">UPPER</span>(SUPPLIER_NAME)) <span class="keyword">INCLUDE</span> (STATE)</span><br></pre></td></tr></table></figure>
+<h2 id="Covered-Index"><a href="#Covered-Index" class="headerlink" title="Covered Index"></a>Covered Index</h2><p>除了在Key列创建二级索引外, 还可以包含数据表中其他列至索引中, 当所有查询中列均可从索引中获取时, 有助于提高读性能, 避免频繁地调用数据表. Covered Index创建指令参考如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建Covered Index语法</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> INDX_NAME <span class="keyword">ON</span> TABLE_NAME (COL1, COL2...) <span class="keyword">INCLUDE</span> (COLX, COLY);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 在ORDERS表上创建索引, 以CUST_ID和ORDER_ID作为Key列, AMOUNT作为包含列</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> CUSTOMER_ORDER_INDEX <span class="keyword">ON</span> ORDERS(CUST_ID, ORDER_ID) <span class="keyword">INCLUDE</span> (AMOUNT);</span><br></pre></td></tr></table></figure>
+<p>Covered Index创建, 虽然在主表和索引表上存在数据冗余问题, 但性能提升上可以抵消这种存储开销.</p>
+<h2 id="索引一致性"><a href="#索引一致性" class="headerlink" title="索引一致性"></a>索引一致性</h2><ul>
+<li><p>如果数据表为Immutable(<code>IMMUTABLE_ROWS=true</code>)、非事务表, 任何数据写入或索引表时发生的故障, 需由客户端处理(如采取重启等方式解决问题), 当数据表写入成功但索引写入失败, 索引将处于数据不一致状态.</p>
+</li>
+<li><p>事务表总是处于一致性状态.</p>
+</li>
+<li><p>对于局部索引而言, 数据和局部索引可能处于非一致性状态, 但Phoenix确保同步, 由于局部索引处于同一RegionServer, 因而整个过程非常快. 自Phoenix 4.X系列版本, 局部索引位于数据表中不同列族, HBase默认ACID语义可保证数据一致性. </p>
+</li>
+<li><p>若数据表为Mutable、非事务表, 当Query产生一Failure时, 数据或索引处于不一致状态, 如果数据表写入成功, 但索引写入滞后, 有以下几种参考配置可以改变这种状况:</p>
+<ol>
+<li><p>Phoenix默认允许数据表写入, 而不允许索引表. 当Phoenix开启一后台进程重建索引时, 索引表被标记为<code>DISABLED</code>状态, 该过程中无需显式配置, 一旦索引表与数据表同步, 索引表状态更新为<code>ACTIVE</code>.</p>
+</li>
+<li><p>数据表禁止后续写入直至索引自动重建、索引同步, 在该种情况下, 索引仍被标记为<code>ACTIVE</code>并接收查询, 直到与数据表同步时才接收新的写入. </p>
+<p>当Block写入数据表、索引写入产生Failure时, 可以设置<code>phoenix.index.failure.block.write</code>属性;<br>可设置<code>phoenix.index.failure.handling.rebuild</code>参数, 当发生故障需要重建索引时, 由于该参数默认为true, 因为Phoenix默认会在后台重建索引.</p>
+</li>
+<li><p>手动重建、禁止索引表写入, 适用于索引奔溃需要重建情形, 当写入索引失败时, Phoenix更新索引状态为<code>REBUILD</code>. 可设置<code>phoenix.index.failure.handling.rebuild</code>参数为false, 禁止Phoenix自动重建索引, 显式重建索引, 参考指令如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 如果使用 ASYNC 关键字, 创建索引会开启MapReduce任务构建, 而非同步重建索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">INDEX</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> INDEX_TABLE <span class="keyword">ON</span> DATA_TABLE <span class="keyword">REBUILD</span> [ASYNC]</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Apache-Phoenix/" <i class="fa fa-tag"> Apache Phoenix</a>
+          
+            
+            <a href="/tags/Apache-HBase/" <i class="fa fa-tag"> Apache HBase</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/cascading/custops/" rel="next" title="Cascading实战之自定义操作(Custom Operations)篇">
+                <i class="fa fa-chevron-left"></i> Cascading实战之自定义操作(Custom Operations)篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/kt/coroutines/" rel="prev" title="Kotlin高性能实战 (三) -- Kotlin协程">
+                Kotlin高性能实战 (三) -- Kotlin协程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#二级索引"><span class="nav-number">1.</span> <span class="nav-text">二级索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局索引"><span class="nav-number">2.</span> <span class="nav-text">全局索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#局部索引"><span class="nav-number">3.</span> <span class="nav-text">局部索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数式索引"><span class="nav-number">4.</span> <span class="nav-text">函数式索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Covered-Index"><span class="nav-number">5.</span> <span class="nav-text">Covered Index</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引一致性"><span class="nav-number">6.</span> <span class="nav-text">索引一致性</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

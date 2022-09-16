@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将对Apache Phoenix事务进行剖析.">
+<meta name="keywords" content="Big Data,Apache Phoenix,Apache HBase">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云中漫步, 浅析Apache Phoenix事务">
+<meta property="og:url" content="https://ultradata.stream/bigdata/hbase/phoenix-txn/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将对Apache Phoenix事务进行剖析.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-txn-mng.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/txn-mng-start.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/txn-mng-commit.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/txn-mng-lifecyle.jpg">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云中漫步, 浅析Apache Phoenix事务">
+<meta name="twitter:description" content="本文将对Apache Phoenix事务进行剖析.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-txn-mng.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/hbase/phoenix-txn/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>云中漫步, 浅析Apache Phoenix事务 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/hbase/phoenix-txn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">云中漫步, 浅析Apache Phoenix事务
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">3.6k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">3 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将对Apache Phoenix事务进行剖析. <a id="more"></a></p>
+<h2 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h2><ul>
+<li>原子性(Atomicity)</li>
+<li>一致性(Consistency)</li>
+<li>隔离性(Isolation)</li>
+<li>持续性(Durability)</li>
+</ul>
+<h2 id="事务控制"><a href="#事务控制" class="headerlink" title="事务控制"></a>事务控制</h2><ul>
+<li>提交(Commit)</li>
+<li>回滚(Rollback)</li>
+<li>存储点(Savepoint). 可以通过回滚恢复的数据库状态.</li>
+</ul>
+<p>事务设置(Set Transaction), 如有些数据库支持通过<code>SET TRANSACTION</code>子句设置事务名, 通过事务名便于区分和理解.</p>
+<h2 id="Phoenix事务"><a href="#Phoenix事务" class="headerlink" title="Phoenix事务"></a>Phoenix事务</h2><p>关于HBase对于事务支持, 可以参考<a href="https://hbase.apache.org/acid-semantics.html" target="_blank" rel="noopener">官方文档</a>. 通常HBase同一RowKey的Cell数据位于同一RegionServer, HBase支持Region级别的Cell数据(或Rows上批量)原子性操作, 通过<code>checkAndPut</code>、<code>checkAndDelete</code>、increment/append等维护Cell数据原子性, 通过<code>MultiRowMutationEndPoint</code>支持Region级别跨行等批量操作. 但HBase并不支持跨Region、跨表或基于多RPC调用的原子性操作. </p>
+<p>HBase默认不支持完备的ACID语义, 但可通过一些第三方组件如Apache Tephra获取更加广泛的事务语义. 事务管理器于ZooKeeper中注册, 利用ZK进行协同, HBase与事务管理器间交互示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/phoenix-txn-mng.jpg" alt></p>
+<p>通常事务管理器维护着一写指针(指向数据库写入ID), 为每一项事务提供唯一性事务ID并维护事务状态(In-Progress进行、Commited已提交、Invalid无效事务), 必要时解决事务冲突问题. 事务管理器简单而快速、保存所有必要状态至内存中并持久化于预写日志(WAL)中. 可以配置事务管理器处于HA高可用状态, 一主(活跃)一备(备用), 以便发生故障时快速转移. 开启事务(示意图如下), 读指针、写指针及当前状态, 当客户端调用开启事务, 事务管理器孵化一新事务, 写指针自增并追加事务日志. 将事务状态存入内存, 在一定程度上可提高事务性能.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/txn-mng-start.jpg" alt></p>
+<p>提交事务时(示意图如下), 如果事务成功, In-Progress指针自减, Commited指针自增, 最终写入事务日志记录事务完成.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/txn-mng-commit.jpg" alt></p>
+<p>客户端通过RPC调用事务管理器开启事务, 事务管理器开启事务并将状态从New改为In-Progress, 当客户端执行完如Put/Delete等操作时, 客户端通过调用Commit RPC提交更新至HBase, 事务管理器接收更新并检测事务冲突, 若无冲突将更新写入HBase并记录版本号. 若客户端提交更新失败, 初始化Abort(放弃操作), 若Abort成功, 事务完整、可回滚; 如Abort失败, 事务无效并将其写入日志. Phoenix事务生命周期示意图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/hbase/txn-mng-lifecyle.jpg" alt></p>
+<h3 id="多版本并发控制"><a href="#多版本并发控制" class="headerlink" title="多版本并发控制"></a>多版本并发控制</h3><p>多版本并发控制(MVCC, Multiversion concurrency control), 用于处理并发事务. 通过对每位用户数据及时写快照, 只有当事务完成或提交时用户才能看到这些变更, 任何数据更新写入新快照同时记录新的版本数, 并确保所有版本数据不会覆写老数据. HBase使用MVCC进行数据读取, 避免行锁, HBase中多版本读写大致过程如下:</p>
+<p>数据读取:</p>
+<ol>
+<li>每次进行读操作时记录数据读取时间戳于Read Point</li>
+<li>所有写入及已写入数值(Write Number)不大于已完成数值, 即此时Read Point数值最大</li>
+<li>将写入数值不大于读取时Read Point的特定数据行(或列)对应Data Cell返回</li>
+</ol>
+<p>数据写入:</p>
+<ol>
+<li>获取行锁后, 每次执行写入操作记录写入数值(Write Number)</li>
+<li>将步骤1获取的写入数值存储至每项Data Cell的Write Store中</li>
+<li>通过声明写入数值, 标志着写入操作完成</li>
+</ol>
+<h3 id="乐观并发控制"><a href="#乐观并发控制" class="headerlink" title="乐观并发控制"></a>乐观并发控制</h3><p>乐观并发控制(OCC, Optimistic Concurrency Control), 适用于事务间互不干扰情形, 避免了锁表、锁行开销. 如果数据正由其它事务修改, OCC在事务提交前会验证每一项数据修改, 然后回滚索引变更. OCC适用于短期事务、分区分割等场景.</p>
+<h2 id="事务管理器Tephra"><a href="#事务管理器Tephra" class="headerlink" title="事务管理器Tephra"></a>事务管理器Tephra</h2><p>Apache Tephra作为一事务管理器, 可以为分布式存储如HBase提供事务管理, 如多版本控制器和事务回滚. Tephra使用快照隔离, 利用HBase的数据版本为事务读写提供多版本并发控制(MVCC), 通过为每一个用户保留数据快照进行多本版并发控制. Tephra事务控制允许跨HBase表、Region, 允许RPC调用, 支持ACID语义.</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>默认Phoenix没有启用事务, 为开启事务, 需在HBase配置文件hbase-site.xml中启用参数<code>phoenix.transactions.enabled</code>, 参考配置如下, 为使配置生效需重启RegionServer.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>phoenix.transactions.enabled<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 指定事务快照路径 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>data.tx.snapshot.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>/tmp/tephra/snapshots<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 指定事务超时时间 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>data.tx.timeout<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>60<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>配置完毕, 开启事务管理器Tephra, 参考指令如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="comment"># Phoenix安装包路径bin目录下存在Tephra二进制可执行文件</span></span><br><span class="line">$ ./bin/tephra start</span><br></pre></td></tr></table></figure>
+<h3 id="开启事务"><a href="#开启事务" class="headerlink" title="开启事务"></a>开启事务</h3><p>可以在建表时设置事务或后续更新表时支持事务, 在建表时开启事务参考语句如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 建表时开启事务SQL语法</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table_name (<span class="keyword">column</span>(s) <span class="keyword">data</span> <span class="keyword">type</span>(s)) <span class="keyword">TRANSACTIONAL</span>=<span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建供应商表时开启事务</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> SUPPLIER(</span><br><span class="line">    SUPPLIER_ID <span class="built_in">BIGINT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> PRIMARY <span class="keyword">KEY</span>,</span><br><span class="line">    SUPPLIER_NAME <span class="built_in">VARCHAR</span>(<span class="number">30</span>),CITY <span class="built_in">VARCHAR</span>(<span class="number">40</span>),</span><br><span class="line">    STATE <span class="built_in">VARCHAR</span>(<span class="number">30</span>),</span><br><span class="line">    ZIP <span class="built_in">INTEGER</span>(<span class="number">10</span>),</span><br><span class="line">    COUNTRY <span class="built_in">VARCHAR</span>(<span class="number">100</span>)</span><br><span class="line">) <span class="keyword">TRANSACTIONAL</span>=<span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<p>在更新数据表时开启事务, 参考语句如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 在更新数据表时开启事务, SQL语法</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">SET</span> <span class="keyword">TRANSACTIONAL</span>=<span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 如在CUSTOMER表上开启事务</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> CUSTOMER <span class="keyword">SET</span>  <span class="keyword">TRANSACTIONAL</span>=<span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<p>注意, 若在非事务表上启用事务, 该表后续不能改回非事务状态(事务表).</p>
+<h3 id="提交事务"><a href="#提交事务" class="headerlink" title="提交事务"></a>提交事务</h3><p>当Phoenix处于事务执行模式, 任何查询中调用的Statement将初始化一新事务, 数据处于Raw状态直至提交. 可以通过<code>!commit</code>指令提交事务, 以下仅为示例脚本:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 假定Phoenix处于事务执行模式, 开启新事务</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> ORDERS;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 插入、删除部分数据</span></span><br><span class="line">UPSERT INTO ORDERS <span class="keyword">VALUES</span> (<span class="number">10250</span>,<span class="string">'2015-5-7'</span>, <span class="number">108</span>, <span class="number">50</span>,<span class="string">'A1100'</span>);</span><br><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> ORDERS <span class="keyword">WHERE</span> ORDER_ID=<span class="string">'10248'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 提交事务</span></span><br><span class="line">!<span class="keyword">commit</span></span><br></pre></td></tr></table></figure>
+<h2 id="Phoenix事务限制"><a href="#Phoenix事务限制" class="headerlink" title="Phoenix事务限制"></a>Phoenix事务限制</h2><ul>
+<li>需手动清理无效事务列表. 失败或不合法事务会被加入一无效事务列表中, 该列表由Tephra维护, 发生重大合并时需手动清理该列表. Tephra开发者后续会着手解决这个问题, 毕竟多数数据库支持自动清除无效事务.</li>
+<li>在事务表上创建异步索引(如执行<code>CREATE INDEX ASYNC</code>子句)前, 需对数据做重大归并(Major Compaction), 否则索引中会出现事务未提交或无效事务.</li>
+<li>创建事务表时数据版本数(值)需设置合理, 否则会导致部分重要日志数据丢失.</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+            
+            <a href="/tags/Apache-Phoenix/" <i class="fa fa-tag"> Apache Phoenix</a>
+          
+            
+            <a href="/tags/Apache-HBase/" <i class="fa fa-tag"> Apache HBase</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/hbase/phoenix-tuning/" rel="next" title="云中漫步, Apache Phoenix之性能优化篇">
+                <i class="fa fa-chevron-left"></i> 云中漫步, Apache Phoenix之性能优化篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/hbase/phoenix-udf/" rel="prev" title="云中漫步, Apache Phoenix UDF实战">
+                云中漫步, Apache Phoenix UDF实战 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ACID"><span class="nav-number">1.</span> <span class="nav-text">ACID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务控制"><span class="nav-number">2.</span> <span class="nav-text">事务控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Phoenix事务"><span class="nav-number">3.</span> <span class="nav-text">Phoenix事务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多版本并发控制"><span class="nav-number">3.1.</span> <span class="nav-text">多版本并发控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#乐观并发控制"><span class="nav-number">3.2.</span> <span class="nav-text">乐观并发控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务管理器Tephra"><span class="nav-number">4.</span> <span class="nav-text">事务管理器Tephra</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">4.1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开启事务"><span class="nav-number">4.2.</span> <span class="nav-text">开启事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提交事务"><span class="nav-number">4.3.</span> <span class="nav-text">提交事务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Phoenix事务限制"><span class="nav-number">5.</span> <span class="nav-text">Phoenix事务限制</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

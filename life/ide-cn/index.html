@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="重磅! Bring Your IDE Into Your Browser. 对, 你没看错, 不是在浏览器中敲JS代码, 也不是运行WebAssembly代码, 而是真正的将你的IDE移植到浏览器中, 打造高效的开发环境!">
+<meta name="keywords" content="Cloud IDE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="将集成开发环境(IDE)搬到浏览器中">
+<meta property="og:url" content="https://ultradata.stream/life/ide-cn/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="重磅! Bring Your IDE Into Your Browser. 对, 你没看错, 不是在浏览器中敲JS代码, 也不是运行WebAssembly代码, 而是真正的将你的IDE移植到浏览器中, 打造高效的开发环境!">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/cloud9.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/cloud9-svn.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/cloud9-process.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/code-server.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/theia.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/jupyter-lab.png">
+<meta property="og:updated_time" content="2018-01-01T14:09:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="将集成开发环境(IDE)搬到浏览器中">
+<meta name="twitter:description" content="重磅! Bring Your IDE Into Your Browser. 对, 你没看错, 不是在浏览器中敲JS代码, 也不是运行WebAssembly代码, 而是真正的将你的IDE移植到浏览器中, 打造高效的开发环境!">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/cloud9.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/life/ide-cn/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>将集成开发环境(IDE)搬到浏览器中 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/life/ide-cn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">将集成开发环境(IDE)搬到浏览器中
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-06-01 21:12:36" itemprop="dateCreated datePublished" datetime="2015-06-01T21:12:36+08:00">2015-06-01</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-01-01 22:09:21" itemprop="dateModified" datetime="2018-01-01T22:09:21+08:00">2018-01-01</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">6.1k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">6 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>重磅! Bring Your IDE Into Your Browser</strong>. 对, 你没看错, 不是在浏览器中敲JS代码, 也不是运行WebAssembly代码, 而是真正的将你的IDE移植到浏览器中, 打造高效的开发环境! <a id="more"></a></p>
+<h2 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h2><p>首先, 你得有台云主机或VPS, 用于安装Cloud IDE(能在浏览器中运行的IDE, 不叫Cloud IDE叫啥?). <strong>如果你只是在你本地环境搞, 没什么意义, 那还不如直接用本地PC IDE</strong>, 对不? </p>
+<h2 id="理由"><a href="#理由" class="headerlink" title="理由"></a>理由</h2><p>和大多数开发人员一样, 你可以:</p>
+<ul>
+<li>通过SSH和FTP访问云主机或VPS</li>
+<li>通过Jupyter Notebook/Jupyter Lab运行Python代码(或者其它Jupyter Notebook支持的语言)</li>
+<li>通过远程桌面软件(如VNC等)访问云主机或VPS GUI环境</li>
+</ul>
+<p>有没有意识到, 云主机或VPS GUI环境访问是使用时的一大”掣肘”.  主要有以下几点:</p>
+<ul>
+<li><p><strong>远程桌面软件不给力</strong>, VNC Sucks, 无论是商业版本的VNC(如RealVNC), 还是开源版本的VNC(如TigerVNC); 无论是Vinagre/AnyDesk/Ammyy Admin/TeamViewer, 还是号称”最好用”的NoMachine, 个人均有用过, 体验均不太好. </p>
+  <div class="note info">
+            <p>远程桌面软件, 存在滞后, 是个绕不过的”坎儿”. 你可以在本机虚拟机上装个远程桌面软件服务端, 然后本机装个客户端, 连上试下体验. 不说了, 请自行体验(如果你还感受不到, 可以同样的在本地虚拟机中装个Jupyter Notebook并运行, 然后在本机浏览器中访问Jupyter Notebook, 对比下体验. 很神奇). 拜托, 这还是本机直连环境, 不是外网啊.</p>
+          </div>
+</li>
+<li><p><strong>并非所有人都是Posix(Unix/Linux/MacOS) Geek, 也并非所有人都是VIM/Emacs党, CLI(命令行)爱好者</strong>. </p>
+  <div class="note info">
+            <p>对于IDE “重度依赖者”而言, 从IDE切换到VIM, 确实是件”头疼”的事儿. 工具, 顺手即可, 不必较真.</p>
+          </div>
+</li>
+<li><p><strong>与时俱进</strong>, 时代在变, <strong>软件和操作系统应该为人服务, 而不是人适应机器</strong>. </p>
+</li>
+</ul>
+<p>给云主机或VPS装个Cloud IDE, 有何不可?</p>
+<h2 id="云主机"><a href="#云主机" class="headerlink" title="云主机"></a>云主机</h2><p>或许, 你还有着更深的疑虑. 为何要有自己的云主机或VPS? 身在大天朝的攻城狮们, 肯定会毫不犹豫的回答你, <strong>“科学上网”, “天天向上”</strong>. 天朝的GFW, 真的是”Great Firewall”, 她可是会学习的哦, 她很聪明, 请不要做些不理智的事儿! (如果你还没感受到, 请看下你购买的VPN, 现在能用的还有几个) </p>
+<p>除了<strong>科学上网</strong>之外, 你可能还需考虑以下几点:</p>
+<ul>
+<li><p><strong>网速问题</strong>, 大天朝内, 普通百姓家里大多数装的是电信百兆宽带, 电信1OOMbps, 即12.5MB/s, 也就是你家里的百兆带宽, 全速跑满也只有12.5 MB/s. 而云主机或VPS, 一般标配千兆口(Gbps), 也就是说, 你的云主机或云主机或VPS可以跑到125MB/s. 理论上, 你的云主机或VPS网络与你家里网络相比, 10:1, 这还只是理想情况. 现实情况是, 你家里的网络, 可能最高能达到6-8MB/s (比如鄙人家里, 电信百兆宽带, 最高能达到5MB/s, 无语中……); 而你的云主机或云主机或VPS, 一般都能跑满带宽(除非你遇到超卖的商家, 那鄙人也无能为力). 这网速悬差, 意味着什么? <strong>意味着同样的工作, 假如能在云主机或云主机或VPS进行, 效率提升至少10倍.</strong> (如果你真的感觉SSH与VIM让你很低效, 请尝试下推荐小节中的Cloud IDE再说)</p>
+  <div class="note info">
+            <p>1 Byte = 8 bit,  12.5 MB/s = 100 Mb/s (即100 Mbps, 小p代表per, 每秒传输100Mb数据), 还有什么问题吗?</p>
+          </div>    
+</li>
+<li><p><strong>资源问题</strong>, 比如Golang, 比如Github, 比如Rust, 比如Docker, 比如k8s …… 列表很长, 不详细列出来了, 自行体会即可. 所以你身边的同事, 早早用上了自己的云主机或VPS, 除了科学上网外, 他们还经常在上面挂个博客. </p>
+</li>
+<li><p><strong>云主机或VPS比较适合开发人员</strong>, 有多少次, 你想认真地训练个模型, 调个参数(超参数调优), 把任务放到公司服务器上跑, 第二天发现任务早早地被运维”干掉了”, 理由是资源占用; 又有多少次, 你想在自己PC上, 验证下新算法, 奈何本机资源限制(如8G内存, 伤不起), 又或者任务刚跑到一半, 被你女盆友强制关机了, 理由是PC噪音加灯光”刺眼”, 抑或任务跑到第二天上班了还没结束, 只得隐忍作罢. 类似这样的例子, 还有很多, 不详细列了. </p>
+<p>  说这么多, 主要有两点: <strong>1. 本机PC环境, 容易受到不可抗拒因素影响, 最重要的原因是你无法保证你的PC长时间不断电</strong>; <strong>2. 即使是公司的测试集群, 测试主机, 也是公司的, 不属于你</strong>, 无法满足个人进一步的开发与调试.  所以, 你需要个人的云主机或VPS, 任务尽管放到后台跑, 不要操心太多. 算法训练, 任务迭代又不占用本机资源, 美哉! </p>
+</li>
+<li><p><strong>效率问题</strong>, 在细述这个问题前, 我希望你把自己的开发环境搬到云主机或VPS上来, 再来谈效率问题. 假定你在自己的云主机或VPS上搞好了开发环境(如果你嫌SSH, VIM以及FTP难用, 请尝试下推荐小节中的Cloud IDE), 你现在可以</p>
+<ul>
+<li><strong>以千兆带宽下载数据集(或模型, 或其他文件)</strong>, 对于要科学上网才能下载的数据集(或模型), 现在你可以几秒钟, 或者几分钟搞定, 而不必苦等几个小时, 甚至是老半天</li>
+<li><strong>享受代码提交(或git clone)速率提升的便捷</strong>, (通常你的代码提交至Github), 现在你在云主机或VPS上提交代码(或git clone), 瞬间”6得飞起”. (假如你的云主机或VPS节点在北美, Github主力节点也在北美, 那效率真是绝了)</li>
+<li><strong>享受”云端”人生</strong>, 你的云主机或VPS, 维护不用操心太多, 所有的开发, 调试, 均可以在”云端”进行</li>
+<li><strong>享受”无忧”人生</strong>, 通常对于算法人员而言, 漫长的模型训练, 迭代, 超参数调优, 特征工程(最主要的是这些过程是不断反复的, 泪啊), 很花时间, 所以时间”分秒必争”. 现在, 你可以将很费时任务训练放到云主机或VPS后台跑, 然后封装下Web接口, 时刻监视每一项重要的超参数. 这生活, 美滋滋!</li>
+<li><strong>更加专注</strong>, 是时候和”踌躇不已”的自己说再见了, “云端”主机, 让你摆脱束缚, 无畏无惧. 非朝内云主机(或VPS)让你的生活更完美! Non-Chinese 云主机(或VPS) Make Your Life Complete!</li>
+</ul>
+</li>
+<li><p><strong>投资自己, 请勿吝啬</strong>. <strong>无论你是身在大厂也好, 还是小厂也好, 在自己没有真正变得不可或缺时, 请不要停下投资自己的脚步!</strong> 举个简单例子, 比如你在<a href="https://t.cn/A67zMSiq" target="_blank" rel="noopener">Vultr</a>月付5美刀购入云主机或VPS用于科学上网, 5美刀, 约30~40块钱, 在魔都不过一顿饭钱(当然你要吃好可能要多花点), 但是这一顿饭钱, 可以让你享受一个月自由网络, 摆脱束缚, 很值. <strong>投资自己, 绝不妥协!</strong></p>
+</li>
+</ul>
+<div class="note success">
+            <p>读到这里, 希望对你有所触动, 假如你身在大天朝, 一台非朝内云主机或VPS真的可以改变你的生活, 小小一台云主机或VPS, <strong>确实能给你带来深远影响, 最重要的是它可以改变你思考的方式, 让你变得更加专注, 更加睿智, 更加无畏无惧</strong>!</p><p>可能下一个问题你会问, 有什么好的云主机或VPS推荐吗? 看你个人需要</p><ul><li><p>如果你需要在云主机或VPS上搭建科学上网环境, 可以考虑<a href="https://t.cn/A6Zfb8J0" target="_blank" rel="noopener">搬瓦工</a>, <a href="https://t.cn/A67zMSiq" target="_blank" rel="noopener">Vultr</a>, 或者<a href="https://t.cn/A6ZfGL99" target="_blank" rel="noopener">Gigsgigs Cloud</a>, 科学上网首选.</p></li><li><p>如果你已经能够科学上网, 你想要台备用的云主机或VPS, 用于个人其它需求(比如外贸,跨境电商等), 可以考虑<a href="https://t.cn/A67blbnO" target="_blank" rel="noopener">Dream Host</a>, 外贸WordPress/PHP建站首选, 在跨境电商外贸网站托管业界很有口碑; 或者, <a href="https://t.cn/A67RJESD" target="_blank" rel="noopener">Liquid Web</a>, 流量给的很足, 对于流量大户, 很有诚意. </p></li></ul><p>对于大数据开发人员而言, 或者算法开发人员而言, 小则几GB数据集, 通常有时需处理上百GB数据集, 云主机或VPS流量很关键, 因为它关系到你是否能”高兴地玩耍”!</p><p>对于云主机或VPS而言, 通常北美的流量比亚太流量便宜, 比如北美流量$0.01/GB, 1TB流量大概5美刀左右(包含出栈和入栈流量, 所以不是10美刀左右), <a href="https://t.cn/A67RJESD" target="_blank" rel="noopener">Liquid Web</a> 低配版每月10TB流量, 两年年付计划每月$15, 真的很良心. (1TB流量按$5.12算, 10TB流量$51.2) </p>
+          </div>
+<h2 id="推荐"><a href="#推荐" class="headerlink" title="推荐"></a>推荐</h2><p>以下是个人使用过的几款可以运行在浏览器中的Cloud IDE. 如果你还有更好的Cloud IDE, 欢迎补充. <strong>以下Cloud IDE在云主机或VPS安装部署时,请确保云主机或VPS已开启IDE对应运行端口</strong>, Amazon AWS, Vultr等供应商需要手动开启其它端口.</p>
+<h3 id="Cloud-9"><a href="#Cloud-9" class="headerlink" title="Cloud 9"></a>Cloud 9</h3><p>Amazon AWS云端IDE, Cloud 9确实不错, 如果你曾用过, 或许你也想在自己云主机或VPS上装个Cloud 9. 不仅你想, Cloud 9团队也想更多的开发人员使用Cloud 9. 于是, Cloud 9官方团队在Github上放出了Cloud 9 SDK源码, 方便广大开发人员”自给自足”.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/cloud9.png" alt></p>
+<p>Cloud 9支持断点测试, Debug调试, 支持终端, 支持浏览器预览, 内部集成了版本控制功能, 如下图所示, 左下方为Git提交的Log View, 对开发人员特别友好. </p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/cloud9-svn.png" alt></p>
+<p>最让我感到”惊艳”的一个功能是, Cloud 9提供了Process List功能, 你可以不用Shell终端查看云主机或VPS所有后台运行进程, 不仅如此, Cloud 9还提供了Kill与Force Kill两种选项终止进程. </p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/cloud9-process.png" alt></p>
+<div class="note info">
+            <p>Cloud 9安装, 参考指令如下:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://github.com/c9/core.git c9sdk \</span><br><span class="line">    &amp;&amp; cd c9sdk \</span><br><span class="line">    &amp;&amp; scripts/install-sdk.sh</span><br><span class="line"></span><br><span class="line">$ # Cloud 9安装成功后, 键入以下指令开启服务, Cloud 9默认端口为8181</span><br><span class="line">$ # 可以通过以下--port参数指定自定义端口, --auth后为用户名与密码</span><br><span class="line">$ node server.js --port 8181 --auth User-Name:Password</span><br></pre></td></tr></table></figure><p>然后在浏览器中键入 <a href="http://你云主机或VPS的公网IP:8181" target="_blank" rel="noopener">http://你云主机或VPS的公网IP:8181</a> 即可访问</p><p>Cloud 9官方一键安装脚本, 请移步至<a href="https://github.com/c9/install" target="_blank" rel="noopener">这里</a><br>Cloud 9官方源码编译安装, 请移步至<a href="https://github.com/c9/core/" target="_blank" rel="noopener">这里</a></p>
+          </div>
+<p>说完了优点, 简单说下Cloud 9不足之处:</p>
+<ul>
+<li>首先, <strong>支持语言相对较少</strong>, Cloud 9默认仅支持Python, Go, PHP, JavaScript语言, 其它语言可能需要安装插件.</li>
+<li>Cloud 9代码自动补全功能, 相对简单, 远没有IntelliJ IDEA/Eclipse/Visual Studio强大; 源码跳转, 可能需要插件支持.</li>
+</ul>
+<p>个人感觉Cloud 9比较适合Posix(Unix/Linux/MacOS)极客, VIM/EMACS党, 以及CIL爱好者. 对于习惯了IDE的代码补全, 源码跳转的开发人员而言, Cloud 9有些类似于增强版的Sublime (终端, Debug调试, 浏览器预览, 版本控制支持等功能, Sublime添加插件也能实现)</p>
+<h3 id="类VS-Code产品"><a href="#类VS-Code产品" class="headerlink" title="类VS Code产品"></a>类VS Code产品</h3><p>有没有可能将微软开源的VS Code移到浏览器中, 在浏览器中享受”云端”便捷生活? 答案是肯定的, 类似的产品有: </p>
+<ul>
+<li>Eclipse Che (可自行部署, 也可使用Red Hat托管的Eclipse Che)</li>
+<li>Eclipse Theia</li>
+<li>其它基于VS Code封装的云IDE (比如腾讯云的云代码编辑器, 国内貌似不止腾讯云, 还有一众Sass服务商将VS Code做成商业化、定制化的云IDE)</li>
+</ul>
+<p>这些产品, 本质上将微软开源的VS Code进行封装, 将VS Code GUI功能移到了浏览器端. 云上主机开启VS Code服务端进程, 本地浏览器端开启VS Code客户端进程, 通过HTTP及REST进行通信. </p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/code-server.png" alt></p>
+<p>这些产品, 通常使用非常流畅, 有时给人一种运行于本地环境的错觉. 如需自行部署, 前提是得有一台云主机(或VPS), 比如<a href="https://t.cn/A6ZQzdx2" target="_blank" rel="noopener">阿里云</a>云主机还不错, 下面以Eclipse Theia为例, 进行私有化部署.</p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/theia.jpg" alt></p>
+<p>源码安装, 指令参考如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="comment"># 首先拉取源码</span></span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/eclipse-theia/theia</span><br><span class="line">$ <span class="comment"># 也可自定义安装, 如在package.json文件中添加插件依赖或其它自定义依赖等</span></span><br><span class="line">$ yarn <span class="comment"># 安装依赖</span></span><br><span class="line">$ yarn theia build <span class="comment"># 编译、打包、构建应用</span></span><br><span class="line">$ <span class="comment"># 运行, 默认端口为8080, 可以通过--port参数指定自定义端口</span></span><br><span class="line">$ <span class="comment"># /my-workspace为工作空间目录, 可自行指定</span></span><br><span class="line">$ yarn theia start /my-workspace --hostname 0.0.0.0 --port 8080</span><br></pre></td></tr></table></figure>
+<p>然后在浏览器中键入 <a href="http://你云主机或VPS的公网IP:8080" target="_blank" rel="noopener">http://你云主机或VPS的公网IP:8080</a> 访问即可. 更多细节, 请参考<a href="https://theia-ide.org/" target="_blank" rel="noopener">官方文档</a></p>
+<h3 id="Jupyter-Notebook"><a href="#Jupyter-Notebook" class="headerlink" title="Jupyter Notebook"></a>Jupyter Notebook</h3><p>Jupyter Notebook, 可以让你在浏览器中编写并运行Python代码, 不多介绍了, Python攻城狮必备神器. </p>
+<h3 id="Jupyter-Lab"><a href="#Jupyter-Lab" class="headerlink" title="Jupyter Lab"></a>Jupyter Lab</h3><p>增强版的Jupyter Notebook, Jupyter Lab外观上更像一IDE. </p>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/ide/jupyter-lab.png" alt></p>
+<h3 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h3><p>如果你喜欢折腾容器(docker, k8s等), Eclipse Che是个不错的选择.  其它Cloud IDE, 如Eclipse Orion, Eclipse Dirigible等也可考虑.</p>
+<h2 id="Enjoy"><a href="#Enjoy" class="headerlink" title="Enjoy"></a>Enjoy</h2><p>玩的愉快, 不谢! “等下, 你的Cloud 9, Jupyter Lab以及VS Code, IP均为公网IP”. 呀, 被你发现了呢? 是时候开启你的传奇时刻了, 请让世界遇见更美好的你!</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Cloud-IDE/" <i class="fa fa-tag"> Cloud IDE</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/nosql/leveldb/crud/" rel="next" title="LevelDB学习手札之CRUD篇">
+                <i class="fa fa-chevron-left"></i> LevelDB学习手札之CRUD篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/cascading/flow-control/" rel="prev" title="Cascading实战之动态流控与组件交互篇">
+                Cascading实战之动态流控与组件交互篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前提"><span class="nav-number">1.</span> <span class="nav-text">前提</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理由"><span class="nav-number">2.</span> <span class="nav-text">理由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#云主机"><span class="nav-number">3.</span> <span class="nav-text">云主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推荐"><span class="nav-number">4.</span> <span class="nav-text">推荐</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cloud-9"><span class="nav-number">4.1.</span> <span class="nav-text">Cloud 9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类VS-Code产品"><span class="nav-number">4.2.</span> <span class="nav-text">类VS Code产品</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jupyter-Notebook"><span class="nav-number">4.3.</span> <span class="nav-text">Jupyter Notebook</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jupyter-Lab"><span class="nav-number">4.4.</span> <span class="nav-text">Jupyter Lab</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其它"><span class="nav-number">4.5.</span> <span class="nav-text">其它</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Enjoy"><span class="nav-number">5.</span> <span class="nav-text">Enjoy</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

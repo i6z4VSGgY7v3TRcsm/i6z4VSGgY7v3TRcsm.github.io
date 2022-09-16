@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="Kubernetes API初探, Kubernetes API相关概念、API Server内部工作机制、如何通过命令行与API进行交互等.">
+<meta name="keywords" content="Kubernetes,Kubernetes API">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes API初探(二)">
+<meta property="og:url" content="https://ultradata.stream/container/k8s/apisrv/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="Kubernetes API初探, Kubernetes API相关概念、API Server内部工作机制、如何通过命令行与API进行交互等.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/arch.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/gvr.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/container/apispc.png">
+<meta property="og:updated_time" content="2018-01-01T14:12:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes API初探(二)">
+<meta name="twitter:description" content="Kubernetes API初探, Kubernetes API相关概念、API Server内部工作机制、如何通过命令行与API进行交互等.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/arch.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/container/k8s/apisrv/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Kubernetes API初探(二) | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/container/k8s/apisrv/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kubernetes API初探(二)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-01-21 21:16:27" itemprop="dateCreated datePublished" datetime="2016-01-21T21:16:27+08:00">2016-01-21</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-01-01 22:12:16" itemprop="dateModified" datetime="2018-01-01T22:12:16+08:00">2018-01-01</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">3.2k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">3 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Kubernetes API初探, Kubernetes API相关概念、API Server内部工作机制、如何通过命令行与API进行交互等. <a id="more"></a></p>
+<h2 id="API-Server"><a href="#API-Server" class="headerlink" title="API Server"></a>API Server</h2><p>如下图所示, Kubernetes主要由不同节点、不同角色组成: 主节点控制平面包含API Server、控制管理器及调度器, API Server作为控制管理实体, 可与分布式存储组件etcd直接交互. API Server主要负责Kubernetes API状态变更、读取, 如处理Worker节点、Kubernetes Native应用或外部客户端状态请求等; API Server也可充当集群代理组件, 如充当Kubernetes Dashboard、流式日志、服务端口代理或服务kubectl exec回话等. 通常, 状态通过etcd进行持久化, API Server充当Kubernetes核心部分.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/arch.png" alt></div></p>
+<h3 id="HTTP-接口"><a href="#HTTP-接口" class="headerlink" title="HTTP 接口"></a>HTTP 接口</h3><p>API Server通过JSON或Protobuf暴露RESTFUL HTTP服务, JSON或Protobuf主要进行集群内部通信, 可通过以下HTTP谓词查询或修改Kubernetes资源:</p>
+<ul>
+<li>HTTP GET, 获取特定资源(如特定Pod)数据或资源列表集(如某个命令空间下的所有Pod)</li>
+<li>HTTP POST, 创建资源, 如部署服务</li>
+<li>HTTP PUT, 更新已有资源, 如改变Pod容器镜像</li>
+<li>HTTP DELETE, 销毁资源, 不可恢复</li>
+<li>HTTP PATCH, 部分更新已有资源</li>
+</ul>
+<p>示例如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl -n NAMESPACE get pods     <span class="comment">## NAMESPACE替换具体命名空间</span></span><br><span class="line">$ GET /api/v1/namespaces/&#123;YOUR-NAMESPACE&#125;/pods    <span class="comment">## 与上面指令等效, 注意替换YOUR-NAMESPACE为具体命名空间</span></span><br></pre></td></tr></table></figure>
+<h3 id="Kubernetes-API版本控制"><a href="#Kubernetes-API版本控制" class="headerlink" title="Kubernetes API版本控制"></a>Kubernetes API版本控制</h3><p>Kubernetes支持API多版本控制, 以不同API路径形式如/api/v1 或/apis/extensions/v1beta2等, 便于拓展, 不同的API版本意味着不同级别的稳定性支持:</p>
+<ul>
+<li>Alpha级别, (如v1alpha2), 默认禁用, 适用于短期测试群集中使用, 适用于可能在任意时候删除的特征</li>
+<li>Beta级别, (如v2beta3), 默认启用, 意味着代码经过了充分测试, 但对象的语义可能会在后续版本中发生改变, 可能会出现不兼容情况</li>
+<li>Stable级别, (如v1), 存在于后续发布的软件版本</li>
+</ul>
+<p>当然, API Server也存在其它类型的HTTP路径, 如非资源对齐的路径：群集范围实体, 如/metrics,/logs或/healthz. 此外, API Server支持监视, 如可以通过在某些请求中添加?watch=true将API Server改为监视模式, 而非按设定时间间隔进行资源轮询. </p>
+<h3 id="声明式状态管理"><a href="#声明式状态管理" class="headerlink" title="声明式状态管理"></a>声明式状态管理</h3><p>大多数API对象区分了所需的资源状态规范和当前时对象的状态,状态规范是对资源期望状态的完整描述,且通常持久于稳定存储如etcd中. 值得注意的一点是, 某些Kubernetes发行版产品,如k3s或微软的AKS,已经取代了etcd或考虑使用其他存储替换etcd. 下面简单聊下Kubernetes声明式状态管理—即声明期望状态, 并让Kubernetes处理其余一切(Handle the rest).</p>
+<p>状态规范描述了期望的资源状态,可通过命令行工具(如kubectl)或通过Golang代码实现.Status描述了资源的观测状态或实际状态,并由控制平面管理,可由核心组件(如控制器管理器)或自定义控制器管理.例如,在部署中,指定期望运行20个应用程序副本.部署控制器作为控制平面中控制器管理器的一部分,可读取部署规范并创建一个副本集,然后负责管理副本：通过创建相应数量的Pod,最终(通过kubelet)在工作节点上启动容器.如果任一副本失败,部署控制器反馈状态.</p>
+<h3 id="API-Terminology"><a href="#API-Terminology" class="headerlink" title="API Terminology"></a>API Terminology</h3><p>回顾下上篇博文, Kubernetes API Server上下文Context经常看到Kind、API Group、版本Version及Resources资源等相关数据, 下面简单聊下这些Context数据. 如下图所示, Resources通常作为GroupVersionResouce(GVR)中的一部分, 集群范围资源如节点或命名空间本身路径中没有$NAMESPACE部分, 如节点(nodes)GVR: /api/v1/nodes; 与GVR类似, Kind存在于每项API Group,是GroupVersionKind(GVK)中的一部分. GVK与GVR存在关联, GVK通过GVR标识的HTTP路径进行识别, 通过REST映射将GVK映射成GVR.</p>
+<p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/extra/gvr.png" alt></div></p>
+<h4 id="Kind"><a href="#Kind" class="headerlink" title="Kind"></a>Kind</h4><p>实体类型, Kind对应于Golang中type, 每个对象都有一个字段Kind(JSON中的小写,Golang中大写),该字段代表一个Pod.Kind有以下三种:</p>
+<ul>
+<li>系统中持久实体对象,如Pod或Endpoints端点, 这些对象具有名称,存在于命名空间中.</li>
+<li>一种或多种实体集合列表, 这些列表具有有限的公共元数据集. 示例如PodLists或NodeLists.</li>
+<li>对对象和非持久实体(如/binding或/scale)进行特定操作的特殊目的类型. 如Kubernetes使用APIGroup和APIResource进行Discovery; 对于错误结果, 使用Status.</li>
+</ul>
+<p>同名的Kind不仅可以在不同版本中共存,还可以在不同的API Group中共存, 如<code>Deployment</code>, 刚开始在扩展组中为alpha kind,最终在apps.k8s.io组中升级为稳定版本, 这种现象称之为同居(Cohabitation). 虽然在Kubernetes中不常见,但也存在, 如:</p>
+<ul>
+<li>extensions和networking.k8s.io中的<code>Ingress</code>和<code>NetworkPolicy</code></li>
+<li>apps和extensions中的<code>DaemonSet</code>,<code>ReplicaSet</code></li>
+<li>核心组和events.k8s.io中的<code>Event</code></li>
+</ul>
+<h4 id="API-Group"><a href="#API-Group" class="headerlink" title="API Group"></a>API Group</h4><p>Kinds集合通常逻辑相关, 所有batch对象如Job或ScheduledJob均存在于Batch API组中.</p>
+<h4 id="Version"><a href="#Version" class="headerlink" title="Version"></a>Version</h4><p>每个API组可以存在多个版本,如一组API首先存在于v1alpha1,然后v1beta1,最后v1, 可以在每个支持的版本中检索在给定版本中创建的对象. API Server执行无损转换并返回所请求版本中的对象. 从集群用户的角度来看,版本只是相同对象的不同表示.</p>
+<h4 id="Resources"><a href="#Resources" class="headerlink" title="Resources"></a>Resources</h4><p>通常由一系列HTTP端点(或路径)暴露CRUD(Create/Read/Update/Delete)操作语义, 通常路径包含:</p>
+<ul>
+<li>root, 如…/pods, 列出该类型的所有实例</li>
+<li>各个命名资源的路径,例如…/pods/nginx</li>
+</ul>
+<p>通常,这些端点中的每一个都返回并接收一Kind(第一种情况下为PodList,第二种情况下为Pod).但在其他情况下(如errors),将返回Status Kind.除了具有完整CRUD语义外,资源还可以由其他端点来执行特定操作(如…/pod/nginx/port-forward, …/pod/nginx/exec, 或…/pod/nginx/logs).这些也称子资源,通常实现自定义协议而非REST, 如通过WebSockets或指令式API进行流式连接等.</p>
+<p>Resources(资源)与Kinds(类别)区别如下:</p>
+<ul>
+<li>Resources对应HTTP路径 </li>
+<li>Kinds通常由端点或etcd中返回或接收的类型对象</li>
+</ul>
+<h4 id="API-SPACE"><a href="#API-SPACE" class="headerlink" title="API SPACE"></a>API SPACE</h4><p><div align="center"><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/container/apispc.png" alt></div></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Kubernetes/" <i class="fa fa-tag"> Kubernetes</a>
+          
+            
+            <a href="/tags/Kubernetes-API/" <i class="fa fa-tag"> Kubernetes API</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/container/k8s/api-intro/" rel="next" title="Kubernetes API初探(一)">
+                <i class="fa fa-chevron-left"></i> Kubernetes API初探(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dl/vdtct/" rel="prev" title="SSD大法实战车辆检测">
+                SSD大法实战车辆检测 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#API-Server"><span class="nav-number">1.</span> <span class="nav-text">API Server</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-接口"><span class="nav-number">1.1.</span> <span class="nav-text">HTTP 接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes-API版本控制"><span class="nav-number">1.2.</span> <span class="nav-text">Kubernetes API版本控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#声明式状态管理"><span class="nav-number">1.3.</span> <span class="nav-text">声明式状态管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API-Terminology"><span class="nav-number">1.4.</span> <span class="nav-text">API Terminology</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Kind"><span class="nav-number">1.4.1.</span> <span class="nav-text">Kind</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#API-Group"><span class="nav-number">1.4.2.</span> <span class="nav-text">API Group</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Version"><span class="nav-number">1.4.3.</span> <span class="nav-text">Version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Resources"><span class="nav-number">1.4.4.</span> <span class="nav-text">Resources</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#API-SPACE"><span class="nav-number">1.4.5.</span> <span class="nav-text">API SPACE</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>

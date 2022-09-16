@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="S66HA0k8XJ">
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.css">
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: "",
+      labels: ""
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+<script async defer data-website-id="42bf4575-ff76-4749-9757-fcc4a185c895" src="https://stats.thedelta.ml/umami.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/njscosmos@1.2.0/devtoolsredir.js"></script>
+  <meta name="description" content="本文将介绍Apache Drill中一些常见的复杂数据分析.">
+<meta name="keywords" content="Apache Drill,Big Data">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Query Engine大作战 -- Apache Drill之复杂数据分析">
+<meta property="og:url" content="https://ultradata.stream/bigdata/drill/analysis/index.html">
+<meta property="og:site_name" content="INSIGHT">
+<meta property="og:description" content="本文将介绍Apache Drill中一些常见的复杂数据分析.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/drill/browser-uacnt.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/drill/mysql-log.jpg">
+<meta property="og:updated_time" content="2015-10-21T14:19:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Query Engine大作战 -- Apache Drill之复杂数据分析">
+<meta name="twitter:description" content="本文将介绍Apache Drill中一些常见的复杂数据分析.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/drill/browser-uacnt.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://ultradata.stream/bigdata/drill/analysis/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>Query Engine大作战 -- Apache Drill之复杂数据分析 | INSIGHT</title>
+  
+
+
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146484128-3"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !false) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-146484128-3');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">INSIGHT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+    
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ultradata.stream/bigdata/drill/analysis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="INSIGHT">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="INSIGHT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Query Engine大作战 -- Apache Drill之复杂数据分析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-11 21:11:06" itemprop="dateCreated datePublished" datetime="2015-10-11T21:11:06+08:00">2015-10-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2015-10-21 22:19:16" itemprop="dateModified" datetime="2015-10-21T22:19:16+08:00">2015-10-21</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Distributed-System/" itemprop="url" rel="index"><span itemprop="name">Distributed System</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span title="本文字数">5.4k</span>
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span title="阅读时长">5 分钟</span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将介绍Apache Drill中一些常见的复杂数据分析. <a id="more"></a></p>
+<h2 id="复杂数据结构"><a href="#复杂数据结构" class="headerlink" title="复杂数据结构"></a>复杂数据结构</h2><p>Drill支持复杂数据结构, 如Array和Map等. Drill中Array与大多数编程语言有些类似, 如数组下标从0开始而非从1开始, 示例SQL如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询CSV格式数据</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">col</span>[<span class="number">0</span>] <span class="keyword">AS</span> shop_name</span><br><span class="line"><span class="keyword">FROM</span> dfs.ecomm_data.<span class="string">`ecomm_shops.csv`</span>;</span><br></pre></td></tr></table></figure>
+<p>当然也可使用数组读取JSON数据, 比如JSON中有些字段为数组类型. 通常使用Map作为JSON数据容器, 比如下面这段SQL中<code>ua</code>字段为一Map, Drill中可以通过: Map.FieldName 形式访问Map中Value.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查看不同浏览器PV分布</span></span><br><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    uadat.ua.AgentNameVersion <span class="keyword">AS</span> Browser,</span><br><span class="line">    <span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> BrowserCount</span><br><span class="line"><span class="keyword">FROM</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> parse_user_agent(<span class="string">`request_user-agent`</span>) <span class="keyword">AS</span> ua</span><br><span class="line">    <span class="keyword">FROM</span> dfs.httpd_logs.<span class="string">`log_data/ecomm.httpd`</span></span><br><span class="line">) <span class="keyword">AS</span> uadat</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> uadat.ua.AgentNameVersion</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> BrowserCount <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="JSON数据分析"><a href="#JSON数据分析" class="headerlink" title="JSON数据分析"></a>JSON数据分析</h2><p>如果JSON或其他嵌套数据格式化合理(能准确推断出数据类型), Apache Drill支持JSON数据查询与分析. </p>
+<h3 id="Drill解析问题"><a href="#Drill解析问题" class="headerlink" title="Drill解析问题"></a>Drill解析问题</h3><p>Drill默认将带小数点数字解析为Double类型, 不带小数点数字解析为BigInt; Drill默认不支持Map中Field为混合类型, 如果用户JSON数据中存在以上两个问题, 可能导致Schema解析错误, 无法成功解析JSON或分析. </p>
+<p>Apache Drill有俩配置项, 可预防这种问题, 如设置<code>store.json.read_number_as_double</code>为true, 可避免数字格式化错误. </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SESSION</span> <span class="keyword">SET</span> <span class="string">`store.json.read_number_as_double`</span> = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<p>可以设置<code>store.json.all_text_mode</code>为true, 将所有Field解析为Varchar类型, 避免JSON字段中混合类型导致的解析错误.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SESSION</span> <span class="keyword">SET</span> <span class="string">`store.json.all_text_mode`</span> = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<p>但如果JSON数据中确实存在混合类型, 又不想所有的Field被Drill解析为Varchar类型, 可以考虑Drill新引入的Union类型(处于测试阶段, 不稳定), 允许JSON数据中同一Field拥有不同类型, 配置参考如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SESSION</span> <span class="keyword">SET</span> <span class="string">`exec.enable_union_type`</span> = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="FLATTEN"><a href="#FLATTEN" class="headerlink" title="FLATTEN()"></a>FLATTEN()</h3><p>Drill提供一比较实用函数<code>FLATTEN()</code>, 可将嵌套的JSON数据字段展开, 假定JSON数据样本(empl.json)如下:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"columns"</span>: [</span><br><span class="line">        <span class="string">"first_name"</span>,</span><br><span class="line">        <span class="string">"last_name"</span>,</span><br><span class="line">        <span class="string">"birthday"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"data"</span>: [</span><br><span class="line">        [</span><br><span class="line">            <span class="string">"Robert"</span>,</span><br><span class="line">            <span class="string">"Hernandez"</span>,</span><br><span class="line">            <span class="string">"5/3/81"</span></span><br><span class="line">        ],</span><br><span class="line">        [</span><br><span class="line">            <span class="string">"Steve"</span>,</span><br><span class="line">            <span class="string">"Smith"</span>,</span><br><span class="line">            <span class="string">"8/4/84"</span></span><br><span class="line">        ],</span><br><span class="line">        [</span><br><span class="line">            <span class="string">"Anne"</span>,</span><br><span class="line">            <span class="string">"Raps"</span>,</span><br><span class="line">            <span class="string">"9/13/91"</span></span><br><span class="line">        ],</span><br><span class="line">        [</span><br><span class="line">            <span class="string">"Alice"</span>,</span><br><span class="line">            <span class="string">"Muller"</span>,</span><br><span class="line">            <span class="string">"4/15/88"</span></span><br><span class="line">        ]</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将上面这段嵌套的JSON样本数据中<code>data</code>字段展开, 参考如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    col_fields[<span class="number">0</span>] <span class="keyword">AS</span> first_name,</span><br><span class="line">    col_fields[<span class="number">1</span>] <span class="keyword">AS</span> last_name,</span><br><span class="line">    col_fields[<span class="number">2</span>] <span class="keyword">AS</span> birthday</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">(</span><br><span class="line">    <span class="keyword">SELECT</span> FLATTEN(<span class="keyword">data</span>) <span class="keyword">AS</span> col_fields</span><br><span class="line">    <span class="keyword">FROM</span> dfs.employee_data.<span class="string">`empl.json`</span></span><br><span class="line">) <span class="keyword">AS</span> employee_data</span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>first_name</th>
+<th>last_name</th>
+<th>birthday</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Robert</td>
+<td>Hernandez</td>
+<td>5/3/81</td>
+</tr>
+<tr>
+<td>Steve</td>
+<td>Smith</td>
+<td>8/4/84</td>
+</tr>
+<tr>
+<td>Anne</td>
+<td>Raps</td>
+<td>9/13/91</td>
+</tr>
+<tr>
+<td>Alice</td>
+<td>Muller</td>
+<td>4/15/88</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="KVGEN"><a href="#KVGEN" class="headerlink" title="KVGEN()"></a>KVGEN()</h3><p>Drill还提供另一实用函数<code>KVGEN()</code>, 支持访问面向列存储的JSON数据, 该函数返回一数组, 数组中每项元素为KV键值对. 假定样本数据(empl_cols.json)如下: </p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"first_name"</span>: &#123;</span><br><span class="line">        <span class="attr">"0"</span>:<span class="string">"Robert"</span>,</span><br><span class="line">        <span class="attr">"1"</span>:<span class="string">"Steve"</span>,</span><br><span class="line">        <span class="attr">"2"</span>:<span class="string">"Anne"</span>,</span><br><span class="line">        <span class="attr">"3"</span>:<span class="string">"Alice"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"last_name"</span>: &#123;</span><br><span class="line">        <span class="attr">"0"</span>:<span class="string">"Hernandez"</span>,</span><br><span class="line">        <span class="attr">"1"</span>:<span class="string">"Smith"</span>,</span><br><span class="line">        <span class="attr">"2"</span>:<span class="string">"Raps"</span>,</span><br><span class="line">        <span class="attr">"3"</span>:<span class="string">"Muller"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"birthday"</span>: &#123;</span><br><span class="line">        <span class="attr">"0"</span>:<span class="string">"5/3/81"</span>,</span><br><span class="line">        <span class="attr">"1"</span>:<span class="string">"8/4/84"</span>,</span><br><span class="line">        <span class="attr">"2"</span>:<span class="string">"9/13/91"</span>,</span><br><span class="line">        <span class="attr">"3"</span>:<span class="string">"4/15/88"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将样本数据中FirstName值抽取出来, 参考如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> FLATTEN(KVGEN(first_name))[<span class="string">'value'</span>] <span class="keyword">AS</span> first_name</span><br><span class="line"><span class="keyword">FROM</span> dfs.employee_data.<span class="string">`empl_cols.json`</span></span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>firstname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Robert</td>
+</tr>
+<tr>
+<td>Steve</td>
+</tr>
+<tr>
+<td>Anne</td>
+</tr>
+<tr>
+<td>Alice</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="日志数据分析"><a href="#日志数据分析" class="headerlink" title="日志数据分析"></a>日志数据分析</h2><p>新版Drill支持读取和查询Apache Web服务器日志(Drill内部嵌入了HTTPD解释器), 可以通过Apache Drill对这些日志数据进行聚合或Join等操作. 为了正常读取Web服务器日志, 需对Drill支持的可插拔存储进行相关配置. 通常Apache Web Server配置路径为/etc/apache2/apache2.conf, 该配置文件中有一项<code>LogFormat</code>(日志格式)配置, 参考如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LogFormat <span class="string">"%h %l %u %t \"%r\" %&gt;s %O \"&#123;Referer&#125;i\" \"%&#123;User-Agent&#125;i"</span><span class="string">"</span></span><br></pre></td></tr></table></figure>
+<p>拷贝该项配置, 打开Web Console点击可插拔存储(如dfs等)配置, 贴到<code>logFormat</code>配置中, 参考如下:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">"httpd": &#123;</span><br><span class="line">    "type": "httpd",</span><br><span class="line">    "logFormat": "%h %l %u %t \"%r\" %&gt;s %O \"&#123;Referer&#125;i\" \"%&#123;User­Agent&#125;i\"",</span><br><span class="line">    "timestampFormat": null</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="note info">
+            <p>以上Web日志格式中, 常见字段(Format String)说明如下:</p><div class="table-container"><table><thead><tr><th>配置字段名</th><th>说明</th></tr></thead><tbody><tr><td>%h</td><td>远程主机名, 若<code>HostnameLookups</code>设置为off, 默认记录IP地址</td></tr><tr><td>%l</td><td>远程日志名(源自identd, 如果存在的话), 通常需设置mod_ident和IdentityCheck为On</td></tr><tr><td>%r</td><td>请求第一行</td></tr><tr><td>%s</td><td>状态(Status), 源请求状态, 使用%&gt;s作为最终状态</td></tr><tr><td>%t</td><td>接收请求时间</td></tr><tr><td>%u</td><td>若为验证请求记录远程用户, 非验证请求为401</td></tr><tr><td>%O</td><td>发送字节(包括头部), 如果请求被丢弃有可能为0, 使用时需开启mod_logio</td></tr><tr><td>%{VARNAME}i</td><td>变量名(VARNAME)内容, 发送至Server请求的Header行</td></tr></tbody></table></div>
+          </div>
+<p>配置完成后, 可以开始查询Web Server日志, 以下为部分Web日志样本, 参考如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">35.154.11.105 ­ ­ [21/Oct/2014:04:11:25 +0100] \</span><br><span class="line"><span class="string">"GET /linux/doing­pxe­without­dhcp­control HTTP/1.1"</span> 200 24323 \</span><br><span class="line"><span class="string">"http://your.ecomm.site.com/"</span> <span class="string">"Mozilla/5.0 (Windows NT 5.1; rv:35.0) \</span></span><br><span class="line"><span class="string">Gecko/20100101 Firefox/35.0"</span></span><br><span class="line"></span><br><span class="line">37.86.201.166­ ­ [21/Oct/2014:04:11:26 +0100] \</span><br><span class="line"><span class="string">"GET /join_form HTTP/1.0"</span> 200 11114 <span class="string">"http://your.ecomm.site.com/"</span> \</span><br><span class="line"><span class="string">"Mozilla/5.0 (Windows NT 5.1; rv:35.0) Gecko/20100101 Firefox/35.0"</span></span><br></pre></td></tr></table></figure>
+<p>查询日志中所有可见Fields:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * </span><br><span class="line"><span class="keyword">FROM</span> dfs.httpd_logs.<span class="string">`log_data/ecomm.httpd`</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+<p>分析用户代理(User Agent, 包括浏览器标识,操作系统标识,渲染引擎,版本信息等字段)类型:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="string">`request_user-agent`</span></span><br><span class="line"><span class="keyword">FROM</span> dfs.httpd_logs.<span class="string">`log_data/ecomm.httpd`</span>;</span><br></pre></td></tr></table></figure>
+<p>直接解析用户代理文本字符串, 有些费劲, 但Drill提供了一Util方法<code>parse_user_agent</code>, 返回一Map包含User Agent明细数据. 以下SQL查看不同浏览器PV分布:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    uadat.ua.AgentNameVersion <span class="keyword">AS</span> Browser,</span><br><span class="line">    <span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> BrowserCount</span><br><span class="line"><span class="keyword">FROM</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> parse_user_agent(<span class="string">`request_user-agent`</span>) <span class="keyword">AS</span> ua</span><br><span class="line">    <span class="keyword">FROM</span> dfs.httpd_logs.<span class="string">`log_data/ecomm.httpd`</span></span><br><span class="line">) <span class="keyword">AS</span> uadat</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> uadat.ua.AgentNameVersion</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> BrowserCount <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/drill/browser-uacnt.jpg" alt></p>
+<p>Web Server日志中, 通常<code>request_referer</code>包含了URL, 可以通过<code>parse_url()</code>函数对URL进行解析, SQL参考如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- parse_url(`request_referer`)返回URL协议、主机、路径</span></span><br><span class="line"><span class="comment">-- 等URL相关信息, 该函数返回结果为一Map</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="string">`request_referer`</span>, parse_url(<span class="string">`request_referer`</span>)</span><br><span class="line"><span class="keyword">FROM</span> dfs.httpd_logs.<span class="string">`log_data/ecomm.httpd`</span></span><br><span class="line"><span class="keyword">WHERE</span> <span class="string">`request_referer`</span> <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span></span><br></pre></td></tr></table></figure>
+<p><code>parse_query()</code>函数, 可用于网络攻防日志分析, 如通过URL来源鉴定是否为可疑攻击等:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> qmap.query_map.<span class="string">`came_from`</span> <span class="keyword">AS</span> came_from</span><br><span class="line"><span class="keyword">FROM</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> parse_query(<span class="string">`request_referer_query`</span>) <span class="keyword">AS</span> query_map</span><br><span class="line">    <span class="keyword">FROM</span> dfs.httpd_logs.<span class="string">`log_data/ecomm.httpd`</span></span><br><span class="line">    <span class="keyword">WHERE</span> <span class="keyword">LENGTH</span>(<span class="string">`request_referer_query`</span>) &gt; <span class="number">0</span></span><br><span class="line">) <span class="keyword">AS</span> qmap</span><br><span class="line"><span class="keyword">WHERE</span> qmap.query_map.<span class="string">`came_from`</span> <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
+<div class="note info">
+            <p>除了Web Server日志, Drill还可分析关系型数据库日志, 如MySQL日志数据等. 当然, 为成功解析MySQL日志, 需对Drill读取日志文件的可插拔存储增加一些配置, 如与上例中HTTPD日志类似的Schema解析与字段说明, 必要时需给出合理的正则解析. 配置成功后, 可以使用Drill解析MySQL日志, 参考如下:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM dfs.mysql.`mysql.log`;</span><br></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/bigdata/drill/mysql-log.jpg" alt></p>
+          </div>
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            
+            <a href="/tags/Apache-Drill/" <i class="fa fa-tag"> Apache Drill</a>
+          
+            
+            <a href="/tags/Big-Data/" <i class="fa fa-tag"> Big Data</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely">
+  
+    <div class="twitter">Twitter</div>
+  
+    <div class="facebook">Facebook</div>
+  
+    <div class="linkedin">LinkedIn</div>
+  
+    <div class="pinterest">Pinterest</div>
+  
+    <div class="telegram">Telegram</div>
+  
+</div>
+
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      <div>
+        
+        <div>
+    
+        <div style="text-align:left;color: #ccc;font-size:16px;">本文结束, 感谢阅读! 如需分享, 请点击上方分享按钮! 如需转载, 请注明原文链接! 禁止一切商业形式用途, 谢谢合作!</div>
+    
+</div>
+        
+      </div>
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/bigdata/drill/intro/" rel="next" title="Query Engine大作战 -- Apache Drill之基本概念篇">
+                <i class="fa fa-chevron-left"></i> Query Engine大作战 -- Apache Drill之基本概念篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/bigdata/hbase/phoenix-intro/" rel="prev" title="云中漫步, 邂逅Apache Phoenix">
+                云中漫步, 邂逅Apache Phoenix <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+
+  </div>
+  
+  
+  
+  </article>
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="https://cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/images/infi.jpg" alt="INSIGHT">
+  
+  <p class="site-author-name" itemprop="name">INSIGHT</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/dot-delta" title="GitHub &rarr; https://github.com/dot-delta" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:contact@thedelta.ml" title="E-Mail &rarr; mailto:contact@thedelta.ml" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#复杂数据结构"><span class="nav-number">1.</span> <span class="nav-text">复杂数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON数据分析"><span class="nav-number">2.</span> <span class="nav-text">JSON数据分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Drill解析问题"><span class="nav-number">2.1.</span> <span class="nav-text">Drill解析问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FLATTEN"><span class="nav-number">2.2.</span> <span class="nav-text">FLATTEN()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KVGEN"><span class="nav-number">2.3.</span> <span class="nav-text">KVGEN()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志数据分析"><span class="nav-number">3.</span> <span class="nav-text">日志数据分析</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="post-meta-divider">|</span>
+  <span>BUILD WITH</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span>AND</span>
+  <span class="author" itemprop="copyrightHolder">PASSION</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">443k</span>
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/njsdeltapst@1.1.0/scripts/js/fbx/jquery.fancybox.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>
