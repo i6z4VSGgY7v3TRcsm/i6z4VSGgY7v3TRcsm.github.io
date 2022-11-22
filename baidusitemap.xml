@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ultradata.stream/bigdata/flink/window/</loc>
-    <lastmod>2019-05-11</lastmod>
-  </url>  <url>
     <loc>https://ultradata.stream/bigdata/flink/dstream/</loc>
     <lastmod>2019-05-11</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/bigdata/flink/state/</loc>
+    <lastmod>2019-05-11</lastmod>
+  </url>  <url>
+    <loc>https://ultradata.stream/bigdata/flink/window/</loc>
     <lastmod>2019-05-11</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/dl/nst/</loc>
@@ -22,28 +22,28 @@
     <loc>https://ultradata.stream/life/blog/</loc>
     <lastmod>2019-04-02</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/ambitious-java/amber-pattern-matching/</loc>
-    <lastmod>2019-04-01</lastmod>
-  </url>  <url>
-    <loc>https://ultradata.stream/ambitious-java/amber-legacy-lambda/</loc>
-    <lastmod>2019-04-01</lastmod>
-  </url>  <url>
     <loc>https://ultradata.stream/ambitious-java/amber-raw-string-literals/</loc>
     <lastmod>2019-04-01</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/ambitious-java/amber-enum/</loc>
+    <loc>https://ultradata.stream/ambitious-java/amber-pattern-matching/</loc>
     <lastmod>2019-04-01</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/ambitious-java/amber-data-class/</loc>
     <lastmod>2019-04-01</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/ambitious-java/zgc/</loc>
-    <lastmod>2019-03-21</lastmod>
+    <loc>https://ultradata.stream/ambitious-java/amber-enum/</loc>
+    <lastmod>2019-04-01</lastmod>
+  </url>  <url>
+    <loc>https://ultradata.stream/ambitious-java/amber-legacy-lambda/</loc>
+    <lastmod>2019-04-01</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/ambitious-java/guide/</loc>
     <lastmod>2019-03-21</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/ambitious-java/epsilon-gc/</loc>
+    <lastmod>2019-03-21</lastmod>
+  </url>  <url>
+    <loc>https://ultradata.stream/ambitious-java/zgc/</loc>
     <lastmod>2019-03-21</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/cloud-native/srvcmesh/</loc>
@@ -148,13 +148,13 @@
     <loc>https://ultradata.stream/microsrvc/axon-cqrs/</loc>
     <lastmod>2016-02-11</lastmod>
   </url>  <url>
+    <loc>https://ultradata.stream/bigdata/cascading/subassembly/</loc>
+    <lastmod>2015-10-21</lastmod>
+  </url>  <url>
     <loc>https://ultradata.stream/bigdata/cascading/tuning/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/bigdata/hbase/phoenix-tuning/</loc>
-    <lastmod>2015-10-21</lastmod>
-  </url>  <url>
-    <loc>https://ultradata.stream/bigdata/drill/mlpipe/</loc>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-intro/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/bigdata/drill/analysis/</loc>
@@ -166,7 +166,7 @@
     <loc>https://ultradata.stream/bigdata/drill/dbc/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/shapeless/dependent-types/</loc>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-tuning/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/bigdata/drill/udf/</loc>
@@ -178,31 +178,28 @@
     <loc>https://ultradata.stream/bigdata/cascading/cascade/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-txn/</loc>
+    <lastmod>2015-10-21</lastmod>
+  </url>  <url>
     <loc>https://ultradata.stream/bigdata/hbase/phoenix-udf/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/bigdata/hbase/phoenix-idx/</loc>
-    <lastmod>2015-10-21</lastmod>
-  </url>  <url>
-    <loc>https://ultradata.stream/bigdata/hbase/phoenix-intro/</loc>
+    <loc>https://ultradata.stream/bigdata/cascading/custops/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/bigdata/hbase/pqs/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/bigdata/cascading/subassembly/</loc>
+    <loc>https://ultradata.stream/bigdata/drill/mlpipe/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/bigdata/hbase/phoenix-txn/</loc>
-    <lastmod>2015-10-21</lastmod>
-  </url>  <url>
-    <loc>https://ultradata.stream/shapeless/poly/</loc>
+    <loc>https://ultradata.stream/bigdata/hbase/phoenix-idx/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/bigdata/cascading/basic/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/bigdata/cascading/custops/</loc>
+    <loc>https://ultradata.stream/bigdata/drill/netanalysis/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/bigdata/cascading/ops-intro/</loc>
@@ -211,19 +208,22 @@
     <loc>https://ultradata.stream/bigdata/hbase/phoenix-integ/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
-    <loc>https://ultradata.stream/bigdata/drill/netanalysis/</loc>
+    <loc>https://ultradata.stream/shapeless/dependent-types/</loc>
+    <lastmod>2015-10-21</lastmod>
+  </url>  <url>
+    <loc>https://ultradata.stream/shapeless/poly/</loc>
     <lastmod>2015-10-21</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/life/guide/</loc>
     <lastmod>2015-10-11</lastmod>
   </url>  <url>
+    <loc>https://ultradata.stream/nosql/leveldb/search/</loc>
+    <lastmod>2015-06-21</lastmod>
+  </url>  <url>
     <loc>https://ultradata.stream/nosql/leveldb/crud/</loc>
     <lastmod>2015-06-21</lastmod>
   </url>  <url>
     <loc>https://ultradata.stream/nosql/leveldb/tuning/</loc>
-    <lastmod>2015-06-21</lastmod>
-  </url>  <url>
-    <loc>https://ultradata.stream/nosql/leveldb/search/</loc>
     <lastmod>2015-06-21</lastmod>
   </url>
 </urlset>
